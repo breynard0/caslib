@@ -1,0 +1,1 @@
+float nth_root(unsigned int n, float f);
