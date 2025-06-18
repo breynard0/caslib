@@ -12,4 +12,8 @@ main: deps
 	gcc work/*.o -o work/main
 
 deps:
-	gcc -c src/sqrt.c -o work/sqrt.o
+	gcc -c src/utils.c -o work/utils.o
+	gcc -c src/root.c -o work/root.o
+
+gen_sources:
+	python scripts/tan_lut.py
