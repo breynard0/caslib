@@ -16,4 +16,5 @@ deps:
 	gcc -c src/root.c -o work/root.o
 
 gen_sources:
+	mkdir -p auto-generated
 	python scripts/tan_lut.py
