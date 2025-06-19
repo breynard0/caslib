@@ -1,0 +1,1 @@
+float tangent(float x);

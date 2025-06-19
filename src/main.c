@@ -1,8 +1,8 @@
 #include "stdio.h"
-#include "../include/root.h"
+#include "../include/trig.h"
 #include "../include/utils.h"
 
 int main() {
-    printf("%f\n", nth_root(3, -0.125));
+    printf("%f\n", tangent(0.8));
     return 0;
 }

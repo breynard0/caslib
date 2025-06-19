@@ -1,3 +1,4 @@
+const int LENGTH = 1068;
 const float TAN_LUT_A[1068] = {
   0.0001,
   0.0015707963267948967,

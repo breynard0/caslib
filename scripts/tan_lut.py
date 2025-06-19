@@ -17,7 +17,8 @@ while acc < end:
     b.append(math.tan(acc))
     acc += interval
 
-text = f"const float TAN_LUT_A[{len(a)}] = "
+text = f"const int LENGTH = {len(a)};\n"
+text += f"const float TAN_LUT_A[{len(a)}] = "
 text += '{\n'
 for val in a:
     text += f"  {val},\n"

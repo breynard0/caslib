@@ -1,0 +1,4 @@
+enum Boolean {
+    TRUE,
+    FALSE
+};
