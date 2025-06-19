@@ -1,6 +1,6 @@
 struct SinCos {
-    float sin;
-    float cos;
+    double sin;
+    double cos;
 };
 
-struct SinCos angle_pair(float num);
+struct SinCos angle_pair(double num);

@@ -1,19 +1,19 @@
 #include "../include/trig.h"
 #include "../include/enums.h"
 #include "../include/utils.h"
-#include "../include/futils.h"
+#include "../include/dutils.h"
 #include "../auto-generated/cordic_constants.h"
 
 // LUT-based
-// float sine(float num) {
-//   float x = fmodulo(num, PI * 2.0);
+// double sine(double num) {
+//   double x = fmodulo(num, PI * 2.0);
 
 //   int idx = LENGTH / 2;
 //   int iter = 4;
 //   enum Boolean found = FALSE;
 
 //   while (found == FALSE) {
-//     float cur = SIN_LUT_A[idx];
+//     double cur = SIN_LUT_A[idx];
 //     if ((cur <= x) && (SIN_LUT_A[idx + 1] >= x)) {
 //       found = TRUE;
 //     } else {
@@ -30,32 +30,32 @@
 //     iter *= 2;
 //   }
 
-//   float weight = (x - SIN_LUT_A[idx]) / (SIN_LUT_A[idx + 1] -
+//   double weight = (x - SIN_LUT_A[idx]) / (SIN_LUT_A[idx + 1] -
 //   SIN_LUT_A[idx]);
 
 //   return SIN_LUT_B[idx] + (SIN_LUT_B[idx + 1] - SIN_LUT_B[idx]) * weight;
 // }
 
 // CORDIC-based
-struct SinCos angle_pair(float num) {
-  float angle_sum = 0.0;
-  float x = 1.0;
-  float y = 0.0;
+struct SinCos angle_pair(double num) {
+  double angle_sum = 0.0;
+  double x = 1.0;
+  double y = 0.0;
 
   struct SinCos out;
 
   unsigned int i = 0;
   while (i < CORDIC_COUNT) {
-    float last_x = x;
-    float last_y = y;
+    double last_x = x;
+    double last_y = y;
 
-    float angle = CORDIC_CONSTANTS[i];
+    double angle = CORDIC_CONSTANTS[i];
     if (angle == num) {
       // special logic
     }
 
-    float halved_x = fhalve(x, i);
-    float halved_y = fhalve(y, i);
+    double halved_x = dhalve(x, i);
+    double halved_y = dhalve(y, i);
 
     if (angle_sum > num) {
         angle_sum -= angle;

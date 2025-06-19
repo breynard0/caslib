@@ -8,7 +8,7 @@ int int_abs(int num) {
   }
 }
 
-float float_abs(float num) {
+double double_abs(double num) {
   if (num < 0.0) {
     return -num;
   } else {
@@ -16,13 +16,13 @@ float float_abs(float num) {
   }
 }
 
-float pow_fi(float num, int exponent) {
+double pow_di(double num, int exponent) {
   if (exponent == 0) {
     return 1.0;
   }
 
   int abs_exp = int_abs(exponent);
-  float val = 1.0;
+  double val = 1.0;
 
   for (int i = 0; i < abs_exp; i++) {
     val *= num;
@@ -35,17 +35,17 @@ float pow_fi(float num, int exponent) {
   }
 }
 
-float ffloor(float num) {
+double dfloor(double num) {
     int round = (int) num;
     if (num < 0.0) {
         round -= 1;
     }
-    return (float) round;
+    return (double) round;
 }
 
-float fmodulo(float num, float mod) {
-    float div = ffloor(float_abs(num / mod));
-    float out = (num - (mod * div));
+double dmodulo(double num, double mod) {
+    double div = dfloor(double_abs(num / mod));
+    double out = (num - (mod * div));
     if (num < 0) {
         return -out;
     } else {
@@ -53,6 +53,6 @@ float fmodulo(float num, float mod) {
     }
 }
 
-float deg_to_rad(float degrees) {
+double deg_to_rad(double degrees) {
     return PI * degrees / 180;
 }
