@@ -4,3 +4,7 @@ struct SinCos {
 };
 
 struct SinCos angle_pair(double num);
+
+double sine(double angle);
+double cosine(double angle);
+double tangent(double angle);

@@ -1,43 +1,53 @@
 #include "../include/trig.h"
+#include "../auto-generated/cordic_constants.h"
+#include "../include/dutils.h"
 #include "../include/enums.h"
 #include "../include/utils.h"
-#include "../include/dutils.h"
-#include "../auto-generated/cordic_constants.h"
 
-// LUT-based
-// double sine(double num) {
-//   double x = fmodulo(num, PI * 2.0);
-
-//   int idx = LENGTH / 2;
-//   int iter = 4;
-//   enum Boolean found = FALSE;
-
-//   while (found == FALSE) {
-//     double cur = SIN_LUT_A[idx];
-//     if ((cur <= x) && (SIN_LUT_A[idx + 1] >= x)) {
-//       found = TRUE;
-//     } else {
-//       int correction = LENGTH / iter;
-//       if (correction < 1) {
-//         correction = 1;
-//       }
-//       if (cur < x) {
-//         idx += correction;
-//       } else {
-//         idx -= correction;
-//       }
-//     }
-//     iter *= 2;
-//   }
-
-//   double weight = (x - SIN_LUT_A[idx]) / (SIN_LUT_A[idx + 1] -
-//   SIN_LUT_A[idx]);
-
-//   return SIN_LUT_B[idx] + (SIN_LUT_B[idx + 1] - SIN_LUT_B[idx]) * weight;
-// }
-
-// CORDIC-based
+// CORDIC implementation
 struct SinCos angle_pair(double num) {
+  enum Boolean negative = FALSE;
+  if (num < 0) {
+    negative = TRUE;
+  }
+
+  num = dmodulo(num, 2 * PI);
+
+  if (negative == TRUE) {
+    num = (2.0 * PI) - num;
+  }
+
+  const double halfpi = PI / 2.0;
+
+  float x_mul = 1.0;
+  float y_mul = 1.0;
+
+  // Quadrant I
+  if (num <= halfpi) {
+    x_mul = 1.0;
+    y_mul = 1.0;
+  }
+  // Quadrant II
+  if (num > halfpi && num <= 2.0 * halfpi) {
+    x_mul = -1.0;
+    y_mul = 1.0;
+    num = PI - num;
+  }
+
+  // Quadrant III
+  if (num > PI && num <= 3.0 * halfpi) {
+    x_mul = -1.0;
+    y_mul = -1.0;
+    num -= PI;
+  }
+
+  // Quadrant IV
+  if (num > 3.0 * halfpi) {
+    x_mul = 1.0;
+    y_mul = -1.0;
+    num = (2.0 * PI) - num;
+  }
+
   double angle_sum = 0.0;
   double x = 1.0;
   double y = 0.0;
@@ -50,28 +60,39 @@ struct SinCos angle_pair(double num) {
     double last_y = y;
 
     double angle = CORDIC_CONSTANTS[i];
-    if (angle == num) {
-      // special logic
-    }
 
     double halved_x = dhalve(x, i);
     double halved_y = dhalve(y, i);
 
     if (angle_sum > num) {
-        angle_sum -= angle;
-        x = last_x + halved_y;
-        y = last_y - halved_x;
+      angle_sum -= angle;
+      x = last_x + halved_y;
+      y = last_y - halved_x;
     } else {
-        angle_sum += angle;
-        x = last_x - halved_y;
-        y = last_y + halved_x;
+      angle_sum += angle;
+      x = last_x - halved_y;
+      y = last_y + halved_x;
     }
 
     i++;
   }
 
-  out.cos = x * COS_MULTIPLIER;
-  out.sin = y * COS_MULTIPLIER;
+  out.cos = x * COS_MULTIPLIER * x_mul;
+  out.sin = y * COS_MULTIPLIER * y_mul;
 
   return out;
+}
+
+double sine(double angle) {
+  struct SinCos pair = angle_pair(angle);
+  return pair.sin;
+}
+
+double cosine(double angle) {
+  struct SinCos pair = angle_pair(angle);
+  return pair.cos;
+}
+double tangent(double angle) {
+  struct SinCos pair = angle_pair(angle);
+  return pair.sin / pair.cos;
 }
