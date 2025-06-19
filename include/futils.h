@@ -6,3 +6,6 @@ typedef union {
     unsigned int sign : 1;
   } parts;
 } float_cast;
+
+float fdouble(float num, int n);
+float fhalve(float num, int n);

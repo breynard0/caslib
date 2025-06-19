@@ -1,4 +1,4 @@
-.SILENT: 
+.SILENT:
 run: init main
 	echo "Running..."
 	./work/main
@@ -13,9 +13,10 @@ main: deps
 
 deps:
 	gcc -c src/utils.c -o work/utils.o
+	gcc -c src/futils.c -o work/futils.o
 	gcc -c src/root.c -o work/root.o
 	gcc -c src/trig.c -o work/trig.o
 
 gen_sources:
 	mkdir -p auto-generated
-	python scripts/tan_lut.py
+	python scripts/cordic_constants.py
