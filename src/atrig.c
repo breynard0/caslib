@@ -24,17 +24,23 @@ static double arc_compute(double num, enum FuncType type) {
   // This method misbehaves for values very close to 1
   // Using rational equations from Desmos, though it does need to be solved
   // Thankfully, this happens to be a biquadratic equation, not a full quartic
-  // Sin:
   // Cosine: y=0.0416603x^4+0.5x^2+1
   // Cosine: x=sqrt(abs((-0.5 + sqrt(0.1666412y+0.0833588))/0.0833206))
+  // Sine: y=-0.499928x^2+1.57057x-0.233522
+  // Sine (sqrt(-1.99971*num+1.9997131249)-1.57056)/0.999856
   const float threshold = 0.998;
-  if (num > threshold) {
+  if (num > threshold && type != TANGENT) {
     if (type == COSINE) {
-      printf("%0.150f\n", double_abs(-0.5 + nth_root(2, 0.1666412 * num + 0.0833588)) /
-             0.0833206);
       return nth_root(
           2, double_abs(-0.5 + nth_root(2, 0.1666412 * num + 0.0833588)) /
                  0.0833206);
+    }
+    if (type == SINE) {
+      return (785285 - square_root(499928344809 - 499928000000 * num)) / 499928;
+      // return (square_root(-1.99971*num+1.9997131249)-1.57057)/-0.999856;
+      // return 0.5 * square_root(2.0 * square_root(96.0147 * num + 48.0293)
+      // + 24.0037) + 1.5708; return ((-0.5 + nth_root(2, 0.1666412 * num +
+      // 0.0833588)) / 0.0833206) + PI / 2.0;
     }
   }
 

@@ -27,3 +27,7 @@ double nth_root(unsigned int n, double d) {
         return estimate;
     }
 }
+
+double square_root(double d) {
+  return nth_root(2, d);
+}
