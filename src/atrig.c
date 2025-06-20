@@ -1,3 +1,4 @@
+#include "../include/atrig.h"
 #include "../include/dutils.h"
 #include "../include/enums.h"
 #include "../include/root.h"
@@ -5,7 +6,6 @@
 #include "../include/utils.h"
 
 #include "../auto-generated/cordic_constants.h"
-#include <stdio.h>
 
 enum FuncType { SINE, COSINE, TANGENT };
 
@@ -17,36 +17,30 @@ static double arc_compute(double num, enum FuncType type) {
   }
 
   num = double_abs(num);
-  if (num > 1) {
+  if (num > 1 && type != TANGENT) {
     return 0.0 / 0.0;
-  }
-
-  // This method misbehaves for values very close to 1
-  // Using rational equations from Desmos, though it does need to be solved
-  // Thankfully, this happens to be a biquadratic equation, not a full quartic
-  // Cosine: y=0.0416603x^4+0.5x^2+1
-  // Cosine: x=sqrt(abs((-0.5 + sqrt(0.1666412y+0.0833588))/0.0833206))
-  // Sine: y=-0.499928x^2+1.57057x-0.233522
-  // Sine (sqrt(-1.99971*num+1.9997131249)-1.57056)/0.999856
-  const float threshold = 0.998;
-  if (num > threshold && type != TANGENT) {
-    if (type == COSINE) {
-      return nth_root(
-          2, double_abs(-0.5 + nth_root(2, 0.1666412 * num + 0.0833588)) /
-                 0.0833206);
-    }
-    if (type == SINE) {
-      return (785285 - square_root(499928344809 - 499928000000 * num)) / 499928;
-      // return (square_root(-1.99971*num+1.9997131249)-1.57057)/-0.999856;
-      // return 0.5 * square_root(2.0 * square_root(96.0147 * num + 48.0293)
-      // + 24.0037) + 1.5708; return ((-0.5 + nth_root(2, 0.1666412 * num +
-      // 0.0833588)) / 0.0833206) + PI / 2.0;
-    }
   }
 
   double angle_sum = 0.0;
   double x = 1.0;
   double y = 0.0;
+
+  // Near 1, sine and cosine freak out
+  // Tangent in this function doesn't work quite right at large values
+  // Cosine values passed into arctan should be small, so that is not an issue
+  // Sine values passed into tan may be large, so it is likely inaccurate, hence
+  // the workaround The tangent function exported by this file does sinX/cosX to
+  // avoid the issues in the arc_compute function
+  const float threshold = 0.99;
+  if (num > threshold && type != TANGENT) {
+    double cos_x = num;
+    if (type == SINE) {
+      cos_x = square_root(1.0 - pow_di(num, 2));
+      return arc_cosine(cos_x);
+    }
+    return arc_compute(
+        (is_negative * (square_root(1.0 - pow_di(cos_x, 2)) / cos_x)), TANGENT);
+  }
 
   int i = 0;
   while (i < CORDIC_COUNT) {
@@ -70,8 +64,6 @@ static double arc_compute(double num, enum FuncType type) {
     double halved_x = dhalve(x, i);
     double halved_y = dhalve(y, i);
 
-    printf("%i %f %f ", val < num, x, num);
-
     // Not using pre-computed values of cosine since Y is being directly
     // compared
     if (val < num) {
@@ -83,7 +75,6 @@ static double arc_compute(double num, enum FuncType type) {
       y = (y_last - halved_x) * cosine(angle);
       angle_sum -= angle;
     }
-    printf("%f\n", angle_sum);
 
     i++;
   }
@@ -104,4 +95,4 @@ double arc_sine(double num) { return arc_compute(num, SINE); }
 
 double arc_cosine(double num) { return arc_compute(num, COSINE); }
 
-double arc_tangent(double num) { return arc_compute(num, TANGENT); }
+double arc_tangent(double num) { return arc_sine(num/square_root(1 + num*num)); }
