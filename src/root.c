@@ -10,9 +10,14 @@ double nth_root(unsigned int n, double d) {
 
     double fn = (double) n;
 
+    double small_mult = 1.0;
+    if (d < 0.1) {
+      small_mult = 100.0;
+    }
+
     // I've arbitrarily picked the number of iterations until it seems precise enough
     const int ITERATIONS = 4;
-    for (int i = 0; i < ITERATIONS * n; i++) {
+    for (int i = 0; i < ITERATIONS * n * small_mult; i++) {
         estimate = (1.0 / fn) * ((fn - 1.0) * estimate + (d / pow_di(estimate, n - 1)));
     }
 

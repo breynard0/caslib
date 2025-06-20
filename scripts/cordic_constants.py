@@ -1,7 +1,7 @@
 import math
 from math import atan
 
-out = "auto-generated/cordic_constants.h"
+out = "auto-generated/cordic_constants"
 
 n = 40;
 
@@ -24,5 +24,7 @@ text = text[:-2]
 text += "};\nconst double COS_MULTIPLIER = "
 text += f"{cos_mul};"
 
-with open(out, "w") as f:
+with open(out + '.c', "w") as f:
   f.write(text)
+with open(out + '.h', "w") as f:
+    f.write(f"extern const unsigned int CORDIC_COUNT;\nextern const double CORDIC_CONSTANTS[{n}];\nextern const double COS_MULTIPLIER;")
