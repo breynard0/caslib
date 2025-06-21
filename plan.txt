@@ -1,0 +1,35 @@
+Goals
+- Solve any expression with no variables for a value
+- Solve linear, quadratic, and cubic equations for x
+- Solve linear and quadratic systems via gaussian elimination
+- GCF from any degree
+- Factor quadratic expressions
+- Simplify any expression with degree up to 2
+- Simplify equation to remove denominators
+- Rearrange equation for any value
+Operations
+- Roots
+- Trigonometric functions and their arc versions
+- Exponents
+- Logarithm
+Buttons
+- 0-9
+- Letters for each of those, second fn
+- Subscript button
+- Multiply
+- Divide
+- Add
+- Subtract
+- PI
+- Square root
+- Cube root
+- Nth root
+- Square
+- Cube
+- Nth power
+- Parentheses
+- Solve for value
+- Rearrange for specific variable
+- Solve system
+- Simplify
+- Up/down/left/right buttons

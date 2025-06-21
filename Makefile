@@ -17,6 +17,8 @@ deps: auto-deps
 	gcc -c src/root.c -o work/root.o
 	gcc -c src/trig.c -o work/trig.o
 	gcc -c src/atrig.c -o work/atrig.o
+	gcc -c src/gcf.c -o work/gcf.o
+	gcc -c src/flags.c -o work/flags.o
 
 auto-deps:
 	gcc -c auto-generated/cordic_constants.c -o work/cordic_constants.o
