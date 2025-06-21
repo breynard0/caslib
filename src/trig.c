@@ -20,8 +20,8 @@ struct SinCos angle_pair(double num) {
 
   const double halfpi = PI / 2.0;
 
-  float x_mul = 1.0;
-  float y_mul = 1.0;
+  double x_mul = 1.0;
+  double y_mul = 1.0;
 
   // Quadrant I
   if (num <= halfpi) {

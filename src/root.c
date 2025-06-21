@@ -11,7 +11,7 @@ double nth_root(unsigned int n, double d) {
     double fn = (double) n;
 
     double small_mult = 1.0;
-    if (d < 0.1) {
+    if (d < 0.1 || d > 10000) {
       small_mult = 100.0;
     }
 

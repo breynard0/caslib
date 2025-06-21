@@ -95,4 +95,6 @@ double arc_sine(double num) { return arc_compute(num, SINE); }
 
 double arc_cosine(double num) { return arc_compute(num, COSINE); }
 
-double arc_tangent(double num) { return arc_sine(num/square_root(1 + num*num)); }
+double arc_tangent(double num) {
+  return arc_cosine(1/square_root(1 + num*num));
+}
