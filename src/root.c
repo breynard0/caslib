@@ -3,8 +3,12 @@
 
 double nth_root(unsigned int n, double d) {
     // Generalization of Heron/Newton's method
+    // Invalid check
+    if ((n % 2) == 0 && d < 0) {
+      return 0.0/0.0;
+    }
 
-    // Use double exponent to use square root of close-ish poewr of 2 as first estimate
+    // Use double exponent to use square root of close-ish power of 2 as first estimate
     double_cast cast = (double_cast) d;
     double estimate = 0x2 ^ ((cast.parts.exponent - 1023) / 2);
 

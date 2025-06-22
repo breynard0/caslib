@@ -13,7 +13,7 @@ long gcf(long x, long y) {
   return lmaximum(x, y);
 }
 
-void reduce_fraction(struct Fraction* fraction) {
+void reduce_fraction(struct ImproperFraction* fraction) {
   long factor = gcf(fraction->numerator, fraction->denominator);
   fraction->numerator = fraction->numerator / factor;
   fraction->denominator = fraction->denominator / factor;

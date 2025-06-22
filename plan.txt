@@ -33,3 +33,4 @@ Buttons
 - Solve system
 - Simplify
 - Up/down/left/right buttons
+- Step (modifier button for another solve button, then button to step through output)

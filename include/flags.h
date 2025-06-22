@@ -1,1 +1,2 @@
 extern short f_overflow;
+extern short f_undefined;
