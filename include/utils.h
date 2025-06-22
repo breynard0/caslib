@@ -4,8 +4,10 @@
 
 int int_abs(int num);
 double double_abs(double num);
+double pow_ii(int num, int exponent);
 double pow_di(double num, int exponent);
 double pow_frac(double num, struct ImproperFraction exponent);
+double pow_dd(double num, double exponent);
 struct ImproperFraction double_to_fraction(double num);
 struct MixedFraction double_to_mixed_fraction(double num);
 double dfloor(double num);

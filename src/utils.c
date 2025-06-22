@@ -20,6 +20,22 @@ double double_abs(double num) {
   }
 }
 
+double pow_ii(int num, int exponent) {
+  if (exponent == 0) {
+    return 1.0;
+  }
+  if (exponent < 0) {
+    return 0.0;
+  }
+  int abs_exp = int_abs(num);
+  int val = 1;
+  for (int i = 0; i < abs_exp; i++) {
+    val *= num;
+  }
+  
+  return val;
+}
+
 double pow_di(double num, int exponent) {
   if (exponent == 0) {
     return 1.0;
@@ -45,11 +61,22 @@ double pow_frac(double num, struct ImproperFraction exponent) {
   return pow_di(nth_root(reduced.denominator, num), reduced.numerator);
 }
 
+double pow_dd(double num, double exponent) {
+  struct MixedFraction f = double_to_mixed_fraction(exponent);
+  printf("%lli\n", f.numerator);
+  struct ImproperFraction i;
+  i.numerator = f.numerator;
+  i.denominator = f.denominator;
+  return pow_frac(num, i);
+}
+
 static short is_imprecise(long long num) {
   unsigned long long i = 10;
   int c = 0;
-  long long last = -1;
+  long long last = 0;
+  int count = 0;
   while (i <= num) {
+    printf("%lli %d\n", (num - last) % i, 10^count);
     if (num % i == last) {
       c++;
     } else {
@@ -62,6 +89,7 @@ static short is_imprecise(long long num) {
 
     last = num % i;
     i *= 10;
+    count++;
   }
 
   return 0;
@@ -83,6 +111,7 @@ struct ImproperFraction double_to_fraction(double num) {
     multiplier /= 10;
   } while (((num < 0.0) != (f.numerator < 0)) || is_imprecise(f.numerator));
   
+  printf("%0.12lli\n", f.numerator);
   f.numerator = (long long)(double) f.numerator;
   reduce_fraction(&f);
   
@@ -93,7 +122,6 @@ struct MixedFraction double_to_mixed_fraction(double num) {
   double whole = dfloor(num);
   double decimal = num - whole;
   struct ImproperFraction i = double_to_fraction(decimal);
-  
   struct MixedFraction out;
   out.numerator = i.numerator;
   out.denominator = i.denominator;
