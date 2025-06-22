@@ -11,7 +11,7 @@ double nth_root(unsigned int n, double d) {
   // Use double exponent to use square root of close-ish power of 2 as first
   // estimate
   double_cast cast = (double_cast)d;
-  double estimate = pow_ii(0x2, ((cast.parts.exponent - 1023) / 2));
+  double estimate = pow_ll(2, ((cast.parts.exponent - 1023) / 2));
 
   double fn = (double)n;
 

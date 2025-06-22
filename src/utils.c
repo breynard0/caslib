@@ -12,6 +12,14 @@ int int_abs(int num) {
   }
 }
 
+long long_abs(long num) {
+  if (num < 0) {
+    return -num;
+  } else {
+    return num;
+  }
+}
+
 double double_abs(double num) {
   if (num < 0.0) {
     return -num;
@@ -20,19 +28,19 @@ double double_abs(double num) {
   }
 }
 
-double pow_ii(int num, int exponent) {
+long pow_ll(long num, long exponent) {
   if (exponent == 0) {
     return 1.0;
   }
   if (exponent < 0) {
     return 0.0;
   }
-  int abs_exp = int_abs(num);
-  int val = 1;
+  int abs_exp = int_abs(exponent);
+  long val = 1;
   for (int i = 0; i < abs_exp; i++) {
     val *= num;
   }
-  
+
   return val;
 }
 
@@ -76,13 +84,13 @@ static short is_imprecise(long long num) {
   long long last = 0;
   int count = 0;
   while (i <= num) {
-    printf("%lli %d\n", (num - last) % i, 10^count);
+    short digit = (num - last) % i / pow_ll(10, count);
     if (num % i == last) {
       c++;
     } else {
       c = 0;
     }
-    
+
     if (c >= 5) {
       return 1;
     }
@@ -95,10 +103,86 @@ static short is_imprecise(long long num) {
   return 0;
 }
 
+short long_long_digits(long long num) {
+  long long absolute = long_abs(num);
+  // No laughing, StackOverflow says that this method is fast
+  // clang-format off
+  if (num < 10) { return 1; }
+  if (num < 100) { return 2; }
+  if (num < 1000) { return 3; }
+  if (num < 10000) { return 4; }
+  if (num < 100000) { return 5; }
+  if (num < 1000000) { return 6; }
+  if (num < 10000000) { return 7; }
+  if (num < 100000000) { return 8; }
+  if (num < 1000000000) { return 9; }
+  if (num < 10000000000) { return 10; }
+  if (num < 100000000000) { return 11; }
+  if (num < 1000000000000) { return 12; }
+  if (num < 10000000000000) { return 13; }
+  if (num < 100000000000000) { return 14; }
+  if (num < 1000000000000000) { return 15; }
+  if (num < 10000000000000000) { return 16; }
+  if (num < 100000000000000000) { return 17; }
+  if (num < 1000000000000000000) { return 18; }
+  // clang-format on
+  return 19;
+}
+
+static long long fix_long_long(long long num) {
+  short flip = 0;
+  {
+    unsigned long long i = 10;
+    long long last = 0;
+    int count = 0;
+    int c = 0;
+
+    while (i <= num) {
+      short digit = (num - last) % i / pow_ll(10, count);
+      if (digit == last) {
+        c++;
+      } else {
+        c = 0;
+      }
+
+      if (c >= 5) {
+        flip = 1;
+      }
+
+      last = digit;
+      i *= 10;
+      count++;
+    }
+  }
+
+  if (flip) {
+    long long new_num = 0;
+    int i = 0;
+    int last = 0;
+    int digits = long_long_digits(num);
+    short good = 1;
+
+    while (i < digits) {
+      short digit = (num - last) % i / pow_ll(10, i);
+      if (digit >= last && good) {
+        new_num += pow_ll(10, i+1);
+      } else {
+        new_num += (digit * pow_ll(10, i));
+        good = 0;
+      }
+      
+      last = digit;
+      i++;
+    }
+  }
+
+  return num;
+}
+
 const double MULTIPLIER = 1000000000000000000.0;
 struct ImproperFraction double_to_fraction(double num) {
   double multiplier = MULTIPLIER;
-  
+
   double whole = dfloor(num);
   double decimal = num - whole;
   struct ImproperFraction f;
@@ -110,11 +194,11 @@ struct ImproperFraction double_to_fraction(double num) {
     f.numerator += (long)whole * f.denominator;
     multiplier /= 10;
   } while (((num < 0.0) != (f.numerator < 0)) || is_imprecise(f.numerator));
-  
-  printf("%0.12lli\n", f.numerator);
-  f.numerator = (long long)(double) f.numerator;
+
+  f.numerator = (long long)(double)f.numerator;
+  f.numerator = fix_long_long(f.numerator);
   reduce_fraction(&f);
-  
+
   return f;
 }
 
@@ -125,7 +209,7 @@ struct MixedFraction double_to_mixed_fraction(double num) {
   struct MixedFraction out;
   out.numerator = i.numerator;
   out.denominator = i.denominator;
-  out.integer = (long) whole;
+  out.integer = (long)whole;
   return out;
 }
 
