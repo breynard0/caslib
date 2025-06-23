@@ -17,9 +17,11 @@ int main() {
     // struct ImproperFraction f;
     // f.numerator = 3;
     // f.denominator = 10;
-    double d = 4.3;
-    struct MixedFraction f = double_to_mixed_fraction(d);
-    printf(" %lli \n------------------, %li\n %li \n", f.numerator, f.integer, f.denominator);
+    double d = 0.00001;
+    // struct MixedFraction f = double_to_mixed_fraction(d);
+    struct ImproperFraction f = double_to_fraction(d);
+    // printf(" %lli \n------------------, %li\n %li \n", f.numerator, f.integer, f.denominator);
+    printf(" %lli \n------------------, %li\n %li \n", f.numerator, 0, f.denominator);
     // printf("%0.11f", d - (double)f.numerator  / (double)f.denominator);
     // printf("%f", log_n(-2102, 10));
     // printf("%f", pow_frac(2.0, f));

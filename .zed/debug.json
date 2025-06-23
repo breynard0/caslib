@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Build & Debug native binary",
+    "build": {
+      "command": "make",
+      "args": ["run"]
+    },
+    "program": "$ZED_WORKTREE_ROOT/work/main",
+    "request": "launch",
+    "adapter": "GDB" // GDB is available on non arm macs as well as linux
+  }
+]

@@ -1,4 +1,5 @@
 #include "../include/utils.h"
+#include "../include/dutils.h"
 #include "../include/flags.h"
 #include "../include/gcf.h"
 #include "../include/root.h"
@@ -20,14 +21,6 @@ long long_abs(long num) {
   }
 }
 
-double double_abs(double num) {
-  if (num < 0.0) {
-    return -num;
-  } else {
-    return num;
-  }
-}
-
 long pow_ll(long num, long exponent) {
   if (exponent == 0) {
     return 1.0;
@@ -37,6 +30,22 @@ long pow_ll(long num, long exponent) {
   }
   int abs_exp = int_abs(exponent);
   long val = 1;
+  for (int i = 0; i < abs_exp; i++) {
+    val *= num;
+  }
+
+  return val;
+}
+
+long long pow_llll(long long num, long long exponent) {
+  if (exponent == 0) {
+    return 1.0;
+  }
+  if (exponent < 0) {
+    return 0.0;
+  }
+  int abs_exp = int_abs(exponent);
+  long long val = 1;
   for (int i = 0; i < abs_exp; i++) {
     val *= num;
   }
@@ -130,6 +139,7 @@ short long_long_digits(long long num) {
 }
 
 static long long fix_long_long(long long num) {
+  printf("num: %lli\n", num);
   short flip = 0;
   {
     unsigned long long i = 10;
@@ -138,7 +148,8 @@ static long long fix_long_long(long long num) {
     int c = 0;
 
     while (i <= num) {
-      short digit = (num - last) % i / pow_ll(10, count);
+      long thing = pow_ll(10, count);
+      short digit = ((num - last) % i) / pow_ll(10, count);
       if (digit == last) {
         c++;
       } else {
@@ -156,24 +167,32 @@ static long long fix_long_long(long long num) {
   }
 
   if (flip) {
-    long long new_num = 0;
-    int i = 0;
-    int last = 0;
+    long long new_num = 1;
+    long long i = 10;
+    long long last = 0;
+    int last_digit = 0;
+    int count = 0;
     int digits = long_long_digits(num);
     short good = 1;
 
-    while (i < digits) {
-      short digit = (num - last) % i / pow_ll(10, i);
-      if (digit >= last && good) {
-        new_num += pow_ll(10, i+1);
+    while (count < digits) {
+      short digit = ((num - last) % i) / pow_ll(10, count);
+      if ((digit >= last_digit ||
+           ((digit >= (last_digit - 1)) && (count < 4))) &&
+          good) {
+        new_num *= 10;
       } else {
-        new_num += (digit * pow_ll(10, i));
+        new_num += (digit * pow_ll(10, count));
         good = 0;
       }
-      
-      last = digit;
-      i++;
+
+      last = num % i;
+      last_digit = digit;
+      i *= 10;
+      count++;
     }
+
+    return new_num;
   }
 
   return num;
@@ -211,24 +230,6 @@ struct MixedFraction double_to_mixed_fraction(double num) {
   out.denominator = i.denominator;
   out.integer = (long)whole;
   return out;
-}
-
-double dfloor(double num) {
-  long round = (long)num;
-  if (num < 0.0) {
-    round -= 1;
-  }
-  return (double)round;
-}
-
-double dmodulo(double num, double mod) {
-  double div = dfloor(double_abs(num / mod));
-  double out = (num - (mod * div));
-  if (num < 0) {
-    return -out;
-  } else {
-    return out;
-  }
 }
 
 double deg_to_rad(double degrees) { return PI * degrees / 180; }

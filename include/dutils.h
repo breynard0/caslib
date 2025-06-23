@@ -9,3 +9,9 @@ typedef union {
 
 double ddouble(double num, int n);
 double dhalve(double num, int n);
+
+double double_abs(double num);
+double dfloor(double num);
+double dceil(double num);
+double dround(double num);
+double dmodulo(double num, double mod);
