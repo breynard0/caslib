@@ -10,3 +10,6 @@ struct MixedFraction {
     long denominator;
 };
 #endif
+
+struct ImproperFraction double_to_fraction(double num);
+struct MixedFraction double_to_mixed_fraction(double num);

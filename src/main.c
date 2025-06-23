@@ -22,11 +22,11 @@ int main() {
     double d = 123.456;
     struct MixedFraction f = double_to_mixed_fraction(d);
     // struct ImproperFraction f = double_to_fraction(d);
-    printf("%f to mixed fraction...\n", d);
+    // printf("%f to mixed fraction...\n", d);
     printf("     %lli \n%li -----\n     %li \n", f.numerator, f.integer, f.denominator);
     // printf(" %lli \n------------------, %li\n %li \n", f.numerator, 0, f.denominator);
     // printf("%0.11f", d - (double)f.numerator  / (double)f.denominator);
-    // printf("%f", log_n(-2102, 10));
+    printf("%f", log_n(2102, 10));
     // printf("%f", pow_frac(2.0, f));
     // printf("%f", pow_dd(2.0, 4.3));
     // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));

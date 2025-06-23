@@ -19,6 +19,8 @@ deps: auto-deps
 	gcc -c src/atrig.c -o work/atrig.o
 	gcc -c src/gcf.c -o work/gcf.o
 	gcc -c src/flags.c -o work/flags.o
+	gcc -c src/pow.c -o work/pow.o
+	gcc -c src/fraction.c -o work/fraction.o
 	gcc -c src/log.c -o work/log.o
 
 auto-deps:

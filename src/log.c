@@ -1,6 +1,6 @@
 #include "../include/utils.h"
 #include "../include/flags.h"
-#include <stdio.h>
+#include "../include/pow.h"
 
 double log_n(double num, double base) {
   if (num <= 0.0) {

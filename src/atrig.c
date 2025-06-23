@@ -4,6 +4,7 @@
 #include "../include/root.h"
 #include "../include/trig.h"
 #include "../include/utils.h"
+#include "../include/pow.h"
 
 #include "../auto-generated/cordic_constants.h"
 
