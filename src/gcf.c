@@ -3,6 +3,9 @@
 
 // Euclidean algorithm
 long gcf(long x, long y) {
+  x = long_abs(x);
+  y = long_abs(y);
+  
   while (x != 0 && y != 0) {
     if (x > y) {
       x = x % y;

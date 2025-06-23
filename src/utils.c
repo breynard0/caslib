@@ -200,6 +200,9 @@ static long long fix_long_long(long long num) {
 
 const double MULTIPLIER = 1000000000000000000.0;
 struct ImproperFraction double_to_fraction(double num) {
+  short negative_mul = 2*(num >= 0)-1;
+  num = double_abs(num);
+  
   double multiplier = MULTIPLIER;
 
   double whole = dfloor(num);
@@ -217,11 +220,15 @@ struct ImproperFraction double_to_fraction(double num) {
   f.numerator = (long long)(double)f.numerator;
   f.numerator = fix_long_long(f.numerator);
   reduce_fraction(&f);
+  f.numerator *= negative_mul;
 
   return f;
 }
 
 struct MixedFraction double_to_mixed_fraction(double num) {
+  short is_negative = num <= 0;
+  num = double_abs(num);
+  
   double whole = dfloor(num);
   double decimal = num - whole;
   struct ImproperFraction i = double_to_fraction(decimal);
@@ -229,6 +236,13 @@ struct MixedFraction double_to_mixed_fraction(double num) {
   out.numerator = i.numerator;
   out.denominator = i.denominator;
   out.integer = (long)whole;
+  
+  // Fix if negative
+  if (is_negative) {
+    out.numerator = -out.numerator;
+    out.integer = -out.integer;
+  }
+  
   return out;
 }
 
