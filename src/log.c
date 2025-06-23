@@ -1,6 +1,8 @@
-#include "../include/utils.h"
 #include "../include/flags.h"
+#include "../include/fraction.h"
 #include "../include/pow.h"
+#include "../include/utils.h"
+#include <stdio.h>
 
 double log_n(double num, double base) {
   if (num <= 0.0) {
@@ -22,20 +24,30 @@ double log_n(double num, double base) {
       lower--;
     }
   }
-  
-  int higher = lower + (2*(num >= 0)-1);
-  
+
+  int higher = lower + (2 * (num >= 0) - 1);
+
   int i = 0;
-  int j = 2;
-  double initial = (pow_di(num, higher) - pow_di(num, lower)) / 2.0;
-  double estimate = initial;
-  int iterations = 20 * lower;
-  
+  long long j = 4;
+  double initial = higher - lower;
+  double estimate = initial / 2;
+  int iterations = 12;
+
   while (i < iterations) {
+    struct ImproperFraction f = double_to_fraction(estimate + lower);
+    printf("%0.16f %lli %li\n", estimate, f.numerator, f.denominator);
+    double product = pow_frac(base, f);
     
+    double delta = initial / j;
+    if (product < num) {
+      estimate += delta;
+    } else {
+      estimate -= delta;
+    }
+
     j *= 2;
     i++;
   }
 
-  return 0.0;
+  return estimate + lower;
 }
