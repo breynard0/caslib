@@ -37,3 +37,4 @@ double nth_root(unsigned int n, double d) {
 }
 
 double square_root(double d) { return nth_root(2, d); }
+double cube_root(double d) { return nth_root(3, d); }

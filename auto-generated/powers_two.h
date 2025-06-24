@@ -1,0 +1,1 @@
+extern double TWO_POWERS[64];
