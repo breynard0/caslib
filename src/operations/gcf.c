@@ -1,5 +1,5 @@
-#include "../include/utils.h"
-#include "../include/gcf.h"
+#include "../../include/utils.h"
+#include "../../include/gcf.h"
 
 // Euclidean algorithm
 long gcf(long x, long y) {

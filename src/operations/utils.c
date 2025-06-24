@@ -1,8 +1,8 @@
-#include "../include/utils.h"
-#include "../include/dutils.h"
-#include "../include/flags.h"
-#include "../include/gcf.h"
-#include "../include/root.h"
+#include "../../include/utils.h"
+#include "../../include/dutils.h"
+#include "../../include/flags.h"
+#include "../../include/gcf.h"
+#include "../../include/root.h"
 #include <stdio.h>
 
 int int_abs(int num) {

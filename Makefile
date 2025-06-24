@@ -1,31 +1,40 @@
 .SILENT:
-run: init main
+# define gcc_call
+# 	$(eval $@_SOURCE = $(1))
+# 	$(eval $@_DEST = $(2))
+# 	gcc -g -pg -c ${@_SOURCE} -o ${@_DEST}
+# endef
+gcc_call = gcc -g -pg -c $(1) -o $(2)
+	
+run: init build
 	echo "Running..."
 	./work/main
 
 init:
 	mkdir -p work
 
-main: deps
+build: deps
 	echo "Building..."
-	gcc -g -pg -c src/main.c -o work/main.o
-	gcc -g -pg work/*.o -o work/main
+	@$(call gcc_call,src/main.c,work/main.o)
+	@$(call gcc_call,work/*.o,work/main)
 
-deps: auto-deps
-	gcc -g -pg -c src/utils.c -o work/utils.o
-	gcc -g -pg -c src/dutils.c -o work/dutils.o
-	gcc -g -pg -c src/root.c -o work/root.o
-	gcc -g -pg -c src/trig.c -o work/trig.o
-	gcc -g -pg -c src/atrig.c -o work/atrig.o
-	gcc -g -pg -c src/gcf.c -o work/gcf.o
-	gcc -g -pg -c src/flags.c -o work/flags.o
-	gcc -g -pg -c src/pow.c -o work/pow.o
-	gcc -g -pg -c src/fraction.c -o work/fraction.o
-	gcc -g -pg -c src/log.c -o work/log.o
+deps: auto-deps operations
+	
+operations:
+	@$(call gcc_call,src/operations/utils.c,work/utils.o)
+	@$(call gcc_call,src/operations/dutils.c,work/dutils.o)
+	@$(call gcc_call,src/operations/root.c,work/root.o)
+	@$(call gcc_call,src/operations/trig.c,work/trig.o)
+	@$(call gcc_call,src/operations/atrig.c,work/atrig.o)
+	@$(call gcc_call,src/operations/gcf.c,work/gcf.o)
+	@$(call gcc_call,src/operations/flags.c,work/flags.o)
+	@$(call gcc_call,src/operations/pow.c,work/pow.o)
+	@$(call gcc_call,src/operations/fraction.c,work/fraction.o)
+	@$(call gcc_call,src/operations/log.c,work/log.o)
 
 auto-deps:
-	gcc -g -pg -c auto-generated/cordic_constants.c -o work/cordic_constants.o
-	gcc -g -pg -c auto-generated/powers_two.c -o work/powers_two.o
+	@$(call gcc_call,auto-generated/cordic_constants.c,work/cordic_constants.o)
+	@$(call gcc_call,auto-generated/powers_two.c,work/powers_two.o)
 
 gen_sources:
 	mkdir -p auto-generated

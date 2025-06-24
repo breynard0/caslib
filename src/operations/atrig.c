@@ -1,12 +1,12 @@
-#include "../include/atrig.h"
-#include "../include/dutils.h"
-#include "../include/enums.h"
-#include "../include/root.h"
-#include "../include/trig.h"
-#include "../include/utils.h"
-#include "../include/pow.h"
+#include "../../include/atrig.h"
+#include "../../include/dutils.h"
+#include "../../include/enums.h"
+#include "../../include/root.h"
+#include "../../include/trig.h"
+#include "../../include/utils.h"
+#include "../../include/pow.h"
 
-#include "../auto-generated/cordic_constants.h"
+#include "../../auto-generated/cordic_constants.h"
 
 enum FuncType { SINE, COSINE, TANGENT };
 

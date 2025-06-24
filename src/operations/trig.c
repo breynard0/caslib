@@ -1,9 +1,9 @@
-#include "../include/trig.h"
-#include "../include/dutils.h"
-#include "../include/enums.h"
-#include "../include/utils.h"
+#include "../../include/trig.h"
+#include "../../include/dutils.h"
+#include "../../include/enums.h"
+#include "../../include/utils.h"
 
-#include "../auto-generated/cordic_constants.h"
+#include "../../auto-generated/cordic_constants.h"
 
 // CORDIC implementation
 struct SinCos angle_pair(double num) {

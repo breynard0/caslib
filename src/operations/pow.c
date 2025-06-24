@@ -1,6 +1,6 @@
-#include "../include/utils.h"
-#include "../include/root.h"
-#include "../auto-generated/powers_two.h"
+#include "../../include/utils.h"
+#include "../../include/root.h"
+#include "../../auto-generated/powers_two.h"
 
 long pow_ll(long num, long exponent) {
   if (exponent == 0) {

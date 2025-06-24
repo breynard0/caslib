@@ -1,3 +1,5 @@
+#include "fraction.h"
+
 long pow_ll(long num, long exponent);
 long long pow_llll(long long num, long long exponent);
 double pow_di(double num, int exponent);

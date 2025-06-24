@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 int main() {
-  // printf("%0.11f\n", nth_root(3, -10.0));
+  printf("%0.11f\n", nth_root(130130, 10));
     // struct SinCos out = angle_pair(deg_to_rad(-315.0));
     // printf("%0.11f %0.11f\n", out.cos, out.sin);
     // double num = 20000.0;
@@ -31,7 +31,7 @@ int main() {
     // printf("%0.10f", log_n(16, 10));
     // printf("%f", pow_frac(10.0, f));
     // printf("%f", pow_dd(2.0, 4.3));
-    printf("%f", pow_di(3, 8));
+    // printf("%f", pow_di(3, 8));
     // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
     return 0;
 }
