@@ -27,6 +27,13 @@ Buttons
 - Square
 - Cube
 - Nth power
+- Sine
+- Cosine
+- Tangent
+- Arc Sine
+- Arc Cosine
+- Arc Tangent
+- Logarithm
 - Parentheses
 - Solve for value
 - Rearrange for specific variable

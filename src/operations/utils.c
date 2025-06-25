@@ -2,6 +2,7 @@
 #include "../../include/dutils.h"
 #include "../../include/flags.h"
 #include "../../include/gcf.h"
+#include "../../include/pow.h"
 #include "../../include/root.h"
 #include <stdio.h>
 
@@ -45,6 +46,23 @@ short long_long_digits(long long num) {
   if (num < 1000000000000000000) { return 18; }
   // clang-format on
   return 19;
+}
+
+short double_digits_whole(double num) {
+  short digits = 0;
+  while (num > pow_di(10.0, digits)) {
+    digits++;
+  }
+  return digits;
+}
+
+short double_digits_partial(double num) {
+  short digits = 0;
+  while (dmodulo(num * pow_di(10, digits), 1.0) != 0) {
+    digits++;
+  }
+
+  return digits;
 }
 
 double deg_to_rad(double degrees) { return PI * degrees / 180; }

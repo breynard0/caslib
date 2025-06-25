@@ -1,8 +1,8 @@
+#include "../../include/dutils.h"
 #include "../../include/flags.h"
 #include "../../include/fraction.h"
 #include "../../include/pow.h"
 #include "../../include/utils.h"
-#include "../../include/dutils.h"
 #include <stdio.h>
 
 double log_n(double num, double base) {
@@ -36,22 +36,22 @@ double log_n(double num, double base) {
   int sig_figs = 0;
 
   while (i < iterations) {
-    sig_figs = i/2;
+    sig_figs = i / 2;
     struct ImproperFraction f = double_to_fraction(estimate + lower);
     printf("%0.20f %lli %li\n", estimate + lower, f.numerator, f.denominator);
     double product = pow_frac(base, f);
-    
+
     double delta = initial / j;
     if (product < num) {
       estimate += delta;
     } else {
       estimate -= delta;
     }
-    
+
     // if (i > 11) {
     //   return estimate + lower;
     // }
-    
+
     estimate = dround(estimate * pow_ll(10, sig_figs)) / pow_ll(10, sig_figs);
 
     j *= 2;

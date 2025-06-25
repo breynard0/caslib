@@ -1,6 +1,6 @@
-#include "../../include/utils.h"
-#include "../../include/root.h"
 #include "../../auto-generated/powers_two.h"
+#include "../../include/root.h"
+#include "../../include/utils.h"
 
 long pow_ll(long num, long exponent) {
   if (exponent == 0) {
@@ -44,21 +44,20 @@ double pow_di(double num, int exponent) {
 
   int abs_exp = int_abs(exponent);
   double val = num;
-  
+
   short lower_idx = 0;
-  while (TWO_POWERS[lower_idx] <= exponent) {
+  while (TWO_POWERS[lower_idx] <= abs_exp) {
     lower_idx++;
   }
-  unsigned int lower = TWO_POWERS[lower_idx-1];
-  
-  
+  unsigned int lower = TWO_POWERS[lower_idx - 1];
+
   int cur_exp = 1;
   while (cur_exp < lower) {
     val *= val;
     cur_exp *= 2;
   }
-  val *= pow_di(num, exponent - lower);
-  
+  val *= pow_di(num, abs_exp - lower);
+
   if (exponent > 0) {
     return val;
   } else {

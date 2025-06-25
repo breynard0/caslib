@@ -16,9 +16,12 @@ init:
 build: deps
 	echo "Building..."
 	@$(call gcc_call,src/main.c,work/main.o)
-	@$(call gcc_call,work/*.o,work/main)
+	gcc -g -pg work/*.o -o work/main
 
-deps: auto-deps operations
+deps: auto-deps operations algebra
+	
+algebra:
+	@$(call gcc_call,src/algebra/lex.c,work/lex.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)

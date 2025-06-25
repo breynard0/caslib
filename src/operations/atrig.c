@@ -1,10 +1,10 @@
 #include "../../include/atrig.h"
 #include "../../include/dutils.h"
 #include "../../include/enums.h"
+#include "../../include/pow.h"
 #include "../../include/root.h"
 #include "../../include/trig.h"
 #include "../../include/utils.h"
-#include "../../include/pow.h"
 
 #include "../../auto-generated/cordic_constants.h"
 
@@ -97,5 +97,5 @@ double arc_sine(double num) { return arc_compute(num, SINE); }
 double arc_cosine(double num) { return arc_compute(num, COSINE); }
 
 double arc_tangent(double num) {
-  return arc_cosine(1/square_root(1 + num*num));
+  return arc_cosine(1 / square_root(1 + num * num));
 }
