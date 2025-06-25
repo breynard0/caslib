@@ -2,7 +2,7 @@
 #include "../../include/objects.h"
 #include "../../include/utils.h"
 
-int lex(char *input, int length, struct EquationObject *buffer[2048],
+int lex(char *input, int length, struct EquationObject* buffer,
         int max_length) {
   int i = 0;
   int out_len = 0;
@@ -46,31 +46,31 @@ int lex(char *input, int length, struct EquationObject *buffer[2048],
         state = 3;
       } else if (c == '*') {
         eo.type = MULT;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
       } else if (c == '/') {
         eo.type = DIV;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
       } else if (c == '+') {
         eo.type = ADD;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
       } else if (c == '-') {
         eo.type = SUB;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
       } else if (c == '^') {
         eo.type = EXP;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
@@ -88,13 +88,13 @@ int lex(char *input, int length, struct EquationObject *buffer[2048],
         eo.type = BLOCK_END;
         eo.value.block.start = start;
         eo.value.block.count = i - start;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
       } else if (c == '=') {
         eo.type = EQUAL;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
@@ -125,7 +125,7 @@ int lex(char *input, int length, struct EquationObject *buffer[2048],
         dot_flag = TRUE;
         state = 2;
       } else {
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
 
@@ -146,7 +146,7 @@ int lex(char *input, int length, struct EquationObject *buffer[2048],
         }
         state = 3;
       } else {
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
 
@@ -158,49 +158,49 @@ int lex(char *input, int length, struct EquationObject *buffer[2048],
       switch (c) {
       case 'p':
         eo.type = PI;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
         break;
       case 's':
         eo.type = SINE;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
         break;
       case 'c':
         eo.type = COSINE;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
         break;
       case 't':
         eo.type = TANGENT;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
         break;
       case 'a':
         eo.type = ARCSINE;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
         break;
       case 'o':
         eo.type = ARCCOSINE;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
         break;
       case 'g':
         eo.type = ARCTANGENT;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
@@ -222,7 +222,7 @@ int lex(char *input, int length, struct EquationObject *buffer[2048],
         state = 5;
       } else {
         eo.type = ROOT;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
@@ -235,7 +235,7 @@ int lex(char *input, int length, struct EquationObject *buffer[2048],
         state = 5;
       } else {
         eo.type = LOG;
-        *buffer[out_len] = eo;
+        buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;

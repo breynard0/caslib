@@ -1,5 +1,5 @@
 #include "objects.h"
 
 // Returns length of buffer
-int lex(char *input, int length, struct EquationObject *buffer[256],
+int lex(char *input, int length, struct EquationObject *buffer,
         int max_length);

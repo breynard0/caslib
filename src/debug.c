@@ -4,43 +4,61 @@
 void print_eo(struct EquationObject object) {
   switch (object.type) {
   case NUMBER:
-    printf("Number: ");
+    printf("Number: %0.8f", object.value.number);
+    break;
   case LETTER:
-    printf("Letter: ");
+    printf("Letter: %c{%c}", object.value.letter.letter, object.value.letter.subscript);
+    break;
   case MULT:
     printf("Mult");
+    break;
   case DIV:
     printf("Div");
+    break;
   case ADD:
     printf("Add");
+    break;
   case SUB:
     printf("Sub");
+    break;
   case PI_VAL:
     printf("Pi");
+    break;
   case ROOT:
-    printf("Root: ");
+    printf("Root: idx %f", object.value.number);
+    break;
   case EXP:
     printf("Exp");
+    break;
   case BLOCK_START:
     printf("Block start");
+    break;
   case BLOCK_END:
-    printf("Block end: ");
+    printf("Block end: start %i, count %i", object.value.block.start, object.value.block.count);
+    break;
   case EQUAL:
-    printf("Number: ");
+    printf("Equal");
+    break;
   case SINE:
-    printf("Number: ");
+    printf("Sine");
+    break;
   case COSINE:
-    printf("Number: ");
+    printf("Cosine");
+    break;
   case TANGENT:
-    printf("Number: ");
+    printf("Tangent");
+    break;
   case ARCSINE:
-    printf("Number: ");
+    printf("ArcSine");
+    break;
   case ARCCOSINE:
-    printf("Number: ");
+    printf("ArcCosine");
+    break;
   case ARCTANGENT:
-    printf("Number: ");
+    printf("ArcTangent");
+    break;
   case LOG:
-    printf("Number: ");
+    printf("Logarithm: base %f", object.value.number);
     break;
   }
   printf("\n");

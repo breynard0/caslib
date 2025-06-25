@@ -10,6 +10,7 @@
 #include "../include/root.h"
 #include "../include/trig.h"
 #include "../include/utils.h"
+#include "../include/debug.h"
 #include <stdio.h>
 
 void test_lex();
@@ -44,7 +45,13 @@ int main() {
 
 void test_lex() {
   char *expression = "3+4";
-  struct EquationObject *buffer;
+  struct EquationObject buffer[256];
 
-  int max_len = lex(expression, 3, &buffer, 256);
+  int max_len = lex(expression, 3, buffer, 256);
+  
+  int i = 0;
+  while (i < max_len) {
+    print_eo(buffer[i]);
+    i++;
+  }
 }
