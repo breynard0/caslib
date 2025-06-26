@@ -1,7 +1,7 @@
 #include "../../include/debug.h"
 #include "../../include/dutils.h"
 #include "../../include/enums.h"
-#include "../../include/objects.h"
+#include "../../include/equation_objects.h"
 #include "../../include/pow.h"
 #include "../../include/utils.h"
 #include <stdio.h>
@@ -26,7 +26,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
   int blocks[64];
 
   while (i <= length) {
-    if (out_len + 2 >= max_length) {
+    if (out_len + 3 >= max_length) {
       break;
     }
 
@@ -270,6 +270,9 @@ int lex(char *input, int length, struct EquationObject *buffer,
     i++;
   }
 
+  buffer[out_len] = eo;
+  eo = eo_def;
+  eo.type = END_LEX;
   buffer[out_len] = eo;
 
   return out_len;

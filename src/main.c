@@ -5,7 +5,7 @@
 #include "../include/gcf.h"
 #include "../include/lex.h"
 #include "../include/log.h"
-#include "../include/objects.h"
+#include "../include/equation_objects.h"
 #include "../include/pow.h"
 #include "../include/root.h"
 #include "../include/trig.h"

@@ -19,7 +19,8 @@ enum EOType {
   ARCSINE,
   ARCCOSINE,
   ARCTANGENT,
-  LOG
+  LOG,
+  END_LEX
 };
 
 union EOVal {
