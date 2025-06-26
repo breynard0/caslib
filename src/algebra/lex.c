@@ -1,9 +1,9 @@
 #include "../../include/debug.h"
+#include "../../include/dutils.h"
 #include "../../include/enums.h"
+#include "../../include/objects.h"
 #include "../../include/pow.h"
 #include "../../include/utils.h"
-#include "../../include/dutils.h"
-#include "../../include/objects.h"
 #include <stdio.h>
 
 int lex(char *input, int length, struct EquationObject *buffer,
@@ -14,6 +14,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
   short state = 1;
 
   struct EquationObject eo_def;
+  eo_def.value.none = 0;
   struct EquationObject eo;
 
   enum Boolean dot_flag = FALSE;
@@ -92,13 +93,16 @@ int lex(char *input, int length, struct EquationObject *buffer,
         block_sp++;
         eo.type = BLOCK_START;
         blocks[block_sp] = i;
+        buffer[out_len] = eo;
+        eo = eo_def;
+        out_len++;
         state = 1;
       } else if (c == ')') {
         int start = blocks[block_sp];
         block_sp--;
         eo.type = BLOCK_END;
         eo.value.block.start = start;
-        eo.value.block.count = i - start;
+        eo.value.block.count = out_len - start;
         buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
@@ -111,7 +115,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
         state = 1;
       } else {
         eo.type = LETTER;
-        if (subscript == TRUE) {
+        if (subscript == FALSE) {
           eo.value.letter.letter = c;
         } else {
           eo.value.letter.subscript = c;
@@ -127,12 +131,13 @@ int lex(char *input, int length, struct EquationObject *buffer,
           eo.value.number *= 10;
           eo.value.number += num;
         } else {
-          // printf("%f", dfloor(eo.value.number * pow_di(10.0, decimal_digits)));
-          eo.value.number = dfloor(eo.value.number * pow_di(10.0, decimal_digits)) / pow_di(10.0, decimal_digits);
+          // printf("%f", dfloor(eo.value.number * pow_di(10.0,
+          // decimal_digits)));
+          eo.value.number =
+              dfloor(eo.value.number * pow_di(10.0, decimal_digits)) /
+              pow_di(10.0, decimal_digits);
           // printf("%i\n", double_digits_partial(eo.value.number) + 1);
-          eo.value.number +=
-              ((double)num) /
-              pow_di(10.0, decimal_digits + 1);
+          eo.value.number += ((double)num) / pow_di(10.0, decimal_digits + 1);
           decimal_digits++;
         }
         state = 2;
@@ -146,7 +151,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
         eo = eo_def;
         out_len++;
 
-        // i--;
+        i--;
         state = 1;
       }
       break;
@@ -154,12 +159,14 @@ int lex(char *input, int length, struct EquationObject *buffer,
       if (c == ':') {
         subscript = TRUE;
         state = 3;
-      } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+      } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                 subscript == TRUE) {
         eo.type = LETTER;
-        if (subscript == TRUE) {
+        if (subscript == FALSE) {
           eo.value.letter.letter = c;
         } else {
           eo.value.letter.subscript = c;
+          subscript = FALSE;
         }
         state = 3;
       } else {
@@ -175,7 +182,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
     case 4:
       switch (c) {
       case 'p':
-        eo.type = PI;
+        eo.type = PI_VAL;
         buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
@@ -250,7 +257,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
       if (c >= '0' && c <= '9') {
         eo.value.number *= 10;
         eo.value.number += c - '0';
-        state = 5;
+        state = 6;
       } else {
         eo.type = LOG;
         buffer[out_len] = eo;

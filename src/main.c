@@ -41,13 +41,15 @@ int main() {
   // printf("%f", dfloor(12232132998.000001534820));
   // printf("%f", dround(1999.99));
   // printf("%f", pow_di(2, -1));
+  printf("%0.10f\n", ln(2));
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
-  test_lex();
+  // test_lex();
   return 0;
 }
 
 void test_lex() {
-  char *expression = "-1382332131.29986701";
+  char *expression = "(22+a:2)*23.12/\\r2\\4=-(0.6^9-e^(-2\\p)+\\g(0.3x:6)\\l26\\";
+  printf("Lexing %s\n", expression);
   struct EquationObject buffer[256];
 
   int max_len = lex(expression, strlen(expression), buffer, 256);
