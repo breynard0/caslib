@@ -6,16 +6,20 @@
 #include <stdio.h>
 
 double ln(double x) {
-  double interval = x/1000000;
+  double y = (x-1) / (x+1);
   double sum = 0;
-  double counter = 1.0;
+  int iterations = 30*x;
   
-  while (counter < x) {
-    sum += interval / counter;
-    counter += interval;
+  for (int i = 0; i < iterations; i++) {
+    double z = ddouble((double) i, 1) + 1.0;
+    sum += (1.0/z) * pow_di(y, z);
   }
   
-  return sum;
+  return 2.0*sum;
+}
+
+double log_n(double num, double base) {
+  return ln(num) / ln(base);
 }
 
 // double log_n(double num, double base) {
