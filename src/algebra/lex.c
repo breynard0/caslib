@@ -1,8 +1,12 @@
+#include "../../include/debug.h"
 #include "../../include/enums.h"
-#include "../../include/objects.h"
+#include "../../include/pow.h"
 #include "../../include/utils.h"
+#include "../../include/dutils.h"
+#include "../../include/objects.h"
+#include <stdio.h>
 
-int lex(char *input, int length, struct EquationObject* buffer,
+int lex(char *input, int length, struct EquationObject *buffer,
         int max_length) {
   int i = 0;
   int out_len = 0;
@@ -11,18 +15,24 @@ int lex(char *input, int length, struct EquationObject* buffer,
 
   struct EquationObject eo_def;
   struct EquationObject eo;
+
   enum Boolean dot_flag = FALSE;
+  short decimal_digits = 0;
+
   enum Boolean subscript = FALSE;
 
   short block_sp = 0;
   int blocks[64];
 
-  while (i < length) {
-    if (out_len + 1 >= max_length) {
+  while (i <= length) {
+    if (out_len + 2 >= max_length) {
       break;
     }
 
     char c = input[i];
+    printf("State: %i, dot_flag: %i, subscript: %i, i: %i, c: %c\n", state,
+           dot_flag == TRUE, subscript == TRUE, i, c);
+    print_eo(eo);
 
     switch (state) {
     case 1:
@@ -32,10 +42,11 @@ int lex(char *input, int length, struct EquationObject* buffer,
         if (dot_flag == FALSE) {
           eo.value.number *= 10;
           eo.value.number += num;
-          dot_flag = TRUE;
         } else {
           eo.value.number +=
-              ((double)num) / double_digits_partial(eo.value.number);
+              ((double)num) /
+              pow_di(10.0, -double_digits_partial(eo.value.number));
+          decimal_digits++;
         }
         state = 2;
       } else if (c == '.') {
@@ -115,10 +126,14 @@ int lex(char *input, int length, struct EquationObject* buffer,
         if (dot_flag == FALSE) {
           eo.value.number *= 10;
           eo.value.number += num;
-          dot_flag = TRUE;
         } else {
+          // printf("%f", dfloor(eo.value.number * pow_di(10.0, decimal_digits)));
+          eo.value.number = dfloor(eo.value.number * pow_di(10.0, decimal_digits)) / pow_di(10.0, decimal_digits);
+          // printf("%i\n", double_digits_partial(eo.value.number) + 1);
           eo.value.number +=
-              ((double)num) / double_digits_partial(eo.value.number);
+              ((double)num) /
+              pow_di(10.0, decimal_digits + 1);
+          decimal_digits++;
         }
         state = 2;
       } else if (c == '.') {
@@ -126,10 +141,12 @@ int lex(char *input, int length, struct EquationObject* buffer,
         state = 2;
       } else {
         buffer[out_len] = eo;
+        dot_flag = FALSE;
+        decimal_digits = 0;
         eo = eo_def;
         out_len++;
 
-        i--;
+        // i--;
         state = 1;
       }
       break;
@@ -147,6 +164,7 @@ int lex(char *input, int length, struct EquationObject* buffer,
         state = 3;
       } else {
         buffer[out_len] = eo;
+        subscript = FALSE;
         eo = eo_def;
         out_len++;
 
@@ -244,6 +262,8 @@ int lex(char *input, int length, struct EquationObject* buffer,
     }
     i++;
   }
+
+  buffer[out_len] = eo;
 
   return out_len;
 }

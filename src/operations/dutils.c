@@ -1,4 +1,5 @@
 #include "../../include/dutils.h"
+#include <stdio.h>
 
 double ddouble(double num, int n) {
   double_cast cast = (double_cast)num;
@@ -35,7 +36,7 @@ double dround(double num) {
 }
 
 double dfloor(double num) {
-  long round = (long)num;
+  long long round = (long long)num;
   if (num < 0.0) {
     round -= 1;
   }

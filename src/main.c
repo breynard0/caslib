@@ -11,6 +11,7 @@
 #include "../include/trig.h"
 #include "../include/utils.h"
 #include "../include/debug.h"
+#include <string.h>
 #include <stdio.h>
 
 void test_lex();
@@ -37,6 +38,8 @@ int main() {
   // pow_frac(10.0, f)); printf("%f", pow_dd(2.0, 4.3)); printf("%f", pow_di(3,
   // 8));
   // printf("%i", double_digits_partial(0.123456789));
+  // printf("%f", dfloor(12232132998.000001534820));
+  // printf("%f", dround(1999.99));
   // printf("%f", pow_di(2, -1));
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   test_lex();
@@ -44,10 +47,12 @@ int main() {
 }
 
 void test_lex() {
-  char *expression = "3+4";
+  char *expression = "-1382332131.29986701";
   struct EquationObject buffer[256];
 
-  int max_len = lex(expression, 3, buffer, 256);
+  int max_len = lex(expression, strlen(expression), buffer, 256);
+  
+  printf("---------------------------------\n");
   
   int i = 0;
   while (i < max_len) {

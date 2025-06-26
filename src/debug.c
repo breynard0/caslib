@@ -4,7 +4,7 @@
 void print_eo(struct EquationObject object) {
   switch (object.type) {
   case NUMBER:
-    printf("Number: %0.8f", object.value.number);
+    printf("Number: %0.16f", object.value.number);
     break;
   case LETTER:
     printf("Letter: %c{%c}", object.value.letter.letter, object.value.letter.subscript);
