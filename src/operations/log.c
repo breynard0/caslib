@@ -3,77 +3,27 @@
 #include "../../include/fraction.h"
 #include "../../include/pow.h"
 #include "../../include/utils.h"
-#include <stdio.h>
+
+#define LN2 0.6931471805599453094172321214581765680755
 
 double ln(double x) {
-  double y = (x-1) / (x+1);
+  double y = (x - 1) / (x + 1);
   double sum = 0;
-  int iterations = 30*x;
-  
+  int iterations = 30 * x;
+
   for (int i = 0; i < iterations; i++) {
-    double z = ddouble((double) i, 1) + 1.0;
-    sum += (1.0/z) * pow_di(y, z);
+    double z = ddouble((double)i, 1) + 1.0;
+    sum += (1.0 / z) * pow_di(y, z);
   }
-  
-  return 2.0*sum;
+
+  return 2.0 * sum;
 }
 
-double log_n(double num, double base) {
-  return ln(num) / ln(base);
+double log_2(double num) {
+  double_cast cast = (double_cast)num;
+  int exponent = cast.parts.exponent - 1023;
+  double remainder = num / pow_di(2.0, exponent);
+  return exponent + (ln(remainder) / LN2);
 }
 
-// double log_n(double num, double base) {
-//   if (num <= 0.0) {
-//     if (num == 0.0) {
-//       f_undefined = 1;
-//     }
-//     return 0.0 / 0.0;
-//   }
-//   int lower = 0;
-//   double count = num;
-//   if (num >= 1.0) {
-//     while (count >= base) {
-//       count /= base;
-//       lower++;
-//     }
-//   } else {
-//     while (count < 1.0) {
-//       count *= base;
-//       lower--;
-//     }
-//   }
-
-//   int higher = lower + (2 * (num >= 0) - 1);
-
-//   int i = 0;
-//   long long j = 4;
-//   double initial = higher - lower;
-//   double estimate = initial / 2;
-//   int iterations = 120;
-//   int sig_figs = 0;
-
-//   while (i < iterations) {
-//     sig_figs = i / 2;
-//     struct ImproperFraction f = double_to_fraction(estimate + lower);
-//     printf("%0.20f %lli %li\n", estimate + lower, f.numerator, f.denominator);
-//     double product = pow_frac(base, f);
-
-//     double delta = initial / j;
-//     if (product < num) {
-//       estimate += delta;
-//     } else {
-//       estimate -= delta;
-//     }
-
-//     // if (i > 11) {
-//     //   return estimate + lower;
-//     // }
-
-//     estimate = dround(estimate * pow_ll(10, sig_figs)) / pow_ll(10, sig_figs);
-
-//     j *= 2;
-//     i++;
-//   }
-
-//   return estimate + lower;
-// }
+double log_n(double num, double base) { return log_2(num) / log_2(base); }

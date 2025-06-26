@@ -41,8 +41,9 @@ int main() {
   // printf("%f", dfloor(12232132998.000001534820));
   // printf("%f", dround(1999.99));
   // printf("%f", pow_di(2, -1));
-  printf("%0.10f\n", log_n(16, 10));
-  // printf("%0.10f\n", ln(2));
+  printf("%0.10f\n", log_n(1600, 10));
+  // printf("%0.10f\n", log_2(160000));
+  // printf("%0.10f\n", ln(200000));
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   return 0;

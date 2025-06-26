@@ -10,6 +10,9 @@ run: init build
 	echo "Running..."
 	./work/main
 
+profile: run
+	gprof work/main > profile.txt
+
 init:
 	mkdir -p work
 
