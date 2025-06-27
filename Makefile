@@ -26,6 +26,7 @@ deps: auto-deps operations algebra
 	
 algebra:
 	@$(call gcc_call,src/algebra/lex.c,work/lex.o)
+	@$(call gcc_call,src/algebra/parse.c,work/parse.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)

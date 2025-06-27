@@ -4,7 +4,6 @@
 #include "../../include/equation_objects.h"
 #include "../../include/pow.h"
 #include "../../include/utils.h"
-#include <stdio.h>
 
 int lex(char *input, int length, struct EquationObject *buffer,
         int max_length) {
@@ -31,9 +30,6 @@ int lex(char *input, int length, struct EquationObject *buffer,
     }
 
     char c = input[i];
-    printf("State: %i, dot_flag: %i, subscript: %i, i: %i, c: %c\n", state,
-           dot_flag == TRUE, subscript == TRUE, i, c);
-    print_eo(eo);
 
     switch (state) {
     case 1:
@@ -131,12 +127,9 @@ int lex(char *input, int length, struct EquationObject *buffer,
           eo.value.number *= 10;
           eo.value.number += num;
         } else {
-          // printf("%f", dfloor(eo.value.number * pow_di(10.0,
-          // decimal_digits)));
           eo.value.number =
               dfloor(eo.value.number * pow_di(10.0, decimal_digits)) /
               pow_di(10.0, decimal_digits);
-          // printf("%i\n", double_digits_partial(eo.value.number) + 1);
           eo.value.number += ((double)num) / pow_di(10.0, decimal_digits + 1);
           decimal_digits++;
         }

@@ -1,20 +1,22 @@
 #include "../include/atrig.h"
+#include "../include/debug.h"
 #include "../include/dutils.h"
+#include "../include/equation_objects.h"
 #include "../include/flags.h"
 #include "../include/fraction.h"
 #include "../include/gcf.h"
 #include "../include/lex.h"
 #include "../include/log.h"
-#include "../include/equation_objects.h"
 #include "../include/pow.h"
 #include "../include/root.h"
 #include "../include/trig.h"
 #include "../include/utils.h"
-#include "../include/debug.h"
-#include <string.h>
+#include "../include/parse.h"
 #include <stdio.h>
+#include <string.h>
 
 void test_lex();
+void test_parse();
 
 int main() {
   // printf("%0.11f\n", nth_root(130130, 10));
@@ -41,26 +43,41 @@ int main() {
   // printf("%f", dfloor(12232132998.000001534820));
   // printf("%f", dround(1999.99));
   // printf("%f", pow_di(2, -1));
-  printf("%0.10f\n", log_n(1600, 10));
+  // printf("%0.10f\n", log_n(1600, 10));
   // printf("%0.10f\n", log_2(160000));
   // printf("%0.10f\n", ln(200000));
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
+  // test_parse();
+  long double d = 60221414107012341324123987265987324659817265987216598321641873264409084099072.0;
+  d += 1.0;
   return 0;
 }
 
 void test_lex() {
-  char *expression = "(22+a:2)*23.12/\\r2\\4=-(0.6^9-e^(-2\\p)+\\g(0.3x:6)\\l26\\";
+  // char *expression =
+  //     "(22+a:2)*23.12/\\r2\\4=-(0.6^9-e^(-2\\p)+\\g(0.3x:6)\\l26\\";
+  char *expression = "2+2*4x";
   printf("Lexing %s\n", expression);
   struct EquationObject buffer[256];
 
   int max_len = lex(expression, strlen(expression), buffer, 256);
-  
+
   printf("---------------------------------\n");
-  
+
   int i = 0;
   while (i < max_len) {
     print_eo(buffer[i]);
     i++;
   }
+}
+
+void test_solve_consts() {
+  char *expression = "2+2*4x";
+  printf("Lexing %s...\n", expression);
+  struct EquationObject lex_buffer[256];
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
+  printf("Parsing...\n");
+  struct ParseObject parse_buffer[256];
+  int parse_len = parse_expr(lex_buffer, lex_len, parse_buffer, 256);
 }
