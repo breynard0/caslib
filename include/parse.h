@@ -28,8 +28,8 @@ struct POArg {
     double num;
     int var_idx;
     struct {
-        double co_eff;
-        char letter[2];
+      double co_eff;
+      struct Letter letter;
     } coeff_var;
   } val;
 };
@@ -50,4 +50,4 @@ struct ParseObject {
 // Parses one side of equation, will stop at either an equals sign or an end
 // character Returns length of buffer
 int parse_expr(struct EquationObject *input, int length,
-          struct ParseObject *buffer, int max_length);
+               struct ParseObject *buffer, int max_length);

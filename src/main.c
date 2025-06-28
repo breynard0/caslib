@@ -7,16 +7,17 @@
 #include "../include/gcf.h"
 #include "../include/lex.h"
 #include "../include/log.h"
+#include "../include/parse.h"
 #include "../include/pow.h"
 #include "../include/root.h"
+#include "../include/solve_consts.h"
 #include "../include/trig.h"
 #include "../include/utils.h"
-#include "../include/parse.h"
 #include <stdio.h>
 #include <string.h>
 
 void test_lex();
-void test_parse();
+void test_solve_consts();
 
 int main() {
   // printf("%0.11f\n", nth_root(130130, 10));
@@ -48,16 +49,14 @@ int main() {
   // printf("%0.10f\n", ln(200000));
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
-  // test_parse();
-  long double d = 60221414107012341324123987265987324659817265987216598321641873264409084099072.0;
-  d += 1.0;
+  test_solve_consts();
   return 0;
 }
 
 void test_lex() {
   // char *expression =
   //     "(22+a:2)*23.12/\\r2\\4=-(0.6^9-e^(-2\\p)+\\g(0.3x:6)\\l26\\";
-  char *expression = "2+2*4x";
+  char *expression = "-2+2*4x";
   printf("Lexing %s\n", expression);
   struct EquationObject buffer[256];
 
@@ -73,11 +72,17 @@ void test_lex() {
 }
 
 void test_solve_consts() {
-  char *expression = "2+2*4x";
+  // char *expression = "-2(2+3)+2*4x-(-2)3";
+  char *expression = "2+2*4\\r12\\34";
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[256];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
-  printf("Parsing...\n");
-  struct ParseObject parse_buffer[256];
-  int parse_len = parse_expr(lex_buffer, lex_len, parse_buffer, 256);
+  printf("Solving...\n");
+  struct InputVar var;
+  var.letter.letter = 'x';
+  var.letter.subscript = ' ';
+  var.value = 3.0;
+  struct InputVar vars[1] = {var};
+  double solution = solve_const_expr(lex_buffer, lex_len, vars, 1);
+  printf("%0.10f", solution);
 }

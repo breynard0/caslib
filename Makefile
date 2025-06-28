@@ -9,7 +9,7 @@ gcc_call = gcc -g -pg -c $(1) -o $(2)
 run: init build
 	echo "Running..."
 	./work/main
-
+	
 profile: run
 	gprof work/main > profile.txt
 
@@ -27,6 +27,7 @@ deps: auto-deps operations algebra
 algebra:
 	@$(call gcc_call,src/algebra/lex.c,work/lex.o)
 	@$(call gcc_call,src/algebra/parse.c,work/parse.o)
+	@$(call gcc_call,src/algebra/solve_consts.c,work/solve_consts.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)

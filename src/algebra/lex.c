@@ -16,10 +16,10 @@ int lex(char *input, int length, struct EquationObject *buffer,
   eo_def.value.none = 0;
   struct EquationObject eo;
 
-  enum Boolean dot_flag = FALSE;
+  Boolean dot_flag = FALSE;
   short decimal_digits = 0;
 
-  enum Boolean subscript = FALSE;
+  Boolean subscript = FALSE;
 
   short block_sp = 0;
   int blocks[64];
@@ -111,6 +111,11 @@ int lex(char *input, int length, struct EquationObject *buffer,
         state = 1;
       } else {
         eo.type = LETTER;
+
+        // Default values
+        eo.value.letter.letter = ' ';
+        eo.value.letter.subscript = ' ';
+
         if (subscript == FALSE) {
           eo.value.letter.letter = c;
         } else {

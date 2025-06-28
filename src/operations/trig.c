@@ -7,7 +7,7 @@
 
 // CORDIC implementation
 struct SinCos angle_pair(double num) {
-  enum Boolean negative = FALSE;
+  Boolean negative = FALSE;
   if (num < 0) {
     negative = TRUE;
   }

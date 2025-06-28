@@ -7,7 +7,8 @@ void print_eo(struct EquationObject object) {
     printf("Number: %0.16f", object.value.number);
     break;
   case LETTER:
-    printf("Letter: %c{%c}", object.value.letter.letter, object.value.letter.subscript);
+    printf("Letter: %c{%c}", object.value.letter.letter,
+           object.value.letter.subscript);
     break;
   case MULT:
     printf("Mult");
@@ -34,7 +35,8 @@ void print_eo(struct EquationObject object) {
     printf("Block start");
     break;
   case BLOCK_END:
-    printf("Block end: start %i, count %i", object.value.block.start, object.value.block.count);
+    printf("Block end: start %i, count %i", object.value.block.start,
+           object.value.block.count);
     break;
   case EQUAL:
     printf("Equal");

@@ -1,7 +1,6 @@
 #include "../../include/dutils.h"
 #include "../../include/pow.h"
 #include "../../include/utils.h"
-#include <stdio.h>
 
 double nth_root(unsigned int n, double d) {
   // Generalization of Heron/Newton's method
@@ -26,7 +25,6 @@ double nth_root(unsigned int n, double d) {
   // enough
   const int ITERATIONS = 4;
   for (int i = 0; i < ITERATIONS * n * small_mult; i++) {
-    printf("%i\n", i);
     estimate =
         (1.0 / fn) * ((fn - 1.0) * estimate + (d / pow_di(estimate, n - 1)));
   }

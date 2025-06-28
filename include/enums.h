@@ -1,1 +1,1 @@
-enum Boolean { TRUE, FALSE };
+typedef enum { FALSE, TRUE } Boolean;

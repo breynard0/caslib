@@ -20,15 +20,18 @@ enum EOType {
   ARCCOSINE,
   ARCTANGENT,
   LOG,
-  END_LEX
+  END_LEX,
+  NONE
+};
+
+struct Letter {
+  char letter;
+  char subscript;
 };
 
 union EOVal {
   double number;
-  struct {
-    char letter;
-    char subscript;
-  } letter;
+  struct Letter letter;
   struct {
     short count;
     int start;

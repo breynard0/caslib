@@ -4,7 +4,6 @@
 #include "../../include/gcf.h"
 #include "../../include/pow.h"
 #include "../../include/root.h"
-#include <stdio.h>
 
 int int_abs(int num) {
   if (num < 0) {
