@@ -35,8 +35,7 @@ void print_eo(struct EquationObject object) {
     printf("Block start");
     break;
   case BLOCK_END:
-    printf("Block end: start %i, count %i", object.value.block.start,
-           object.value.block.count);
+    printf("Block end");
     break;
   case EQUAL:
     printf("Equal");

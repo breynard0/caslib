@@ -45,6 +45,7 @@ int main() {
   // printf("%f", dfloor(12232132998.000001534820));
   // printf("%f", dround(1999.99));
   // printf("%f", pow_di(2, -1));
+  // printf("%0.10f", pow_dd(2, 3.5));
   // printf("%0.10f\n", log_n(1600, 10));
   // printf("%0.10f\n", log_2(160000));
   // printf("%0.10f\n", ln(200000));
@@ -57,7 +58,7 @@ int main() {
 void test_lex() {
   // char *expression =
   //     "(22+a:2)*23.12/\\r2\\4=-(0.6^9-e^(-2\\p)+\\g(0.3x:6)\\l26\\";
-  char *expression = "-2+2*4x";
+  char *expression = "-2+2*4^2";
   printf("Lexing %s\n", expression);
   struct EquationObject buffer[256];
 
@@ -75,8 +76,11 @@ void test_lex() {
 void test_solve_consts() {
   // char *expression = "-2(2+3)+2*4x-(-2)3";
   // char *expression = "6+5*2-10/2";
-  char *expression = "6-5*5-72/2";
-  // char *expression = "6*5/2";
+  // char *expression = "6-5*5-72/2";
+  // char *expression = "2*(1+32)";
+  // char *expression = "2-(-2)";
+  // char *expression = "-2+2*4^2";
+  char *expression = "2^3.5";
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[256];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 256);

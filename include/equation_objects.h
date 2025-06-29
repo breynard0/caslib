@@ -32,10 +32,6 @@ struct Letter {
 union EOVal {
   double number;
   struct Letter letter;
-  struct {
-    short count;
-    int start;
-  } block;
   char none;
 };
 

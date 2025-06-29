@@ -21,9 +21,6 @@ int lex(char *input, int length, struct EquationObject *buffer,
 
   Boolean subscript = FALSE;
 
-  short block_sp = 0;
-  int blocks[64];
-
   while (i <= length) {
     if (out_len + 3 >= max_length) {
       break;
@@ -85,20 +82,13 @@ int lex(char *input, int length, struct EquationObject *buffer,
       } else if (c == '\\') {
         state = 4;
       } else if (c == '(') {
-        blocks[block_sp] = i;
-        block_sp++;
         eo.type = BLOCK_START;
-        blocks[block_sp] = i;
         buffer[out_len] = eo;
         eo = eo_def;
         out_len++;
         state = 1;
       } else if (c == ')') {
-        int start = blocks[block_sp];
-        block_sp--;
         eo.type = BLOCK_END;
-        eo.value.block.start = start;
-        eo.value.block.count = out_len - start;
         buffer[out_len] = eo;
         eo = eo_def;
         out_len++;

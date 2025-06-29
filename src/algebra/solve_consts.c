@@ -11,12 +11,12 @@
 #include "../../include/root.h"
 #include "../../include/trig.h"
 #include "../../include/utils.h"
+#include <stdio.h>
 
 static Boolean is_function(enum EOType type) {
   switch (type) {
   case PI_VAL:
   case ROOT:
-  case EXP:
   case SINE:
   case COSINE:
   case TANGENT:
@@ -57,7 +57,7 @@ static Boolean is_juxtaposed(struct EquationObject self,
     return TRUE;
   }
   // All the functions
-  if (is_function(self.type) &&
+  if (is_function(self.type) && self.type != EXP &&
       (last.type == NUMBER || last.type == BLOCK_END || last.type == LETTER)) {
     return TRUE;
   }
@@ -174,6 +174,7 @@ double solve_const_expr(struct EquationObject *input, int length,
   }
 
   // Debug
+  printf("----------------\n");
   for (int i = 0; i < new_len; i++) {
     print_eo(expression[i]);
   }
@@ -182,14 +183,39 @@ double solve_const_expr(struct EquationObject *input, int length,
   i = 0;
   Boolean blocks_found = FALSE;
   while (!blocks_found) {
-    if (expression[i].type == BLOCK_END) {
-      int start = expression[i].value.block.start;
-      short count = expression[i].value.block.count;
-      struct EquationObject buffer[count];
-      for (int j = 0; j < count; j++) {
-        
-      }
+    if (i >= new_len) {
+      blocks_found = TRUE;
+      break;
     }
+
+    if (expression[i].type == BLOCK_END) {
+      int start = i;
+      while (start >= 0) {
+        if (expression[start].type == BLOCK_START) {
+          break;
+        } else {
+          start--;
+        }
+      }
+      short count = i - start;
+      struct EquationObject new_buffer[count];
+
+      // Remove start block
+      remove_eo_idx(expression, new_len, start);
+
+      // New buffer and recursion
+      for (int j = 0; j < count - 1; j++) {
+        printf("Thing: ");
+        print_eo(expression[start]);
+        new_buffer[j] = expression[start];
+        remove_eo_idx(expression, new_len, start);
+        new_len--;
+      }
+      expression[start].type = NUMBER;
+      expression[start].value.number =
+          solve_const_expr(new_buffer, new_len + 1, buffer, num_args);
+    }
+    i++;
   }
 
   // Solve the rest in PEDMAS order
@@ -204,16 +230,6 @@ double solve_const_expr(struct EquationObject *input, int length,
       case ROOT:
         val = nth_root(expression[i].value.number,
                        expression[i + 1].value.number);
-        break;
-      case EXP:
-        if (dfloor(expression[i].value.number) ==
-            (double)(long long)expression[i].value.number) {
-          val = pow_di(expression[i + 1].value.number,
-                       (int)expression[i].value.number);
-        } else {
-          val = pow_dd(expression[i + 1].value.number,
-                       expression[i].value.number);
-        }
         break;
       case SINE:
         val = sine(expression[i + 1].value.number);
@@ -255,6 +271,47 @@ double solve_const_expr(struct EquationObject *input, int length,
     }
     remove_eo_idx(expression, new_len, i + 1);
     new_len--;
+  }
+
+  // Exponentiation
+  i = 1;
+  Boolean exp_found = FALSE;
+  while (!exp_found) {
+    if (i >= new_len) {
+      exp_found = TRUE;
+      break;
+    }
+
+    double before = expression[i - 1].value.number;
+    double after = expression[i + 1].value.number;
+    double val = 0.0;
+
+    Boolean found = FALSE;
+
+    if (expression[i].type == EXP) {
+      if (dfloor(expression[i + 1].value.number) ==
+          expression[i + 1].value.number) {
+        val = pow_di(expression[i - 1].value.number,
+                     (int)expression[i + 1].value.number);
+      } else {
+        val = pow_dd(expression[i - 1].value.number,
+                     expression[i + 1].value.number);
+      }
+      found = TRUE;
+    }
+
+    printf("Val: %f\n", val);
+    if (found) {
+      expression[i].type = NUMBER;
+      expression[i].value.number = val;
+      remove_eo_idx(expression, new_len, i + 1);
+      new_len--;
+      remove_eo_idx(expression, new_len, i - 1);
+      new_len--;
+      i = 1;
+      continue;
+    }
+    i++;
   }
 
   // Multiplications and divisions
@@ -301,7 +358,7 @@ double solve_const_expr(struct EquationObject *input, int length,
       add_found = TRUE;
       break;
     }
-    
+
     double before = expression[i - 1].value.number;
     double after = expression[i + 1].value.number;
     double val = 0.0;

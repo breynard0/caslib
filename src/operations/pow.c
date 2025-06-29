@@ -76,7 +76,7 @@ double pow_dd(double num, double exponent) {
   struct ImproperFraction i;
   i.numerator = f.numerator;
   i.denominator = f.denominator;
-  return pow_frac(num, i);
+  return pow_frac(num, i) * pow_di(num, f.integer);
 }
 
 double square_double(double num) { return pow_di(num, 2); }
