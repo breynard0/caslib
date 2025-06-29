@@ -1,6 +1,9 @@
 #include "../../auto-generated/powers_two.h"
 #include "../../include/root.h"
 #include "../../include/utils.h"
+#include "../../include/dutils.h"
+#include "../../include/log.h"
+#include <stdio.h>
 
 long pow_ll(long num, long exponent) {
   if (exponent == 0) {
@@ -71,12 +74,35 @@ double pow_frac(double num, struct ImproperFraction exponent) {
   return pow_di(nth_root(reduced.denominator, num), reduced.numerator);
 }
 
+// double pow_dd(double num, double exponent) {
+//   struct MixedFraction f = double_to_mixed_fraction(exponent);
+//   struct ImproperFraction i;
+//   i.numerator = f.numerator;
+//   i.denominator = f.denominator;
+//   return pow_frac(num, i) * pow_di(num, f.integer);
+// }
+
 double pow_dd(double num, double exponent) {
-  struct MixedFraction f = double_to_mixed_fraction(exponent);
-  struct ImproperFraction i;
-  i.numerator = f.numerator;
-  i.denominator = f.denominator;
-  return pow_frac(num, i) * pow_di(num, f.integer);
+  double part = dmodulo(exponent, 1.0);
+  int whole = exponent - part;
+  
+  int iterations = 100;
+  
+  double step = num / 4.0;
+  double guess = num / 2.0;
+  
+  int i = 0;
+  while (i < iterations) {
+    if (log_n(guess, num) > part) {
+      guess -= step;
+    } else {
+      guess += step;
+    }
+    step = dhalve(step, 1);
+    i++;
+  }
+  
+  return pow_di(num, whole) * guess;
 }
 
 double square_double(double num) { return pow_di(num, 2); }
