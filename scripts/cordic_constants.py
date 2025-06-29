@@ -3,7 +3,7 @@ from math import atan
 
 out = "auto-generated/cordic_constants"
 
-n = 40;
+n = 60;
 
 angles = []
 cos_mul = 1.0

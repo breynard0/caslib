@@ -1,10 +1,15 @@
 #include "../../include/solve_consts.h"
+#include "../../include/atrig.h"
 #include "../../include/debug.h"
+#include "../../include/dutils.h"
 #include "../../include/enums.h"
 #include "../../include/equation_objects.h"
 #include "../../include/flags.h"
+#include "../../include/log.h"
 #include "../../include/parse.h"
+#include "../../include/pow.h"
 #include "../../include/root.h"
+#include "../../include/trig.h"
 #include "../../include/utils.h"
 
 static Boolean is_function(enum EOType type) {
@@ -174,35 +179,62 @@ double solve_const_expr(struct EquationObject *input, int length,
   }
 
   // Use recursion to reduce blocks to doubles
+  i = 0;
+  Boolean blocks_found = FALSE;
+  while (!blocks_found) {
+    if (expression[i].type == BLOCK_END) {
+      int start = expression[i].value.block.start;
+      short count = expression[i].value.block.count;
+      struct EquationObject buffer[count];
+      for (int j = 0; j < count; j++) {
+        
+      }
+    }
+  }
 
   // Solve the rest in PEDMAS order
 
   // Functions
-  for (int i = 0; i < new_len; i++) {
+  // Going backwards because nested functions
+  for (int i = new_len - 2; i >= 0; i--) {
     Boolean exit = FALSE;
     double val = 0.0;
     if (i + 1 < new_len) {
-
       switch (expression[i].type) {
       case ROOT:
         val = nth_root(expression[i].value.number,
                        expression[i + 1].value.number);
         break;
       case EXP:
+        if (dfloor(expression[i].value.number) ==
+            (double)(long long)expression[i].value.number) {
+          val = pow_di(expression[i + 1].value.number,
+                       (int)expression[i].value.number);
+        } else {
+          val = pow_dd(expression[i + 1].value.number,
+                       expression[i].value.number);
+        }
         break;
       case SINE:
+        val = sine(expression[i + 1].value.number);
         break;
       case COSINE:
+        val = cosine(expression[i + 1].value.number);
         break;
       case TANGENT:
+        val = tangent(expression[i + 1].value.number);
         break;
       case ARCSINE:
+        val = arc_sine(expression[i + 1].value.number);
         break;
       case ARCCOSINE:
+        val = arc_cosine(expression[i + 1].value.number);
         break;
       case ARCTANGENT:
+        val = arc_tangent(expression[i + 1].value.number);
         break;
       case LOG:
+        val = log_n(expression[i + 1].value.number, expression[i].value.number);
         break;
       default:
         exit = TRUE;
@@ -225,5 +257,78 @@ double solve_const_expr(struct EquationObject *input, int length,
     new_len--;
   }
 
-  return 0.0;
+  // Multiplications and divisions
+  i = 1;
+  Boolean mult_found = FALSE;
+  while (!mult_found) {
+    if (i >= new_len) {
+      mult_found = TRUE;
+      break;
+    }
+    double before = expression[i - 1].value.number;
+    double after = expression[i + 1].value.number;
+    double val = 0.0;
+
+    Boolean found = FALSE;
+
+    if (expression[i].type == MULT) {
+      val = before * after;
+      found = TRUE;
+    }
+    if (expression[i].type == DIV) {
+      val = before / after;
+      found = TRUE;
+    }
+
+    if (found) {
+      expression[i].type = NUMBER;
+      expression[i].value.number = val;
+      remove_eo_idx(expression, new_len, i + 1);
+      new_len--;
+      remove_eo_idx(expression, new_len, i - 1);
+      new_len--;
+      i = 1;
+      continue;
+    }
+    i++;
+  }
+
+  // Addition and subtraction
+  i = 1;
+  Boolean add_found = FALSE;
+  while (!add_found) {
+    if (i >= new_len) {
+      add_found = TRUE;
+      break;
+    }
+    
+    double before = expression[i - 1].value.number;
+    double after = expression[i + 1].value.number;
+    double val = 0.0;
+
+    Boolean found = FALSE;
+
+    if (expression[i].type == ADD) {
+      val = before + after;
+      found = TRUE;
+    }
+    if (expression[i].type == SUB) {
+      val = before - after;
+      found = TRUE;
+    }
+
+    if (found) {
+      expression[i].type = NUMBER;
+      expression[i].value.number = val;
+      remove_eo_idx(expression, new_len, i + 1);
+      new_len--;
+      remove_eo_idx(expression, new_len, i - 1);
+      new_len--;
+      i = 1;
+      continue;
+    }
+    i++;
+  }
+
+  return expression[0].value.number;
 }

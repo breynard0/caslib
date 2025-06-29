@@ -23,6 +23,7 @@ int main() {
   // printf("%0.11f\n", nth_root(130130, 10));
   // struct SinCos out = angle_pair(deg_to_rad(-315.0));
   // printf("%0.11f %0.11f\n", out.cos, out.sin);
+  // printf("%0.11f\n", sine(cosine(tangent(43))));
   // double num = 20000.0;
   // printf("Arc function of %f: %0.10f", num, arc_tangent(num));
   // printf("%li", gcf(-10, -15));
@@ -73,7 +74,9 @@ void test_lex() {
 
 void test_solve_consts() {
   // char *expression = "-2(2+3)+2*4x-(-2)3";
-  char *expression = "2+2*4\\r12\\34";
+  // char *expression = "6+5*2-10/2";
+  char *expression = "6-5*5-72/2";
+  // char *expression = "6*5/2";
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[256];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
