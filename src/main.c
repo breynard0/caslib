@@ -74,14 +74,15 @@ void test_lex() {
 }
 
 void test_solve_consts() {
-  // char *expression = "-2(2+3)+2*4x-(-2)3";
+  char *expression = "-2(2+3)+2*4x-(-2)3";
   // char *expression = "6+5*2-10/2";
   // char *expression = "6-5*5-72/2";
   // char *expression = "2*(1+32)";
   // char *expression = "2-(-2)";
   // char *expression = "-2+2*4^2";
   // char *expression = "2^3.5";
-  char *expression = "28\\r1600";
+  // char *expression = "(28\\r1600)-(100/(3^8))";
+  // char *expression = "(1/(2+2))";
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[256];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 256);

@@ -11,6 +11,9 @@
 #include "../../include/trig.h"
 #include "../../include/utils.h"
 
+#include "../../include/debug.h"
+#include "stdio.h"
+
 static Boolean is_function(enum EOType type) {
   switch (type) {
   case PI_VAL:
@@ -169,6 +172,11 @@ double solve_const_expr(struct EquationObject *input, int length,
     i++;
   }
 
+  printf("----------------\n");
+  for (int i = 0; i < new_len; i++) {
+    print_eo(expression[i]);
+  }
+
   // Use recursion to reduce blocks to doubles
   i = 0;
   Boolean blocks_found = FALSE;
@@ -189,19 +197,25 @@ double solve_const_expr(struct EquationObject *input, int length,
       }
       short count = i - start;
       struct EquationObject new_buffer[count];
+      short len = 0;
 
       // Remove start block
       remove_eo_idx(expression, new_len, start);
+      new_len--;
 
       // New buffer and recursion
       for (int j = 0; j < count - 1; j++) {
+        printf("Thing: ");
+        print_eo(expression[start]);
         new_buffer[j] = expression[start];
+        len++;
         remove_eo_idx(expression, new_len, start);
         new_len--;
       }
       expression[start].type = NUMBER;
       expression[start].value.number =
-          solve_const_expr(new_buffer, new_len + 1, buffer, num_args);
+          solve_const_expr(new_buffer, len, buffer, num_args);
+      i -= count;
     }
     i++;
   }
@@ -381,5 +395,10 @@ double solve_const_expr(struct EquationObject *input, int length,
     i++;
   }
 
+  printf("----------------\n");
+  for (int i = 0; i < new_len; i++) {
+    print_eo(expression[i]);
+  }
+  printf("Returning %f\n", expression[0].value.number);
   return expression[0].value.number;
 }
