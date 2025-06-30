@@ -220,38 +220,18 @@ int lex(char *input, int length, struct EquationObject *buffer,
         break;
       case 'r':
         eo.type = ROOT;
-        state = 5;
+        buffer[out_len] = eo;
+        eo = eo_def;
+        out_len++;
+        state = 1;
         break;
       case 'l':
         eo.type = LOG;
-        state = 6;
+        buffer[out_len] = eo;
+        eo = eo_def;
+        out_len++;
+        state = 1;
         break;
-      }
-      break;
-    case 5:
-      if (c >= '0' && c <= '9') {
-        eo.value.number *= 10;
-        eo.value.number += c - '0';
-        state = 5;
-      } else {
-        eo.type = ROOT;
-        buffer[out_len] = eo;
-        eo = eo_def;
-        out_len++;
-        state = 1;
-      }
-      break;
-    case 6:
-      if (c >= '0' && c <= '9') {
-        eo.value.number *= 10;
-        eo.value.number += c - '0';
-        state = 6;
-      } else {
-        eo.type = LOG;
-        buffer[out_len] = eo;
-        eo = eo_def;
-        out_len++;
-        state = 1;
       }
       break;
     }

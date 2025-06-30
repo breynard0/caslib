@@ -74,14 +74,6 @@ double pow_frac(double num, struct ImproperFraction exponent) {
   return pow_di(nth_root(reduced.denominator, num), reduced.numerator);
 }
 
-// double pow_dd(double num, double exponent) {
-//   struct MixedFraction f = double_to_mixed_fraction(exponent);
-//   struct ImproperFraction i;
-//   i.numerator = f.numerator;
-//   i.denominator = f.denominator;
-//   return pow_frac(num, i) * pow_di(num, f.integer);
-// }
-
 double pow_dd(double num, double exponent) {
   double part = dmodulo(exponent, 1.0);
   int whole = exponent - part;

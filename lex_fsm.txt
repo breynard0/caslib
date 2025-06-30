@@ -27,19 +27,11 @@ if anything else: push LETTER, decrement counter, 1
 
 State 4:
 if 'p': push PI, 1
-if 'r': 5
+if 'r': push ROOT, 1 (format n\rn)
 if 's': push SINE, 1
 if 'c': push COSINE, 1
 if 't': push TANGENT, 1
 if 'a': push ARCSINE, 1
 if 'o': push ARCCOSINE, 1
 if 'g': push ARCTANGENT, 1
-if 'l': 6
-
-State 5:
-if [0-9]: add to index, 5
-if '\': push ROOT, 1
-
-State 6:
-if [0-9]: add to base, 5
-if '\': push LOG, 1
+if 'l': push LOG, 1 (format n\rn)

@@ -1,6 +1,5 @@
 #include "../../include/solve_consts.h"
 #include "../../include/atrig.h"
-#include "../../include/debug.h"
 #include "../../include/dutils.h"
 #include "../../include/enums.h"
 #include "../../include/equation_objects.h"
@@ -11,19 +10,16 @@
 #include "../../include/root.h"
 #include "../../include/trig.h"
 #include "../../include/utils.h"
-#include <stdio.h>
 
 static Boolean is_function(enum EOType type) {
   switch (type) {
   case PI_VAL:
-  case ROOT:
   case SINE:
   case COSINE:
   case TANGENT:
   case ARCSINE:
   case ARCCOSINE:
   case ARCTANGENT:
-  case LOG:
     return TRUE;
   default:
     return FALSE;
@@ -56,7 +52,7 @@ static Boolean is_juxtaposed(struct EquationObject self,
   if (self.type == BLOCK_START && last.type == LETTER) {
     return TRUE;
   }
-  // All the functions
+  // Almost all the functions
   if (is_function(self.type) && self.type != EXP &&
       (last.type == NUMBER || last.type == BLOCK_END || last.type == LETTER)) {
     return TRUE;
@@ -173,12 +169,6 @@ double solve_const_expr(struct EquationObject *input, int length,
     i++;
   }
 
-  // Debug
-  printf("----------------\n");
-  for (int i = 0; i < new_len; i++) {
-    print_eo(expression[i]);
-  }
-
   // Use recursion to reduce blocks to doubles
   i = 0;
   Boolean blocks_found = FALSE;
@@ -205,8 +195,6 @@ double solve_const_expr(struct EquationObject *input, int length,
 
       // New buffer and recursion
       for (int j = 0; j < count - 1; j++) {
-        printf("Thing: ");
-        print_eo(expression[start]);
         new_buffer[j] = expression[start];
         remove_eo_idx(expression, new_len, start);
         new_len--;
@@ -227,10 +215,6 @@ double solve_const_expr(struct EquationObject *input, int length,
     double val = 0.0;
     if (i + 1 < new_len) {
       switch (expression[i].type) {
-      case ROOT:
-        val = nth_root(expression[i].value.number,
-                       expression[i + 1].value.number);
-        break;
       case SINE:
         val = sine(expression[i + 1].value.number);
         break;
@@ -248,9 +232,6 @@ double solve_const_expr(struct EquationObject *input, int length,
         break;
       case ARCTANGENT:
         val = arc_tangent(expression[i + 1].value.number);
-        break;
-      case LOG:
-        val = log_n(expression[i + 1].value.number, expression[i].value.number);
         break;
       default:
         exit = TRUE;
@@ -273,7 +254,7 @@ double solve_const_expr(struct EquationObject *input, int length,
     new_len--;
   }
 
-  // Exponentiation
+  // Exponentiation and friends
   i = 1;
   Boolean exp_found = FALSE;
   while (!exp_found) {
@@ -300,7 +281,20 @@ double solve_const_expr(struct EquationObject *input, int length,
       found = TRUE;
     }
 
-    printf("Val: %f\n", val);
+    if (expression[i].type == ROOT) {
+      val = nth_root(expression[i - 1].value.number,
+                     expression[i + 1].value.number);
+
+      found = TRUE;
+    }
+
+    if (expression[i].type == LOG) {
+      val =
+          log_n(expression[i - 1].value.number, expression[i + 1].value.number);
+
+      found = TRUE;
+    }
+
     if (found) {
       expression[i].type = NUMBER;
       expression[i].value.number = val;

@@ -26,7 +26,7 @@ void print_eo(struct EquationObject object) {
     printf("Pi");
     break;
   case ROOT:
-    printf("Root: idx %f", object.value.number);
+    printf("Root");
     break;
   case EXP:
     printf("Exp");
@@ -59,7 +59,7 @@ void print_eo(struct EquationObject object) {
     printf("ArcTangent");
     break;
   case LOG:
-    printf("Logarithm: base %f", object.value.number);
+    printf("Logarithm");
     break;
   }
   printf("\n");
