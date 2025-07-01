@@ -1,17 +1,17 @@
-#include "../../include/solve_consts.h"
-#include "../../include/atrig.h"
-#include "../../include/dutils.h"
-#include "../../include/enums.h"
-#include "../../include/equation_objects.h"
-#include "../../include/flags.h"
-#include "../../include/log.h"
-#include "../../include/parse.h"
-#include "../../include/pow.h"
-#include "../../include/root.h"
-#include "../../include/trig.h"
-#include "../../include/utils.h"
+#include "solve_consts.h"
+#include "atrig.h"
+#include "dutils.h"
+#include "enums.h"
+#include "equation_objects.h"
+#include "flags.h"
+#include "log.h"
+#include "parse.h"
+#include "pow.h"
+#include "root.h"
+#include "trig.h"
+#include "utils.h"
 
-#include "../../include/debug.h"
+#include "debug.h"
 #include "stdio.h"
 
 static Boolean is_function(enum EOType type) {
@@ -172,11 +172,6 @@ double solve_const_expr(struct EquationObject *input, int length,
     i++;
   }
 
-  printf("----------------\n");
-  for (int i = 0; i < new_len; i++) {
-    print_eo(expression[i]);
-  }
-
   // Use recursion to reduce blocks to doubles
   i = 0;
   Boolean blocks_found = FALSE;
@@ -205,8 +200,6 @@ double solve_const_expr(struct EquationObject *input, int length,
 
       // New buffer and recursion
       for (int j = 0; j < count - 1; j++) {
-        printf("Thing: ");
-        print_eo(expression[start]);
         new_buffer[j] = expression[start];
         len++;
         remove_eo_idx(expression, new_len, start);
@@ -395,10 +388,5 @@ double solve_const_expr(struct EquationObject *input, int length,
     i++;
   }
 
-  printf("----------------\n");
-  for (int i = 0; i < new_len; i++) {
-    print_eo(expression[i]);
-  }
-  printf("Returning %f\n", expression[0].value.number);
   return expression[0].value.number;
 }

@@ -1,7 +1,7 @@
-#include "../../include/trig.h"
-#include "../../include/dutils.h"
-#include "../../include/enums.h"
-#include "../../include/utils.h"
+#include "trig.h"
+#include "dutils.h"
+#include "enums.h"
+#include "utils.h"
 
 #include "../../auto-generated/cordic_constants.h"
 

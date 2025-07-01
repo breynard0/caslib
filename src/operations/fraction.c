@@ -1,6 +1,6 @@
-#include "../../include/dutils.h"
-#include "../../include/pow.h"
-#include "../../include/utils.h"
+#include "dutils.h"
+#include "pow.h"
+#include "utils.h"
 
 static short is_imprecise(long long num) {
   unsigned long long i = 10;

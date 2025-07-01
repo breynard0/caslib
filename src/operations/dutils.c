@@ -1,4 +1,4 @@
-#include "../../include/dutils.h"
+#include "dutils.h"
 
 double ddouble(double num, int n) {
   double_cast cast = (double_cast)num;

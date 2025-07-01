@@ -1,8 +1,8 @@
-#include "../../include/dutils.h"
-#include "../../include/flags.h"
-#include "../../include/fraction.h"
-#include "../../include/pow.h"
-#include "../../include/utils.h"
+#include "dutils.h"
+#include "flags.h"
+#include "fraction.h"
+#include "pow.h"
+#include "utils.h"
 
 #define LN2 0.6931471805599453094172321214581765680755
 

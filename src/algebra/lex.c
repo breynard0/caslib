@@ -1,9 +1,9 @@
-#include "../../include/debug.h"
-#include "../../include/dutils.h"
-#include "../../include/enums.h"
-#include "../../include/equation_objects.h"
-#include "../../include/pow.h"
-#include "../../include/utils.h"
+#include "debug.h"
+#include "dutils.h"
+#include "enums.h"
+#include "equation_objects.h"
+#include "pow.h"
+#include "utils.h"
 
 int lex(char *input, int length, struct EquationObject *buffer,
         int max_length) {

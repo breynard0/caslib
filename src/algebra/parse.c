@@ -1,5 +1,5 @@
-#include "../../include/parse.h"
-#include "../../include/equation_objects.h"
+#include "parse.h"
+#include "equation_objects.h"
 
 // 2+2*4x
 int parse_expr(struct EquationObject *input, int length,

@@ -1,18 +1,18 @@
-#include "../include/atrig.h"
-#include "../include/debug.h"
-#include "../include/dutils.h"
-#include "../include/equation_objects.h"
-#include "../include/flags.h"
-#include "../include/fraction.h"
-#include "../include/gcf.h"
-#include "../include/lex.h"
-#include "../include/log.h"
-#include "../include/parse.h"
-#include "../include/pow.h"
-#include "../include/root.h"
-#include "../include/solve_consts.h"
-#include "../include/trig.h"
-#include "../include/utils.h"
+#include "atrig.h"
+#include "debug.h"
+#include "dutils.h"
+#include "equation_objects.h"
+#include "flags.h"
+#include "fraction.h"
+#include "gcf.h"
+#include "lex.h"
+#include "log.h"
+#include "parse.h"
+#include "pow.h"
+#include "root.h"
+#include "solve_consts.h"
+#include "trig.h"
+#include "utils.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -74,7 +74,7 @@ void test_lex() {
 }
 
 void test_solve_consts() {
-  char *expression = "-2(2+3)+2*4x-(-2)3";
+  char *expression = "-2(2+3)+2*4x-(-2)3*10\\r29";
   // char *expression = "6+5*2-10/2";
   // char *expression = "6-5*5-72/2";
   // char *expression = "2*(1+32)";

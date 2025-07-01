@@ -1,10 +1,10 @@
-#include "../../include/atrig.h"
-#include "../../include/dutils.h"
-#include "../../include/enums.h"
-#include "../../include/pow.h"
-#include "../../include/root.h"
-#include "../../include/trig.h"
-#include "../../include/utils.h"
+#include "atrig.h"
+#include "dutils.h"
+#include "enums.h"
+#include "pow.h"
+#include "root.h"
+#include "trig.h"
+#include "utils.h"
 
 #include "../../auto-generated/cordic_constants.h"
 

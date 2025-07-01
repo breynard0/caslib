@@ -1,8 +1,8 @@
 #include "../../auto-generated/powers_two.h"
-#include "../../include/root.h"
-#include "../../include/utils.h"
-#include "../../include/dutils.h"
-#include "../../include/log.h"
+#include "root.h"
+#include "utils.h"
+#include "dutils.h"
+#include "log.h"
 #include <stdio.h>
 
 long pow_ll(long num, long exponent) {

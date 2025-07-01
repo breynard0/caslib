@@ -1,6 +1,6 @@
-#include "../../include/dutils.h"
-#include "../../include/pow.h"
-#include "../../include/utils.h"
+#include "dutils.h"
+#include "pow.h"
+#include "utils.h"
 
 double nth_root(unsigned int n, double d) {
   // Generalization of Heron/Newton's method

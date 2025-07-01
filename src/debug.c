@@ -1,4 +1,4 @@
-#include "../include/equation_objects.h"
+#include "equation_objects.h"
 #include <stdio.h>
 
 void print_eo(struct EquationObject object) {

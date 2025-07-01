@@ -1,9 +1,9 @@
-#include "../../include/utils.h"
-#include "../../include/dutils.h"
-#include "../../include/flags.h"
-#include "../../include/gcf.h"
-#include "../../include/pow.h"
-#include "../../include/root.h"
+#include "utils.h"
+#include "dutils.h"
+#include "flags.h"
+#include "gcf.h"
+#include "pow.h"
+#include "root.h"
 
 int int_abs(int num) {
   if (num < 0) {

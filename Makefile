@@ -1,10 +1,11 @@
 .SILENT:
+
 # define gcc_call
 # 	$(eval $@_SOURCE = $(1))
 # 	$(eval $@_DEST = $(2))
 # 	gcc -g -pg -c ${@_SOURCE} -o ${@_DEST}
 # endef
-gcc_call = gcc -g -pg -c $(1) -o $(2)
+gcc_call = gcc -I./include -g -pg -c $(1) -o $(2)
 	
 run: init build
 	echo "Running..."
