@@ -1,3 +1,4 @@
+#include "enums.h"
 #include "equation_objects.h"
 
 #ifndef PO_OBJ
@@ -45,9 +46,14 @@ struct ParseObject {
   struct POValue value;
 };
 
+struct InputVar {
+  struct Letter letter;
+  double value;
+};
 #endif
 
-// Parses one side of equation, will stop at either an equals sign or an end
-// character Returns length of buffer
-int parse_expr(struct EquationObject *input, int length,
-               struct ParseObject *buffer, int max_length);
+Boolean is_juxtaposed(struct EquationObject self, struct EquationObject last);
+Boolean is_negative(struct EquationObject self, struct EquationObject last);
+int expand_juxtopposed(struct EquationObject *input, int length,
+                       struct EquationObject *out_buffer, int buffer_len, struct InputVar* buffer,
+                       int num_args);

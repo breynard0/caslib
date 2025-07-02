@@ -29,6 +29,9 @@ algebra:
 	@$(call gcc_call,src/algebra/lex.c,work/lex.o)
 	@$(call gcc_call,src/algebra/parse.c,work/parse.o)
 	@$(call gcc_call,src/algebra/solve_consts.c,work/solve_consts.o)
+	@$(call gcc_call,src/algebra/valid_coeff.c,work/valid_coeff.o)
+	@$(call gcc_call,src/algebra/get_terms.c,work/get_terms.o)
+	@$(call gcc_call,src/algebra/expansion.c,work/expansion.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)
