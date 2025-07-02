@@ -61,6 +61,11 @@ void print_eo(struct EquationObject object) {
   case LOG:
     printf("Logarithm");
     break;
+  case END_LEX:
+    printf("End Lex");
+    break;
+  case NONE:
+    break;
   }
   printf("\n");
 }

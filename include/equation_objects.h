@@ -40,3 +40,5 @@ struct EquationObject {
   union EOVal value;
 };
 #endif
+
+void remove_eo_idx(struct EquationObject *list, int length, int idx);

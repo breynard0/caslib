@@ -122,7 +122,7 @@ int expand_juxtopposed(struct EquationObject* input, int length, struct Equation
       }
     }
 
-    if (obj.type == LETTER) {
+    if (obj.type == LETTER && num_args > 0) {
       Boolean found = FALSE;
       for (int j = 0; j < num_args; j++) {
         struct Letter cur_letter = buffer[j].letter;

@@ -11,19 +11,6 @@
 #include "trig.h"
 #include "utils.h"
 
-#include "debug.h"
-#include "stdio.h"
-
-static void remove_eo_idx(struct EquationObject *list, int length, int idx) {
-  if (idx == length - 1) {
-    list[idx].type = END_LEX;
-  }
-
-  for (int i = idx; i < length - 1; i++) {
-    list[i] = list[i + 1];
-  }
-}
-
 double solve_const_expr(struct EquationObject *input, int length,
                         struct InputVar *buffer, int num_args) {
   // Get number of juxtaposed elements to know how long to make buffer

@@ -13,11 +13,13 @@
 #include "solve_consts.h"
 #include "trig.h"
 #include "utils.h"
+#include "expansion.h"
 #include <stdio.h>
 #include <string.h>
 
 void test_lex();
 void test_solve_consts();
+void test_expansion();
 
 int main() {
   // printf("%0.11f\n", nth_root(130130, 10));
@@ -51,7 +53,8 @@ int main() {
   // printf("%0.10f\n", ln(200000));
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
-  test_solve_consts();
+  // test_solve_consts();
+  test_expansion();
   return 0;
 }
 
@@ -94,4 +97,16 @@ void test_solve_consts() {
   struct InputVar vars[1] = {var};
   double solution = solve_const_expr(lex_buffer, lex_len, vars, 1);
   printf("%0.10f", solution);
+}
+
+void test_expansion() {
+  char *expression = "2(3x^2-4x+8(3+2))";
+  printf("Lexing %s...\n", expression);
+  struct EquationObject lex_buffer[512];
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
+  printf("Expanding...\n");
+  int new_len = expand_polynomial(lex_buffer, 256);
+  // for (int i = 0; i < new_len; i++) {
+  //   print_eo(lex_buffer[new_len]);
+  // }
 }
