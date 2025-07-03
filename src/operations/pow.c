@@ -3,7 +3,6 @@
 #include "utils.h"
 #include "dutils.h"
 #include "log.h"
-#include <stdio.h>
 
 long pow_ll(long num, long exponent) {
   if (exponent == 0) {
@@ -75,6 +74,10 @@ double pow_frac(double num, struct ImproperFraction exponent) {
 }
 
 double pow_dd(double num, double exponent) {
+  if (exponent == (long long) exponent) {
+    return pow_di(num, exponent);
+  }
+  
   double part = dmodulo(exponent, 1.0);
   int whole = exponent - part;
   

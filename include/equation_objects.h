@@ -42,3 +42,5 @@ struct EquationObject {
 #endif
 
 void remove_eo_idx(struct EquationObject *list, int length, int idx);
+// Make sure list has enough space, pre-increment
+void insert_eo_idx(struct EquationObject *list, int length, int idx, struct EquationObject object);
