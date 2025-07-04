@@ -7,7 +7,7 @@
 #include "solve_consts.h"
 #include "trig.h"
 #include "utils.h"
-#include <stdio.h>
+#include "collection.h"
 
 // Make sure buffer is big enough! This function also assumes no block
 // denominators.
@@ -23,7 +23,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     }
   }
 
-  struct EquationObject expression[2*(length + 2 * extra_count)] = {};
+  struct EquationObject expression[2 * (length + 2 * extra_count)] = {};
   int new_len = expand_juxtopposed(buffer, length, expression,
                                    length + 2 * extra_count, 0, 0);
 
@@ -32,7 +32,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   // insert_eo_idx(expression, new_len, 4, test);
   // buffer[0] = test;
   // return 1;
-  
+
   // Evaluate constant blocks
   int i = 0;
   while (i < new_len) {
@@ -95,13 +95,15 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       new_len--;
       break;
     case EXP:
-      expression[i].type = NUMBER;
-      expression[i].value.number = pow_dd(expression[i - 1].value.number,
-                                          expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      remove_eo_idx(expression, new_len, i - 1);
-      new_len--;
+      if (expression[i - 1].type == NUMBER) {
+        expression[i].type = NUMBER;
+        expression[i].value.number = pow_dd(expression[i - 1].value.number,
+                                            expression[i + 1].value.number);
+        remove_eo_idx(expression, new_len, i + 1);
+        new_len--;
+        remove_eo_idx(expression, new_len, i - 1);
+        new_len--;
+      }
       break;
     case SINE:
       expression[i].type = NUMBER;
@@ -190,7 +192,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
               new_len--;
               break;
             }
-            
+
             if (expression[j].type == ADD || expression[j].type == SUB) {
               j++;
               for (int k = 0; k < factor_len; k++) {
@@ -208,6 +210,9 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     i++;
   }
 
+  // Collect terms
+  new_len = collect_reorder_polynomial(expression, new_len);
+  
   for (int m = 0; m < new_len; m++) {
     buffer[m] = expression[m];
   }

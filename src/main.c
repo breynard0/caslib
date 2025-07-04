@@ -101,12 +101,12 @@ void test_solve_consts() {
 
 void test_expansion() {
   // char *expression = "2(3x^2-4x+8(3+2))";
-  char *expression = "2x(3x+2)";
+  char *expression = "x^2*3*2*x+7*8*x/2";
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[512];
-  int lex_len = lex(expression, strlen(expression), lex_buffer, 16);
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 24);
   printf("Expanding...\n");
-  int new_len = expand_polynomial(lex_buffer, 16);
+  int new_len = expand_polynomial(lex_buffer, 24);
   for (int i = 0; i < new_len; i++) {
     print_eo(lex_buffer[i]);
   }
