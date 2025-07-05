@@ -100,13 +100,22 @@ void test_solve_consts() {
 }
 
 void test_expansion() {
+  // Working
+  // char *expression = "x^2*3*2*x+7*8*x/2";
   // char *expression = "2(3x^2-4x+8(3+2))";
-  char *expression = "x^2*3*2*x+7*8*x/2";
+  // char *expression = "4x^2+3";
+  // char *expression = "4x^2.3*x^1.7";
+  
+  // Not working still
+  char *expression = "3x+4x+5x^2";
+  // char *expression = "-3+4x^2+3x^2+7x-2x+2";
+  // char *expression = "(4x^2+12)*2";
+  
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[512];
-  int lex_len = lex(expression, strlen(expression), lex_buffer, 24);
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 32);
   printf("Expanding...\n");
-  int new_len = expand_polynomial(lex_buffer, 24);
+  int new_len = expand_polynomial(lex_buffer, 32);
   for (int i = 0; i < new_len; i++) {
     print_eo(lex_buffer[i]);
   }
