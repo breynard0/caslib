@@ -1,8 +1,8 @@
-#include "equation_objects.h"
-#include "enums.h"
-#include "utils.h"
-#include "flags.h"
 #include "parse.h"
+#include "enums.h"
+#include "equation_objects.h"
+#include "flags.h"
+#include "utils.h"
 
 static Boolean is_function(enum EOType type) {
   switch (type) {
@@ -19,8 +19,7 @@ static Boolean is_function(enum EOType type) {
   }
 }
 
-Boolean is_juxtaposed(struct EquationObject self,
-                             struct EquationObject last) {
+Boolean is_juxtaposed(struct EquationObject self, struct EquationObject last) {
   // (2)3
   if (self.type == NUMBER && last.type == BLOCK_END) {
     return TRUE;
@@ -53,8 +52,7 @@ Boolean is_juxtaposed(struct EquationObject self,
   return FALSE;
 }
 
-Boolean is_negative(struct EquationObject self,
-                           struct EquationObject last) {
+Boolean is_negative(struct EquationObject self, struct EquationObject last) {
   if (self.type == SUB) {
     if (last.type == NUMBER) {
       return FALSE;
@@ -72,7 +70,9 @@ Boolean is_negative(struct EquationObject self,
   return TRUE;
 }
 
-int expand_juxtopposed(struct EquationObject* input, int length, struct EquationObject* out_buffer, int buffer_len, struct InputVar* buffer, int num_args) {
+int expand_juxtopposed(struct EquationObject *input, int length,
+                       struct EquationObject *out_buffer, int buffer_len,
+                       struct InputVar *buffer, int num_args) {
   // Get number of juxtaposed elements to know how long to make buffer
   int extra_count = 0;
   for (int i = 1; i < length; i++) {
@@ -83,11 +83,11 @@ int expand_juxtopposed(struct EquationObject* input, int length, struct Equation
       extra_count++;
     }
   }
-  
+
   int new_len = length;
   int insert_idx = 0;
   int i = 0;
-  
+
   // Negative sign first
   if (input[0].type == SUB) {
     out_buffer[insert_idx].type = NUMBER;
@@ -135,7 +135,8 @@ int expand_juxtopposed(struct EquationObject* input, int length, struct Equation
       }
       if (!found) {
         f_bad_equation = 1;
-        return 0.0 / 0.0;
+        double nan = NAN;
+        return (int) nan;
       }
     } else if (obj.type == PI_VAL) {
       out_buffer[insert_idx].type = NUMBER;
@@ -147,4 +148,6 @@ int expand_juxtopposed(struct EquationObject* input, int length, struct Equation
     insert_idx++;
     i++;
   }
+
+  return new_len;
 }

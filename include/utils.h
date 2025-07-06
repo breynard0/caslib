@@ -2,6 +2,7 @@
 
 #define PI 3.14159265359
 #define NAT_LOG_BASE_E 2.718281828459
+#define NAN 0.0/0.0
 
 int int_abs(int num);
 long long_abs(long num);

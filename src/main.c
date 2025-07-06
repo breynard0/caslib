@@ -105,10 +105,16 @@ void test_expansion() {
   // char *expression = "2(3x^2-4x+8(3+2))";
   // char *expression = "4x^2+3";
   // char *expression = "4x^2.3*x^1.7";
+  // char *expression = "3x-2x-x";
+  // char *expression = "3x+4+5x^2";
+  // char *expression = "3x+4x+5x";
+  // char *expression = "3x+2x^2+4x+7x^2";
+  // char *expression = "3x+2x^2+4x+5x+7x^2";
+  // char *expression = "4x^2-3+3x^2+7x-2x+2";
+  // char *expression = "4x+3y+7x";
   
   // Not working still
-  char *expression = "3x+4x+5x^2";
-  // char *expression = "-3+4x^2+3x^2+7x-2x+2";
+  char *expression = "4xy+3xy+7x";
   // char *expression = "(4x^2+12)*2";
   
   printf("Lexing %s...\n", expression);

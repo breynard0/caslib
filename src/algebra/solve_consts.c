@@ -110,7 +110,7 @@ double solve_const_expr(struct EquationObject *input, int length,
 
     if (i + 1 >= new_len) {
       f_bad_equation = 1;
-      return 0.0 / 0.0;
+      return NAN;
     }
     remove_eo_idx(expression, new_len, i + 1);
     new_len--;

@@ -11,22 +11,15 @@ struct MulVar {
   double degree;
 };
 
-Boolean eq_letter_equal(struct EquationObject self, struct EquationObject other,
-                        double self_degree, double other_degree) {
-  if (self.type != LETTER || other.type != LETTER) {
-    return TRUE;
+void remove_mv_idx(struct MulVar *list, int length, int idx) {
+  for (int i = idx; i < length - 1; i++) {
+    list[i] = list[i + 1];
   }
-
-  if (self.value.letter.letter != other.value.letter.letter ||
-      self.value.letter.subscript != other.value.letter.subscript) {
-    return FALSE;
+}
+void remove_d_idx(double *list, int length, int idx) {
+  for (int i = idx; i < length - 1; i++) {
+    list[i] = list[i + 1];
   }
-
-  if (self_degree != other_degree) {
-    return FALSE;
-  }
-
-  return TRUE;
 }
 
 int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
@@ -70,93 +63,223 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   }
 
   // Collect like terms
-  // Yes, I know this method has awful time complexity. However, it has great
-  // space complexity, and I can change it if it ends up being a bottleneck
+
+  // NaN degree denotes separation
+  struct MulVar vars[mid_len] = {};
+  int vars_len = 0;
+
+  double coeffs[mid_len] = {};
+  int coeffs_len = 0;
+
+  // Construct arrays
+  i = 0;
+  while (i < mid_len) {
+    enum EOType t = mid_buf[i].type;
+    if (t == NUMBER) {
+      coeffs[coeffs_len] = mid_buf[i].value.number;
+      coeffs_len++;
+    }
+    if (t == LETTER) {
+      vars[vars_len].letter = mid_buf[i].value.letter;
+
+      double degree = 1;
+      if (i < mid_len - 1 && mid_buf[i + 1].type == EXP) {
+        i += 2;
+        degree = mid_buf[i].value.number;
+      }
+      vars[vars_len].degree = degree;
+      vars_len++;
+    }
+    if (t == ADD || t == SUB) {
+      vars[vars_len].degree = NAN;
+      vars_len++;
+      if (t == SUB) {
+        if (mid_buf[i + 1].type == NUMBER) {
+          mid_buf[i + 1].value.number *= -1;
+        } else if (mid_buf[i + 1].type == LETTER) {
+          mid_len++;
+          struct EquationObject obj;
+          obj.type = NUMBER;
+          obj.value.number = -1.0;
+          insert_eo_idx(mid_buf, mid_len, i + 1, obj);
+        }
+      }
+    }
+    i++;
+  }
+  vars[vars_len].degree = NAN;
+  vars_len++;
+
+  struct MulVar out_vars[vars_len] = {};
+  int out_vars_len = 0;
+
+  double coeffs_out[coeffs_len] = {};
+  int out_coeffs_len = 0;
+
   i = 0;
   count = 0;
-  while (i < mid_len) {
-    if ((mid_buf[i].type == ADD) || (mid_buf[i].type == SUB)) {
+  int n = 0;
+  double coeff = coeffs[n];
+  while (i < vars_len) {
+    // Check if NaN
+    if (vars[i].degree != vars[i].degree) {
       int start = i - count;
-      Boolean found = FALSE;
+      int j = i + 1;
+      int j_count = 0;
+      int local_n = n + 1;
       Boolean correct = TRUE;
+      int vars_compared = 0;
 
-      int idx = i + 1;
-      int idx_count = 0;
-      int letters_found = 0;
-      while (found == FALSE && idx < mid_len) {
-        double self_degree = 1.0;
-        if (mid_buf[start + idx_count + 1].type == EXP) {
-          self_degree = mid_buf[start + idx_count + 2].value.number;
-        }
-        double other_degree = 1.0;
-        if (mid_buf[idx + 1].type == EXP) {
-          self_degree = mid_buf[idx + 2].value.number;
-        }
-
-        if (!eq_letter_equal(mid_buf[start + idx_count], mid_buf[idx],
-                             self_degree, other_degree)) {
-          correct = FALSE;
-        }
-
-        if (mid_buf[idx].type == LETTER) {
-          letters_found++;
-        }
-
-        if (mid_buf[idx].type == ADD || mid_buf[idx].type == SUB ||
-            idx >= mid_len - 1 || mid_buf[idx].type == END_LEX) {
-          if (correct && letters_found != 0) {
-            found = TRUE;
-            for (int j = 0; j < count; j++) {
-              remove_eo_idx(mid_buf, mid_len, start);
-              mid_len--;
+      while (j < vars_len) {
+        if (vars[j].degree != vars[j].degree) {
+          if (correct && (vars_compared != 0 || count == 0)) {
+            coeff += coeffs[local_n];
+            // Remove term and one separator
+            int term_start = j - j_count;
+            for (int k = 0; k < j_count + 1; k++) {
+              remove_mv_idx(vars, vars_len, term_start);
+              vars_len--;
+              j--;
             }
-
-            // Fold in negative sign if necessary
-            if (mid_buf[start].type == SUB &&
-                mid_buf[start + 1].type == NUMBER) {
-              mid_buf[start + 1].value.number *= -1;
-            }
-
-            // Remove trailing addition or subtraction sign
-            if (mid_len != 0) {
-              remove_eo_idx(mid_buf, mid_len, start);
-              mid_len--;
-            }
-            idx -= idx_count;
+            remove_d_idx(coeffs, coeffs_len, local_n);
+            coeffs_len--;
+            local_n--;
           }
+
+          j_count = 0;
+          local_n++;
+          j++;
           correct = TRUE;
-          letters_found = 0;
-          idx_count = -1;
+          vars_compared = 0;
+          continue;
         }
 
-        idx_count++;
-        idx++;
+        if (correct) {
+          struct MulVar self = vars[start + j_count];
+          struct MulVar other = vars[j];
+
+          if (self.letter.letter != other.letter.letter ||
+              self.letter.subscript != other.letter.subscript ||
+              self.degree != other.degree) {
+            correct = FALSE;
+          }
+
+          vars_compared++;
+        }
+        j_count++;
+        j++;
       }
 
-      if (found) {
-        i = 0;
+      // Push here
+      coeffs_out[out_coeffs_len] = coeff;
+      out_coeffs_len++;
+
+      if (i != 0) {
+        int h = i - 1;
+        while (vars[h].degree == vars[h].degree && h != 0) {
+          h--;
+        }
+        if (vars[h].degree != vars[h].degree) {
+          h++;
+        }
+        while (vars[h].degree == vars[h].degree && h < vars_len) {
+          out_vars[out_vars_len] = vars[h];
+          out_vars_len++;
+
+          h++;
+        }
+        out_vars[out_vars_len].degree = NAN;
+        out_vars_len++;
       }
-      count = 0;
-    } else {
-      count++;
+
+      n++;
+      coeff = coeffs[n];
+      count = -1;
     }
 
-    if (i >= mid_len || buffer[i].type == END_LEX) {
-      break;
-    }
-
+    count++;
     i++;
   }
 
-  mid_buf[mid_len].type = END_LEX;
+  out_vars_len--;
 
-  i = 0;
-  while (i < mid_len) {
-    buffer[i] = mid_buf[i];
-    i++;
+  struct EquationObject out_buf[length] = {};
+  int out_buf_len = 0;
+
+  while (out_vars_len > 0) {
+    i = 0;
+    count = 0;
+    n = 0;
+
+    int max = 0;
+    int max_n = 0;
+
+    while (i < out_vars_len) {
+      if (out_vars[i].degree > max) {
+        max = out_vars[i].degree;
+        max_n = n;
+      }
+
+      if (out_vars[i].degree != out_vars[i].degree) {
+        n++;
+      }
+
+      i++;
+    }
+
+    if (coeffs_out[max_n] != 0 && coeffs_out[max_n] != 1) {
+      out_buf[out_buf_len].type = NUMBER;
+      out_buf[out_buf_len].value.number = coeffs_out[max_n];
+      out_buf_len++;
+      out_buf[out_buf_len].type = MULT;
+      out_buf_len++;
+    }
+    remove_d_idx(coeffs_out, out_coeffs_len, max_n);
+    out_coeffs_len--;
+
+    i = 0;
+    int local_n = 0;
+    while (local_n < max_n) {
+      if (out_vars[i].degree != out_vars[i].degree) {
+        local_n++;
+      }
+      i++;
+    }
+    if (out_vars[i].degree != out_vars[i].degree) {
+      i++;
+    }
+    while (out_vars[i].degree == out_vars[i].degree && i < out_vars_len) {
+      out_buf[out_buf_len].type = LETTER;
+      out_buf[out_buf_len].value.letter = out_vars[i].letter;
+      out_buf_len++;
+      if (out_vars[i].degree != 1) {
+        out_buf[out_buf_len].type = EXP;
+        out_buf_len++;
+        out_buf[out_buf_len].type = NUMBER;
+        out_buf[out_buf_len].value.number = out_vars[i].degree;
+        out_buf_len++;
+      }
+
+      out_buf[out_buf_len].type = ADD;
+      out_buf_len++;
+
+      // Remove self
+      remove_mv_idx(out_vars, out_vars_len, i);
+      out_vars_len--;
+    }
+    // Remove separator
+    remove_mv_idx(out_vars, out_vars_len, i - 1);
+    out_vars_len--;
   }
 
-  return mid_len;
+  // Replace trailing add with endlex
+  out_buf[out_buf_len - 1].type = END_LEX;
+
+  for (int l = 0; l < out_buf_len; l++) {
+    buffer[l] = out_buf[l];
+  }
+
+  return out_buf_len;
 }
 
 int simplify_polyterm(struct EquationObject *buffer, int length) {

@@ -19,7 +19,7 @@ static double arc_compute(double num, enum FuncType type) {
 
   num = double_abs(num);
   if (num > 1 && type != TANGENT) {
-    return 0.0 / 0.0;
+    return NAN;
   }
 
   double angle_sum = 0.0;
