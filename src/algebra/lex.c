@@ -144,18 +144,29 @@ int lex(char *input, int length, struct EquationObject *buffer,
       break;
     case 3:
       if (c == ':') {
-        subscript = TRUE;
+        subscript;
         state = 3;
       } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                 subscript == TRUE) {
+                 subscript) {
         eo.type = LETTER;
-        if (subscript == FALSE) {
-          eo.value.letter.letter = c;
-        } else {
-          eo.value.letter.subscript = c;
+        if ((!subscript && eo.value.letter.letter != ' ') ||
+            (subscript && eo.value.letter.subscript != ' ')) {
+          buffer[out_len] = eo;
           subscript = FALSE;
+          eo = eo_def;
+          out_len++;
+
+          i--;
+          state = 1;
+        } else {
+          if (!subscript) {
+            eo.value.letter.letter = c;
+          } else {
+            eo.value.letter.subscript = c;
+            subscript = FALSE;
+          }
+          state = 3;
         }
-        state = 3;
       } else {
         buffer[out_len] = eo;
         subscript = FALSE;

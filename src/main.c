@@ -61,7 +61,8 @@ int main() {
 void test_lex() {
   // char *expression =
   //     "(22+a:2)*23.12/\\r2\\4=-(0.6^9-e^(-2\\p)+\\g(0.3x:6)\\l26\\";
-  char *expression = "-2+2*4^2";
+  // char *expression = "-2+2*4^2";
+  char *expression = "4xy";
   printf("Lexing %s\n", expression);
   struct EquationObject buffer[256];
 
@@ -114,6 +115,7 @@ void test_expansion() {
   // char *expression = "4x+3y+7x";
   
   // Not working still
+  // char *expression = "4xy";
   char *expression = "4xy+3xy+7x";
   // char *expression = "(4x^2+12)*2";
   

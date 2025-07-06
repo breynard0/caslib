@@ -44,6 +44,10 @@ Boolean is_juxtaposed(struct EquationObject self, struct EquationObject last) {
   if (self.type == BLOCK_START && last.type == LETTER) {
     return TRUE;
   }
+  // xy
+  if (self.type == LETTER && last.type == LETTER) {
+    return TRUE;
+  }
   // Almost all the functions
   if (is_function(self.type) && self.type != EXP &&
       (last.type == NUMBER || last.type == BLOCK_END || last.type == LETTER)) {

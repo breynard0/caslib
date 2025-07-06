@@ -15,6 +15,9 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   // Get number of juxtaposed elements to know how long to make buffer
   int extra_count = 0;
   for (int i = 1; i < length; i++) {
+    if (buffer[i].type == END_LEX) {
+      break;
+    }
     if (is_juxtaposed(buffer[i], buffer[i - 1])) {
       extra_count++;
     }
@@ -211,7 +214,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   }
 
   // Collect terms
-  // new_len = collect_reorder_polynomial(expression, new_len);
+  new_len = collect_reorder_polynomial(expression, new_len);
   
   for (int m = 0; m < new_len; m++) {
     buffer[m] = expression[m];
