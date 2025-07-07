@@ -103,7 +103,6 @@ void test_solve_consts() {
 void test_expansion() {
   // Working
   // char *expression = "x^2*3*2*x+7*8*x/2";
-  // char *expression = "2(3x^2-4x+8(3+2))";
   // char *expression = "4x^2+3";
   // char *expression = "4x^2.3*x^1.7";
   // char *expression = "3x-2x-x";
@@ -113,11 +112,14 @@ void test_expansion() {
   // char *expression = "3x+2x^2+4x+5x+7x^2";
   // char *expression = "4x^2-3+3x^2+7x-2x+2";
   // char *expression = "4x+3y+7x";
+  // char *expression = "4xy";
+  // char *expression = "4x^2yz^8+3x^2yz^8+7x";
+  // char *expression = "2+3+4";
+  char *expression = "3x^2+2x-6x";
   
   // Not working still
-  // char *expression = "4xy";
-  char *expression = "4xy+3xy+7x";
-  // char *expression = "(4x^2+12)*2";
+  // char *expression = "2(3x^2-4x+8(3+2))";
+  // char *expression = "(4x^2+12)2";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[512];

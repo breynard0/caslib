@@ -105,9 +105,14 @@ int expand_juxtopposed(struct EquationObject *input, int length,
 
   // Main loop
   while (i < new_len) {
+    if (insert_idx >= buffer_len) {
+      f_buffer_overflow = TRUE;
+      return 0;
+    }
+
     struct EquationObject obj = input[i];
 
-    // Check for juxtaposition and negative numbers
+    // Check for juxtaposition, negative numbers and add x^0 to constants
     if (i != 0) {
       if (is_juxtaposed(input[i], input[i - 1])) {
         out_buffer[insert_idx].type = MULT;
@@ -140,7 +145,7 @@ int expand_juxtopposed(struct EquationObject *input, int length,
       if (!found) {
         f_bad_equation = 1;
         double nan = NAN;
-        return (int) nan;
+        return (int)nan;
       }
     } else if (obj.type == PI_VAL) {
       out_buffer[insert_idx].type = NUMBER;

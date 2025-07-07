@@ -144,7 +144,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
       break;
     case 3:
       if (c == ':') {
-        subscript;
+        subscript = TRUE;
         state = 3;
       } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
                  subscript) {

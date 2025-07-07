@@ -110,7 +110,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   vars[vars_len].degree = NAN;
   vars_len++;
 
-  struct MulVar out_vars[vars_len] = {};
+  struct MulVar out_vars[vars_len + coeffs_len] = {};
   int out_vars_len = 0;
 
   double coeffs_out[coeffs_len] = {};
@@ -132,6 +132,10 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
 
       while (j < vars_len) {
         if (vars[j].degree != vars[j].degree) {
+          // Check for mismatch
+          if (vars[start + j_count].degree == vars[start + j_count].degree) {
+            correct = FALSE;
+          }
           if (correct && (vars_compared != 0 || count == 0)) {
             coeff += coeffs[local_n];
             // Remove term and one separator
@@ -173,6 +177,12 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       // Push here
       coeffs_out[out_coeffs_len] = coeff;
       out_coeffs_len++;
+      if (i != 0 && vars[i - 1].degree != vars[i - 1].degree) {
+        out_vars[out_vars_len].letter.letter = 'x';
+        out_vars[out_vars_len].letter.subscript = ' ';
+        out_vars[out_vars_len].degree = 0;
+        out_vars_len++;
+      }
 
       if (i != 0) {
         int h = i - 1;
@@ -227,7 +237,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       i++;
     }
 
-    if (coeffs_out[max_n] != 0 && coeffs_out[max_n] != 1) {
+    if (coeffs_out[max_n] != 1) {
       out_buf[out_buf_len].type = NUMBER;
       out_buf[out_buf_len].value.number = coeffs_out[max_n];
       out_buf_len++;
@@ -260,7 +270,12 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
         out_buf_len++;
       }
 
-      out_buf[out_buf_len].type = ADD;
+      if (i != out_vars_len - 1 &&
+          out_vars[i + 1].degree == out_vars[i + 1].degree) {
+        out_buf[out_buf_len].type = MULT;
+      } else {
+        out_buf[out_buf_len].type = ADD;
+      }
       out_buf_len++;
 
       // Remove self
@@ -268,12 +283,32 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       out_vars_len--;
     }
     // Remove separator
-    remove_mv_idx(out_vars, out_vars_len, i - 1);
+    remove_mv_idx(out_vars, out_vars_len, i);
     out_vars_len--;
   }
 
   // Replace trailing add with endlex
   out_buf[out_buf_len - 1].type = END_LEX;
+
+  // Fix some stuff, make negatives subtraction and remove x^0
+  for (i = 1; i < out_buf_len; i++) {
+    // Negative stuff
+    if (out_buf[i].type == NUMBER && out_buf[i].value.number < 0) {
+      out_buf[i].value.number *= -1;
+      if (out_buf[i - 1].type == ADD) {
+        out_buf[i - 1].type = SUB;
+      } else if (out_buf[i - 1].type == SUB) {
+        out_buf[i - 1].type = ADD;
+      }
+    }
+    // x^0
+    if (out_buf[i].type == NUMBER && out_buf[i].value.number == 0 && out_buf[i-1].type == EXP && out_buf[i - 2].type == LETTER) {
+      for (int j = 0; j < 4; j++) {
+        remove_eo_idx(out_buf, out_buf_len, i - 3);
+        out_buf_len--;
+      }
+    }
+  }
 
   for (int l = 0; l < out_buf_len; l++) {
     buffer[l] = out_buf[l];
@@ -297,7 +332,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
   struct MulVar vars[length] = {};
   int vars_len = 0;
 
-  for (int i = 1; i < length + 1; i++) {
+  for (int i = 1; i < length; i++) {
     if (term[i].type == NUMBER) {
       if (term[i - 1].type == MULT) {
         consts *= term[i].value.number;
@@ -328,6 +363,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
           found = TRUE;
           break;
         }
+        j++;
       }
       if (!found) {
         double my_degree = 1;
