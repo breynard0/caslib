@@ -89,6 +89,12 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       }
       vars[vars_len].degree = degree;
       vars_len++;
+
+      // Add coefficient of 1 if does not exist
+      if (i >= 2 && mid_buf[i - 2].type != NUMBER) {
+        coeffs[coeffs_len] = 1.0;
+        coeffs_len++;
+      }
     }
     if (t == ADD || t == SUB) {
       vars[vars_len].degree = NAN;
@@ -302,7 +308,8 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       }
     }
     // x^0
-    if (out_buf[i].type == NUMBER && out_buf[i].value.number == 0 && out_buf[i-1].type == EXP && out_buf[i - 2].type == LETTER) {
+    if (out_buf[i].type == NUMBER && out_buf[i].value.number == 0 &&
+        out_buf[i - 1].type == EXP && out_buf[i - 2].type == LETTER) {
       for (int j = 0; j < 4; j++) {
         remove_eo_idx(out_buf, out_buf_len, i - 3);
         out_buf_len--;

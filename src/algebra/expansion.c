@@ -1,4 +1,5 @@
 #include "atrig.h"
+#include "collection.h"
 #include "equation_objects.h"
 #include "log.h"
 #include "parse.h"
@@ -7,7 +8,6 @@
 #include "solve_consts.h"
 #include "trig.h"
 #include "utils.h"
-#include "collection.h"
 
 // Make sure buffer is big enough! This function also assumes no block
 // denominators.
@@ -29,12 +29,6 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   struct EquationObject expression[2 * (length + 2 * extra_count)] = {};
   int new_len = expand_juxtopposed(buffer, length, expression,
                                    length + 2 * extra_count, 0, 0);
-
-  struct EquationObject test;
-  // test.type = ADD;
-  // insert_eo_idx(expression, new_len, 4, test);
-  // buffer[0] = test;
-  // return 1;
 
   // Evaluate constant blocks
   int i = 0;
@@ -172,7 +166,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       if (start != 0) {
         if (expression[start - 1].type == MULT) {
           int prestart = start - 2;
-          while (expression[prestart].type != ADD ||
+          while (expression[prestart].type != ADD &&
                  expression[prestart].type != SUB) {
             if (prestart > 0) {
               prestart--;
@@ -180,12 +174,17 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
               break;
             }
           }
+          if (expression[prestart].type == ADD ||
+              expression[prestart].type == SUB) {
+            prestart++;
+          }
           int factor_len = start - prestart;
           struct EquationObject factor[factor_len];
-          for (int n = prestart; n < factor_len; n++) {
+          for (int n = 0; n < factor_len; n++) {
             factor[n] = expression[n + prestart];
           }
 
+          // Removes starting block
           remove_eo_idx(expression, new_len, start);
           new_len--;
           int j = start;
@@ -215,7 +214,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
 
   // Collect terms
   new_len = collect_reorder_polynomial(expression, new_len);
-  
+
   for (int m = 0; m < new_len; m++) {
     buffer[m] = expression[m];
   }
