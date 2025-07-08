@@ -117,17 +117,19 @@ void test_expansion() {
   // char *expression = "4x^2yz^8+3x^2yz^8+7x";
   // char *expression = "2+3+4";
   // char *expression = "3x^2+2x-6x";
+  // char *expression = "x(x+4)+3(x+4)";
+  // char *expression = "(x+3)2";
+  // char *expression = "(x*3)";
+  // char *expression = "x+3+x+4";
   
   // Not working still
+  char *expression = "((()()()()((x+3)+(x+4)())())())";
   // char *expression = "2(3x^2-4x+8(3+2))";
-  // char *expression = "1+(x+3)2";
   // char *expression = "(x+3)(x+4)";
-  // char *expression = "(x+3)(x+4)";
-  char *expression = "x(x+4)+3(x+4)";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[512];
-  int lex_len = lex(expression, strlen(expression), lex_buffer, 32);
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
   printf("Expanding...\n");
   int new_len = expand_polynomial(lex_buffer, 32);
   for (int i = 0; i < new_len; i++) {

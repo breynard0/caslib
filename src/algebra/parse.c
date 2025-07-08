@@ -29,7 +29,7 @@ Boolean is_juxtaposed(struct EquationObject self, struct EquationObject last) {
     return TRUE;
   }
   // ()
-  if (self.type == BLOCK_END && last.type == BLOCK_START) {
+  if (self.type == BLOCK_START && last.type == BLOCK_END) {
     return TRUE;
   }
   // 5x
@@ -86,6 +86,23 @@ int expand_juxtopposed(struct EquationObject *input, int length,
     if (is_negative(input[i], input[i - 1])) {
       extra_count++;
     }
+    if ((input[i].type == NUMBER || input[i].type == LETTER || input[i].type == BLOCK_START) && input[i - 1].type == BLOCK_END) {
+      int block_count = 1;
+      int j = i - 2;
+      int extra = 0;
+      while (block_count != 0) {
+        if (input[j].type == BLOCK_END) {
+          block_count++;
+        }
+        if (input[j].type == BLOCK_START) {
+          block_count--;
+        }
+        j--;
+        extra++;
+      }
+      extra++;
+      extra_count += extra * (length / extra);
+    }
   }
 
   int new_len = length;
@@ -105,7 +122,7 @@ int expand_juxtopposed(struct EquationObject *input, int length,
 
   // Main loop
   while (i < new_len) {
-    if (insert_idx >= buffer_len) {
+    if (insert_idx > buffer_len) {
       f_buffer_overflow = TRUE;
       return 0;
     }
