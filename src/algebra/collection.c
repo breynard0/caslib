@@ -60,8 +60,10 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
            start_buf[i + 1].type == BLOCK_END);
 
       if ((is_before && is_after) || (start == 0 && is_after) ||
-          ((i >= new_len || start_buf[i + 1].type == END_LEX) && is_before) ||
-          (start == 0 && (i >= new_len || start_buf[i + 1].type == END_LEX))) {
+          ((i >= new_len - 1 || start_buf[i + 1].type == END_LEX) &&
+           is_before) ||
+          (start == 0 &&
+           (i >= new_len - 1 || start_buf[i + 1].type == END_LEX))) {
         remove_eo_idx(start_buf, new_len, i);
         new_len--;
         remove_eo_idx(start_buf, new_len, start);
@@ -76,8 +78,8 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   // Collect factors within terms
   i = 0;
   int count = 0;
-  while (i < new_len) {
-    if ((i == new_len - 1) || (start_buf[i].type == END_LEX) ||
+  while (i < length) {
+    if ((i == length - 1) || (start_buf[i].type == END_LEX) ||
         (start_buf[i].type == ADD) || (start_buf[i].type == SUB)) {
       struct EquationObject tmp_buf[count];
       for (int j = 0; j < count; j++) {
@@ -107,6 +109,11 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
     i++;
   }
 
+  if (mid_buf[mid_len].type != END_LEX) {
+    mid_buf[mid_len].type = END_LEX;
+    mid_len++;
+  }
+
   // Collect like terms
 
   // NaN degree denotes separation
@@ -125,6 +132,14 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       coeffs_len++;
     }
     if (t == LETTER) {
+      // Add coefficient of 1 if does not exist
+      if (i < 2 || (i >= 2 && ((mid_buf[i - 1].type == ADD ||
+                                mid_buf[i - 1].type == SUB) ||
+                               (mid_buf[i - 2].type != NUMBER)))) {
+        coeffs[coeffs_len] = 1.0;
+        coeffs_len++;
+      }
+
       vars[vars_len].letter = mid_buf[i].value.letter;
 
       double degree = 1;
@@ -134,14 +149,6 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       }
       vars[vars_len].degree = degree;
       vars_len++;
-
-      // Add coefficient of 1 if does not exist
-      if (i < 2 || (i >= 2 && ((mid_buf[i - 1].type == ADD ||
-                                mid_buf[i - 1].type == SUB) ||
-                               mid_buf[i - 2].type != NUMBER))) {
-        coeffs[coeffs_len] = 1.0;
-        coeffs_len++;
-      }
     }
     if (t == ADD || t == SUB) {
       vars[vars_len].degree = NAN;

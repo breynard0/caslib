@@ -9,7 +9,6 @@
 #include "solve_consts.h"
 #include "trig.h"
 #include "utils.h"
-#include <stdio.h>
 
 // Make sure buffer is big enough! This function also assumes no block
 // denominators.
@@ -65,6 +64,10 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   int new_len = expand_juxtopposed(buffer, length, expression,
                                    length + 2 * extra_count + 1, 0, 0);
 
+  while (expression[new_len].type != END_LEX) {
+    new_len--;
+  }
+  
   // Evaluate constant blocks
   int i = 0;
   while (i < new_len) {
@@ -230,9 +233,36 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
         insert_eo_idx(expression, new_len, dest_start + 1, mult_obj);
       }
 
+      if (expression[dest_start].type == BLOCK_START) {
+        int idx = dest_start + 1;
+        Boolean running = TRUE;
+        while (running) {
+          if (expression[idx].type == BLOCK_END) {
+            running = FALSE;
+          }
+          if (expression[idx].type == ADD || expression[idx].type == SUB || expression[idx].type == BLOCK_END) {
+            new_len++;
+            insert_eo_idx(expression, new_len, idx, mult_obj);
+            for (int j = 0; j < factor_count; j++) {
+              idx++;
+              new_len++;
+              insert_eo_idx(expression, new_len, idx, factor[j]);
+            }
+            idx++;
+          }
+          idx++;
+        }
+        // Remove parentheses
+        remove_eo_idx(expression, new_len, dest_start);
+        new_len--;
+        remove_eo_idx(expression, new_len, idx - 1);
+        new_len--;
+      }
+
       // Remove leading multiplication sign
       remove_eo_idx(expression, new_len, i);
       new_len--;
+      i = -1;
     }
     i++;
   }
@@ -240,6 +270,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   // Distributive property
   i = 0;
   while (i < new_len) {
+  // while (0) {
     if (expression[i].type == BLOCK_END) {
       int start = i;
       while (expression[start].type != BLOCK_START) {
@@ -293,6 +324,12 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     }
 
     i++;
+  }
+
+  // Add end_lex if it is missing
+  if (expression[new_len - 1].type != END_LEX) {
+    expression[new_len].type = END_LEX;
+    new_len++;
   }
 
   // Collect terms

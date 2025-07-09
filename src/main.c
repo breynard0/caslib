@@ -121,11 +121,13 @@ void test_expansion() {
   // char *expression = "(x+3)2";
   // char *expression = "(x*3)";
   // char *expression = "x+3+x+4";
+  // char *expression = "((()()()()((x+3)+(x+4)())())())";
+  // char *expression = "(x+3)+(x+4)2";
+  // char *expression = "((()()()()((x+3)+(x+4)2())())())";
   
   // Not working still
-  char *expression = "((()()()()((x+3)+(x+4)())())())";
+  char *expression = "(x^2-1)(x-3)";
   // char *expression = "2(3x^2-4x+8(3+2))";
-  // char *expression = "(x+3)(x+4)";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[512];
