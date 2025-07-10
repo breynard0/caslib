@@ -218,19 +218,41 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
         new_len--;
         i--;
       }
-
-      int dest_start = i + 1;
+      
       struct EquationObject mult_obj;
       mult_obj.type = MULT;
+      
+      // Replace subtraction with negative addition
+      int k = 0;
+      while (k < new_len) {
+        if (expression[k].type == SUB) {
+          expression[k].type = ADD;
+          
+          struct EquationObject obj;
+          obj.type = NUMBER;
+          obj.value.number = -1.0;
+          
+          new_len++;
+          insert_eo_idx(expression, new_len, k + 1, mult_obj);
+          new_len++;
+          insert_eo_idx(expression, new_len, k + 1, obj);
+        }
+        k++;
+      }
+      
+      int dest_start = i + 1;
+      int end = dest_start;
 
       if (expression[dest_start].type == LETTER ||
           expression[dest_start].type == NUMBER) {
         for (int j = 0; j < factor_count; j++) {
           new_len++;
           insert_eo_idx(expression, new_len, dest_start + j + 1, factor[j]);
+          end++;
         }
         new_len++;
         insert_eo_idx(expression, new_len, dest_start + 1, mult_obj);
+        end++;
       }
 
       if (expression[dest_start].type == BLOCK_START) {
@@ -241,27 +263,29 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
             running = FALSE;
           }
           if (expression[idx].type == ADD || expression[idx].type == SUB || expression[idx].type == BLOCK_END) {
+            
             new_len++;
             insert_eo_idx(expression, new_len, idx, mult_obj);
+            end++;
             for (int j = 0; j < factor_count; j++) {
               idx++;
               new_len++;
               insert_eo_idx(expression, new_len, idx, factor[j]);
+              end++;
             }
             idx++;
           }
           idx++;
         }
-        // Remove parentheses
-        remove_eo_idx(expression, new_len, dest_start);
-        new_len--;
-        remove_eo_idx(expression, new_len, idx - 1);
-        new_len--;
       }
 
       // Remove leading multiplication sign
       remove_eo_idx(expression, new_len, i);
       new_len--;
+      struct EquationObject starting_parenthesis;
+      starting_parenthesis.type = BLOCK_START;
+      struct EquationObject closing_parenthesis;
+      closing_parenthesis.type = BLOCK_END;
       i = -1;
     }
     i++;
@@ -281,7 +305,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
         if (expression[start - 1].type == MULT) {
           int prestart = start - 2;
           while (expression[prestart].type != ADD &&
-                 expression[prestart].type != SUB) {
+                 expression[prestart].type != SUB && expression[prestart].type != BLOCK_START) {
             if (prestart > 0) {
               prestart--;
             } else {
@@ -289,7 +313,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
             }
           }
           if (expression[prestart].type == ADD ||
-              expression[prestart].type == SUB) {
+              expression[prestart].type == SUB || expression[prestart].type == BLOCK_START) {
             prestart++;
           }
           int factor_len = start - prestart;

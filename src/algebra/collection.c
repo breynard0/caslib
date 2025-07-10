@@ -161,6 +161,9 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
           struct EquationObject obj;
           obj.type = NUMBER;
           obj.value.number = -1.0;
+          struct EquationObject mult_obj;
+          mult_obj.type = MULT;
+          insert_eo_idx(mid_buf, mid_len, i + 1, mult_obj);
           insert_eo_idx(mid_buf, mid_len, i + 1, obj);
         }
       }
@@ -350,7 +353,8 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   // Replace trailing add with endlex
   out_buf[out_buf_len - 1].type = END_LEX;
 
-  // Fix some stuff, make negatives subtraction and remove x^0
+  // Fix some stuff, make adding negatives subtraction, remove x^0, remove 1*
+  // and *1, remove +0
   for (i = 1; i < out_buf_len; i++) {
     // Negative stuff
     if (out_buf[i].type == NUMBER && out_buf[i].value.number < 0) {
@@ -368,6 +372,27 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
         remove_eo_idx(out_buf, out_buf_len, i - 3);
         out_buf_len--;
       }
+    }
+    // 1*
+    if ((out_buf[i].type == NUMBER && out_buf[i].value.number == 1 &&
+         out_buf[i - 1].type == MULT) ||
+        (out_buf[i].type == MULT && out_buf[i - 1].type == NUMBER &&
+         out_buf[i - 1].value.number == 1)) {
+      remove_eo_idx(out_buf, out_buf_len, i - 1);
+      out_buf_len--;
+      remove_eo_idx(out_buf, out_buf_len, i - 1);
+      out_buf_len--;
+    }
+    // 0+
+    // -0 should be filtered, 0- should not
+    if ((out_buf[i].type == NUMBER && out_buf[i].value.number == 0 &&
+         (out_buf[i - 1].type == ADD || out_buf[i - 1].type == SUB)) ||
+        (out_buf[i].type == ADD && out_buf[i - 1].type == NUMBER &&
+         out_buf[i - 1].value.number == 0)) {
+      remove_eo_idx(out_buf, out_buf_len, i - 1);
+      out_buf_len--;
+      remove_eo_idx(out_buf, out_buf_len, i - 1);
+      out_buf_len--;
     }
   }
 
