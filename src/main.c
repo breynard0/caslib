@@ -127,16 +127,19 @@ void test_expansion() {
   // char *expression = "2*(x+1)(x+2)";
   // char *expression = "(x+1)(x+2)2";
   // char *expression = "(x+1)(x+2)(x+3)";
+  // char *expression = "(x+1)(x+2)(x+3)(x+4)(x+5)(x+6)";
+  // char *expression = "2(x+2)(x+2)+5";
   
   // Not working still
-  char *expression = "(x+1)(x+2)(x+3)(x+4)(x+5)(x+6)";
+  char *expression = "(x+2)^80";
+  // char *expression = "(x+2)(x+2)(x^4+8x^3+24x^2+32x+16)";
   // char *expression = "2(3x^2-4x+8(3+2))";
   
   printf("Lexing %s...\n", expression);
-  struct EquationObject lex_buffer[512];
+  struct EquationObject lex_buffer[1024];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
   printf("Expanding...\n");
-  int new_len = expand_polynomial(lex_buffer, 64);
+  int new_len = expand_polynomial(lex_buffer, 1024);
   for (int i = 0; i < new_len; i++) {
     print_eo(lex_buffer[i]);
   }

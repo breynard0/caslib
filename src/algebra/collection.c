@@ -2,7 +2,7 @@
 #include "enums.h"
 #include "equation_objects.h"
 #include "utils.h"
-#include <stdio.h>
+#include "cull.h"
 
 static int simplify_polyterm(struct EquationObject *buffer, int length);
 
@@ -353,8 +353,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   // Replace trailing add with endlex
   out_buf[out_buf_len - 1].type = END_LEX;
 
-  // Fix some stuff, make adding negatives subtraction, remove x^0, remove 1*
-  // and *1, remove +0
+  // Fix some stuff, make adding negatives subtraction
   for (i = 1; i < out_buf_len; i++) {
     // Negative stuff
     if (out_buf[i].type == NUMBER && out_buf[i].value.number < 0) {
@@ -365,37 +364,10 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
         out_buf[i - 1].type = ADD;
       }
     }
-    // x^0
-    if (out_buf[i].type == NUMBER && out_buf[i].value.number == 0 &&
-        out_buf[i - 1].type == EXP && out_buf[i - 2].type == LETTER) {
-      for (int j = 0; j < 4; j++) {
-        remove_eo_idx(out_buf, out_buf_len, i - 3);
-        out_buf_len--;
-      }
-    }
-    // 1*
-    if ((out_buf[i].type == NUMBER && out_buf[i].value.number == 1 &&
-         out_buf[i - 1].type == MULT) ||
-        (out_buf[i].type == MULT && out_buf[i - 1].type == NUMBER &&
-         out_buf[i - 1].value.number == 1)) {
-      remove_eo_idx(out_buf, out_buf_len, i - 1);
-      out_buf_len--;
-      remove_eo_idx(out_buf, out_buf_len, i - 1);
-      out_buf_len--;
-    }
-    // 0+
-    // -0 should be filtered, 0- should not
-    if ((out_buf[i].type == NUMBER && out_buf[i].value.number == 0 &&
-         (out_buf[i - 1].type == ADD || out_buf[i - 1].type == SUB)) ||
-        (out_buf[i].type == ADD && out_buf[i - 1].type == NUMBER &&
-         out_buf[i - 1].value.number == 0)) {
-      remove_eo_idx(out_buf, out_buf_len, i - 1);
-      out_buf_len--;
-      remove_eo_idx(out_buf, out_buf_len, i - 1);
-      out_buf_len--;
-    }
   }
 
+  out_buf_len = cull_the_useless(out_buf, out_buf_len);
+  
   for (int l = 0; l < out_buf_len; l++) {
     buffer[l] = out_buf[l];
   }

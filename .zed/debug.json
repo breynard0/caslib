@@ -8,5 +8,11 @@
     "program": "$ZED_WORKTREE_ROOT/work/main",
     "request": "launch",
     "adapter": "GDB" // GDB is available on non arm macs as well as linux
+  },
+  {
+    "label": "Debug native binary",
+    "program": "$ZED_WORKTREE_ROOT/work/main",
+    "request": "launch",
+    "adapter": "GDB" // GDB is available on non arm macs as well as linux
   }
 ]

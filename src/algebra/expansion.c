@@ -1,5 +1,6 @@
 #include "atrig.h"
 #include "collection.h"
+#include "cull.h"
 #include "debug.h"
 #include "equation_objects.h"
 #include "log.h"
@@ -58,16 +59,22 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       extra++;
       extra_count += extra * (length / extra);
     }
+    if (buffer[i].type == EXP && buffer[i - 1].type == BLOCK_END) {
+      extra_count += i * buffer[i + 1].value.number;
+    }
   }
 
   struct EquationObject expression[2 * (length + 2 * extra_count) + 1] = {};
   int new_len = expand_juxtopposed(buffer, length, expression,
                                    length + 2 * extra_count + 1, 0, 0);
 
+  cull_the_useless(expression, new_len);
+
   while (expression[new_len].type != END_LEX) {
     new_len--;
   }
-  
+  new_len++;
+
   // Evaluate constant blocks
   int i = 0;
   while (i < new_len) {
@@ -192,6 +199,51 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     i++;
   }
 
+  cull_the_useless(expression, new_len);
+
+  struct EquationObject mult_obj;
+  mult_obj.type = MULT;
+
+  // Expand term powers
+  i = 1;
+  while (i < new_len) {
+    if (expression[i].type == EXP && expression[i - 1].type == BLOCK_END) {
+      double exp = expression[i + 1].value.number;
+
+      // Grab term
+      int start = i - 2;
+      while (expression[start].type != BLOCK_START) {
+        start--;
+      }
+
+      int term_len = i - start;
+      struct EquationObject term[term_len] = {};
+      for (int j = 0; j < term_len; j++) {
+        term[j] = expression[start + j];
+      }
+
+      // Remove exponent
+      remove_eo_idx(expression, new_len, i);
+      new_len--;
+      remove_eo_idx(expression, new_len, i);
+      new_len--;
+
+      // Copy term
+      for (int j = 0; j < exp - 1; j++) {
+        new_len++;
+        insert_eo_idx(expression, new_len, i, mult_obj);
+        i++;
+        for (int k = 0; k < term_len; k++) {
+          new_len++;
+          insert_eo_idx(expression, new_len, i, term[k]);
+          i++;
+        }
+      }
+      i = 0;
+    }
+    i++;
+  }
+
   // Rearrange to make solvable
   i = 1;
   while (i < new_len) {
@@ -218,20 +270,17 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
         new_len--;
         i--;
       }
-      
-      struct EquationObject mult_obj;
-      mult_obj.type = MULT;
-      
+
       // Replace subtraction with negative addition
       int k = 0;
       while (k < new_len) {
         if (expression[k].type == SUB) {
           expression[k].type = ADD;
-          
+
           struct EquationObject obj;
           obj.type = NUMBER;
           obj.value.number = -1.0;
-          
+
           new_len++;
           insert_eo_idx(expression, new_len, k + 1, mult_obj);
           new_len++;
@@ -239,20 +288,18 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
         }
         k++;
       }
-      
+
       int dest_start = i + 1;
-      int end = dest_start;
+      int end = -1;
 
       if (expression[dest_start].type == LETTER ||
           expression[dest_start].type == NUMBER) {
         for (int j = 0; j < factor_count; j++) {
           new_len++;
           insert_eo_idx(expression, new_len, dest_start + j + 1, factor[j]);
-          end++;
         }
         new_len++;
         insert_eo_idx(expression, new_len, dest_start + 1, mult_obj);
-        end++;
       }
 
       if (expression[dest_start].type == BLOCK_START) {
@@ -262,39 +309,67 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
           if (expression[idx].type == BLOCK_END) {
             running = FALSE;
           }
-          if (expression[idx].type == ADD || expression[idx].type == SUB || expression[idx].type == BLOCK_END) {
-            
+          if (expression[idx].type == ADD || expression[idx].type == SUB ||
+              expression[idx].type == BLOCK_END) {
+
             new_len++;
             insert_eo_idx(expression, new_len, idx, mult_obj);
-            end++;
             for (int j = 0; j < factor_count; j++) {
               idx++;
               new_len++;
               insert_eo_idx(expression, new_len, idx, factor[j]);
-              end++;
             }
             idx++;
           }
           idx++;
         }
+        end = idx - 2;
       }
 
       // Remove leading multiplication sign
       remove_eo_idx(expression, new_len, i);
       new_len--;
-      struct EquationObject starting_parenthesis;
-      starting_parenthesis.type = BLOCK_START;
-      struct EquationObject closing_parenthesis;
-      closing_parenthesis.type = BLOCK_END;
+
+      // Inline new thing, reusing buffer
+      if (end > 0) {
+        int idx = start;
+        int j = 0;
+        while (idx <= end) {
+          buffer[j] = expression[idx];
+
+          idx++;
+          j++;
+        }
+        buffer[j].type = END_LEX;
+        j++;
+        int out_count = expand_polynomial(buffer, j) - 1;
+        for (int k = 0; k < end - start; k++) {
+          remove_eo_idx(expression, new_len, start);
+          new_len--;
+        }
+        
+        new_len++;
+        struct EquationObject block_start;
+        block_start.type = BLOCK_START;
+        insert_eo_idx(expression, new_len, start, block_start);
+        
+        new_len += out_count;
+        for (int k = 0; k < out_count; k++) {
+          insert_eo_idx(expression, new_len, start + 1 + k, buffer[k]);
+        }
+      }
+
       i = -1;
     }
     i++;
   }
 
+  cull_the_useless(expression, new_len);
+
   // Distributive property
   i = 0;
   while (i < new_len) {
-  // while (0) {
+    // while (0) {
     if (expression[i].type == BLOCK_END) {
       int start = i;
       while (expression[start].type != BLOCK_START) {
@@ -305,7 +380,8 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
         if (expression[start - 1].type == MULT) {
           int prestart = start - 2;
           while (expression[prestart].type != ADD &&
-                 expression[prestart].type != SUB && expression[prestart].type != BLOCK_START) {
+                 expression[prestart].type != SUB &&
+                 expression[prestart].type != BLOCK_START) {
             if (prestart > 0) {
               prestart--;
             } else {
@@ -313,7 +389,8 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
             }
           }
           if (expression[prestart].type == ADD ||
-              expression[prestart].type == SUB || expression[prestart].type == BLOCK_START) {
+              expression[prestart].type == SUB ||
+              expression[prestart].type == BLOCK_START) {
             prestart++;
           }
           int factor_len = start - prestart;
@@ -349,6 +426,8 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
 
     i++;
   }
+
+  cull_the_useless(expression, new_len);
 
   // Add end_lex if it is missing
   if (expression[new_len - 1].type != END_LEX) {
