@@ -1,6 +1,7 @@
 #include "atrig.h"
 #include "debug.h"
 #include "dutils.h"
+#include "enums.h"
 #include "equation_objects.h"
 #include "flags.h"
 #include "fraction.h"
@@ -14,12 +15,14 @@
 #include "trig.h"
 #include "utils.h"
 #include "expansion.h"
+#include "valid.h"
 #include <stdio.h>
 #include <string.h>
 
 void test_lex();
 void test_solve_consts();
 void test_expansion();
+void test_valid();
 
 int main() {
   // printf("%0.11f\n", nth_root(130130, 10));
@@ -54,7 +57,8 @@ int main() {
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   // test_solve_consts();
-  test_expansion();
+  // test_expansion();
+  test_valid();
   return 0;
 }
 
@@ -129,9 +133,12 @@ void test_expansion() {
   // char *expression = "(x+1)(x+2)(x+3)";
   // char *expression = "(x+1)(x+2)(x+3)(x+4)(x+5)(x+6)";
   // char *expression = "2(x+2)(x+2)+5";
+  // char *expression = "(x+2)^85";
   
   // Not working still
-  char *expression = "(x+2)^80";
+  // char *expression = "(x+1)(x+1)";
+  char *expression = "x*x+2+x+2";
+  // char *expression = "(x-1)^6";
   // char *expression = "(x+2)(x+2)(x^4+8x^3+24x^2+32x+16)";
   // char *expression = "2(3x^2-4x+8(3+2))";
   
@@ -142,5 +149,19 @@ void test_expansion() {
   int new_len = expand_polynomial(lex_buffer, 1024);
   for (int i = 0; i < new_len; i++) {
     print_eo(lex_buffer[i]);
+  }
+}
+
+void test_valid() {
+  char *expression = "(x + 3))";
+  printf("Lexing %s...\n", expression);
+  struct EquationObject lex_buffer[1024];
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
+  printf("Checking...\n");
+  Boolean out = valid_expr(lex_buffer, lex_len);
+  if (out) {
+    printf("True");
+  } else {
+    printf("False");
   }
 }

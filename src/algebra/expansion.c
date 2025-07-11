@@ -13,6 +13,7 @@
 
 // Make sure buffer is big enough! This function also assumes no block
 // denominators.
+// Length should also be one less than the length of the buffer
 int expand_polynomial(struct EquationObject *buffer, int length) {
   // Remove empty parentheses
   int par_idx = 1;
@@ -65,8 +66,13 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   }
 
   struct EquationObject expression[2 * (length + 2 * extra_count) + 1] = {};
-  int new_len = expand_juxtopposed(buffer, length, expression,
-                                   length + 2 * extra_count + 1, 0, 0);
+  int new_len = length - 1;
+  while (buffer[new_len].type != END_LEX) {
+    new_len--;
+  }
+  
+  new_len = expand_juxtopposed(buffer, length, expression,
+                                   new_len, 0, 0);
 
   cull_the_useless(expression, new_len);
 
