@@ -1,8 +1,8 @@
+#include "cull.h"
 #include "debug.h"
 #include "enums.h"
 #include "equation_objects.h"
 #include "utils.h"
-#include "cull.h"
 
 static int simplify_polyterm(struct EquationObject *buffer, int length);
 
@@ -135,7 +135,8 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       // Add coefficient of 1 if does not exist
       if (i < 2 || (i >= 2 && ((mid_buf[i - 1].type == ADD ||
                                 mid_buf[i - 1].type == SUB) ||
-                               (mid_buf[i - 2].type != NUMBER)))) {
+                               (mid_buf[i - 2].type != NUMBER &&
+                                mid_buf[i - 2].type != LETTER)))) {
         coeffs[coeffs_len] = 1.0;
         coeffs_len++;
       }
@@ -276,7 +277,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
 
   out_vars_len--;
 
-  struct EquationObject out_buf[2*length] = {};
+  struct EquationObject out_buf[2 * length] = {};
   int out_buf_len = 0;
 
   while (out_vars_len > 0) {
@@ -300,14 +301,16 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       i++;
     }
 
-    if ((coeffs_out[max_n] != 1  && out_vars[max_n].degree == out_vars[max_n].degree) || max == 0) {
+    if ((coeffs_out[max_n] != 1 &&
+         out_vars[max_n].degree == out_vars[max_n].degree) ||
+        max == 0) {
       out_buf[out_buf_len].type = NUMBER;
       out_buf[out_buf_len].value.number = coeffs_out[max_n];
       out_buf_len++;
       out_buf[out_buf_len].type = MULT;
       out_buf_len++;
     }
-    
+
     remove_d_idx(coeffs_out, out_coeffs_len, max_n);
     out_coeffs_len--;
 
@@ -368,7 +371,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   }
 
   out_buf_len = cull_the_useless(out_buf, out_buf_len);
-  
+
   for (int l = 0; l < out_buf_len; l++) {
     buffer[l] = out_buf[l];
   }

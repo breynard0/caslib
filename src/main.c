@@ -135,9 +135,11 @@ void test_expansion() {
   // char *expression = "2(x+2)(x+2)+5";
   // char *expression = "(x+2)^85";
   // char *expression = "x*(x+1)+(x+1)";
+  // char *expression = "(x+1)(x+1)";
   
   // Not working still
-  char *expression = "(x+1)(x-1)";
+  char *expression = "(x+2)(x+y)";
+  // char *expression = "(x+2)(x-2)";
   // char *expression = "(x-1)^6";
   // char *expression = "2(3x^2-4x+8(3+2))";
   
