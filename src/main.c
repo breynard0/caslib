@@ -57,8 +57,8 @@ int main() {
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   // test_solve_consts();
-  // test_expansion();
-  test_valid();
+  test_expansion();
+  // test_valid();
   return 0;
 }
 
@@ -134,12 +134,11 @@ void test_expansion() {
   // char *expression = "(x+1)(x+2)(x+3)(x+4)(x+5)(x+6)";
   // char *expression = "2(x+2)(x+2)+5";
   // char *expression = "(x+2)^85";
+  // char *expression = "x*(x+1)+(x+1)";
   
   // Not working still
-  // char *expression = "(x+1)(x+1)";
-  char *expression = "x*x+2+x+2";
+  char *expression = "(x+1)(x-1)";
   // char *expression = "(x-1)^6";
-  // char *expression = "(x+2)(x+2)(x^4+8x^3+24x^2+32x+16)";
   // char *expression = "2(3x^2-4x+8(3+2))";
   
   printf("Lexing %s...\n", expression);

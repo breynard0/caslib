@@ -101,7 +101,7 @@ int expand_juxtopposed(struct EquationObject *input, int length,
         extra++;
       }
       extra++;
-      extra_count += extra * (length / extra);
+      extra_count += extra * (buffer_len / extra);
     }
   }
 
@@ -173,6 +173,9 @@ int expand_juxtopposed(struct EquationObject *input, int length,
 
     insert_idx++;
     i++;
+    if (obj.type == END_LEX) {
+      break;
+    }
   }
 
   return new_len;

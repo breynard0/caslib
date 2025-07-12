@@ -276,7 +276,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
 
   out_vars_len--;
 
-  struct EquationObject out_buf[length] = {};
+  struct EquationObject out_buf[2*length] = {};
   int out_buf_len = 0;
 
   while (out_vars_len > 0) {
@@ -300,13 +300,14 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       i++;
     }
 
-    if (coeffs_out[max_n] != 1) {
+    if ((coeffs_out[max_n] != 1  && out_vars[max_n].degree == out_vars[max_n].degree) || max == 0) {
       out_buf[out_buf_len].type = NUMBER;
       out_buf[out_buf_len].value.number = coeffs_out[max_n];
       out_buf_len++;
       out_buf[out_buf_len].type = MULT;
       out_buf_len++;
     }
+    
     remove_d_idx(coeffs_out, out_coeffs_len, max_n);
     out_coeffs_len--;
 
@@ -447,7 +448,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
   int out_buf_len = 2 * ((consts != 1.0) + (3 * vars_len)) + 1;
   struct EquationObject out_buf[out_buf_len];
   int out_buf_idx = 0;
-  if (consts != 1.0) {
+  if (consts != 1.0 || vars_len == 0) {
     out_buf[out_buf_idx].type = NUMBER;
     out_buf[out_buf_idx].value.number = consts;
     out_buf_idx++;

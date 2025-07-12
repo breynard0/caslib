@@ -29,6 +29,12 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     par_idx++;
   }
 
+  int new_len = 0;
+  while (buffer[new_len].type != END_LEX) {
+    new_len++;
+  }
+  new_len++;
+  
   // Get number of juxtaposed elements to know how long to make buffer
   int extra_count = 0;
   for (int i = 1; i < length; i++) {
@@ -58,28 +64,27 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
         extra++;
       }
       extra++;
-      extra_count += extra * (length / extra);
+      extra_count += extra * (new_len / extra);
     }
     if (buffer[i].type == EXP && buffer[i - 1].type == BLOCK_END) {
       extra_count += i * buffer[i + 1].value.number;
     }
   }
 
-  struct EquationObject expression[2 * (length + 2 * extra_count) + 1] = {};
-  int new_len = length - 1;
-  while (buffer[new_len].type != END_LEX) {
-    new_len--;
-  }
+  int orig_expr_len = 2 * (new_len + 2 * extra_count) + 1;
   
-  new_len = expand_juxtopposed(buffer, length, expression,
-                                   new_len, 0, 0);
+  struct EquationObject expression[orig_expr_len] = {};
+  
+  new_len = expand_juxtopposed(buffer, new_len, expression,
+                                   orig_expr_len, 0, 0);
 
-  cull_the_useless(expression, new_len);
-
+  new_len = 0;
   while (expression[new_len].type != END_LEX) {
-    new_len--;
+    new_len++;
   }
   new_len++;
+  
+  new_len = cull_the_useless(expression, new_len);
 
   // Evaluate constant blocks
   int i = 0;
@@ -205,7 +210,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     i++;
   }
 
-  cull_the_useless(expression, new_len);
+  new_len = cull_the_useless(expression, new_len);
 
   struct EquationObject mult_obj;
   mult_obj.type = MULT;
@@ -370,7 +375,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     i++;
   }
 
-  cull_the_useless(expression, new_len);
+  new_len = cull_the_useless(expression, new_len);
 
   // Distributive property
   i = 0;
@@ -433,7 +438,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     i++;
   }
 
-  cull_the_useless(expression, new_len);
+  new_len = cull_the_useless(expression, new_len);
 
   // Add end_lex if it is missing
   if (expression[new_len - 1].type != END_LEX) {
@@ -441,6 +446,12 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     new_len++;
   }
 
+  new_len = 0;
+  while (expression[new_len].type != END_LEX) {
+    new_len++;
+  }
+  new_len++;
+  
   // Collect terms
   new_len = collect_reorder_polynomial(expression, new_len);
 

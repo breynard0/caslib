@@ -12,6 +12,11 @@ int cull_the_useless(struct EquationObject *expression, int length) {
         new_len--;
       }
     }
+    i++;
+  }
+
+  i = 0;
+  while (i < new_len) {
     // 1*
     if ((expression[i].type == NUMBER && expression[i].value.number == 1 &&
          expression[i - 1].type == MULT) ||
@@ -35,6 +40,12 @@ int cull_the_useless(struct EquationObject *expression, int length) {
     }
     i++;
   }
+
+  new_len = 0;
+  while (expression[new_len].type != END_LEX) {
+    new_len++;
+  }
+  new_len++;
 
   return new_len;
 }
