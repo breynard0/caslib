@@ -301,7 +301,8 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       i++;
     }
 
-    if ((coeffs_out[max_n] != 1 &&
+    double orig_coeff = coeffs_out[max_n];
+    if ((orig_coeff != 1 && orig_coeff != 0 &&
          out_vars[max_n].degree == out_vars[max_n].degree) ||
         max == 0) {
       out_buf[out_buf_len].type = NUMBER;
@@ -325,7 +326,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
     if (out_vars[i].degree != out_vars[i].degree) {
       i++;
     }
-    while (out_vars[i].degree == out_vars[i].degree && i < out_vars_len) {
+    while (out_vars[i].degree == out_vars[i].degree && i < out_vars_len && orig_coeff != 0) {
       out_buf[out_buf_len].type = LETTER;
       out_buf[out_buf_len].value.letter = out_vars[i].letter;
       out_buf_len++;
