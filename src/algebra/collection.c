@@ -461,8 +461,26 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
     }
   }
 
+  // Sort variables in alphabetical order
+  // vars should be small, this inefficient but readable sorting algorithm is fine
+  Boolean found = TRUE;
+  while (found) {
+    int i = 1;
+    found = FALSE;
+    while (i < vars_len) {
+      struct MulVar first = vars[i - 1];
+      struct MulVar second = vars[i];
+      
+      if (first.letter.letter > second.letter.letter) {
+        vars[i - 1] = second;
+        vars[i] = first;
+        found = TRUE;
+      }
+      i++;
+    }
+  }
+  
   for (int j = 0; j < vars_len; j++) {
-    // I think shouldn't crash because short circuiting?
     if ((out_buf_idx > 0) && out_buf[out_buf_idx - 1].type != MULT) {
       out_buf[out_buf_idx].type = MULT;
       out_buf_idx++;
