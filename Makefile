@@ -32,10 +32,10 @@ algebra:
 	@$(call gcc_call,src/algebra/solve_consts.c,work/solve_consts.o)
 	@$(call gcc_call,src/algebra/valid.c,work/valid.o)
 	@$(call gcc_call,src/algebra/equation_objects.c,work/equation_objects.o)
-	@$(call gcc_call,src/algebra/get_terms.c,work/get_terms.o)
 	@$(call gcc_call,src/algebra/expansion.c,work/expansion.o)
 	@$(call gcc_call,src/algebra/collection.c,work/collection.o)
 	@$(call gcc_call,src/algebra/cull.c,work/cull.o)
+	@$(call gcc_call,src/algebra/cauchy.c,work/cauchy.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)

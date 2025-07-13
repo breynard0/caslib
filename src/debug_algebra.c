@@ -16,14 +16,14 @@
 #include "trig.h"
 #include "utils.h"
 #include "valid.h"
-#include "get_terms.h"
+#include "cauchy.h"
 #include <stdio.h>
 #include <string.h>
 
 void test_lex();
 void test_solve_consts();
 void test_expansion();
-void test_terms();
+void test_roots();
 void test_valid();
 
 void debug_algebra() {
@@ -59,8 +59,8 @@ void debug_algebra() {
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   // test_solve_consts();
-  // test_expansion();
-  test_terms();
+  test_expansion();
+  // test_roots();
   // test_valid();
 }
 
@@ -142,7 +142,8 @@ void test_expansion() {
   // char *expression = "(x+2)(x-2)";
   // char *expression = "(x-1)^6";
   // char *expression = "2(3x^2-4x+8(3+2))";
-  char *expression = "3/2";
+  // char *expression = "3/2";
+  char *expression = "3+x";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -154,25 +155,23 @@ void test_expansion() {
   }
 }
 
-void test_terms() {
-  char *expression = "3/2+(3x/3)/(9x-1)-2";
+void test_roots() {
+  // char *expression = "3/2+(3x/3)/(9x-1)-2";
+  char *expression = "2+x^2+1";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
-  printf("Splitting terms...\n");
-  struct Term term_buf[32] = {};
-  int new_len = get_terms(lex_buffer, lex_len, term_buf, term_buf,  32, TRUE);
+  printf("Simplifying...\n");
+  int new_len = expand_polynomial(lex_buffer, 1024);
+  printf("Simplified: ");
   for (int i = 0; i < new_len; i++) {
-    printf("Term %i:\n", i + 1);
-    for (int j = 0; j < term_buf[i].numerator_length; j++) {
-      print_eo(term_buf[i].numerator[j]);
-    }
-    printf("---------------------------------------------------\n");
-    for (int j = 0; j < term_buf[i].denominator_length; j++) {
-      print_eo(term_buf[i].denominator[j]);
-    }
+    print_eo_flat(lex_buffer[i]);
   }
+  printf("Calculating bound...\n");
+  double bound_abs = get_bound_abs(lex_buffer, new_len);
+  printf("Bound calculated: %f < x < %f\n", -bound_abs, bound_abs);
+  printf("Solving...\n");
 }
 
 void test_valid() {

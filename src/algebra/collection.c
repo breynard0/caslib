@@ -264,6 +264,12 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
         }
         out_vars[out_vars_len].degree = NAN;
         out_vars_len++;
+      } else {
+        out_vars[out_vars_len].letter.letter = 'x';
+        out_vars[out_vars_len].degree = 0;
+        out_vars_len++;
+        out_vars[out_vars_len].degree = NAN;
+        out_vars_len++;
       }
 
       n++;
