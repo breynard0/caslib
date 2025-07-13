@@ -162,7 +162,7 @@ void test_terms() {
   int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
   printf("Splitting terms...\n");
   struct Term term_buf[32] = {};
-  int new_len = get_terms(lex_buffer, lex_len, term_buf, 32, TRUE);
+  int new_len = get_terms(lex_buffer, lex_len, term_buf, term_buf,  32, TRUE);
   for (int i = 0; i < new_len; i++) {
     printf("Term %i:\n", i + 1);
     for (int j = 0; j < term_buf[i].numerator_length; j++) {
