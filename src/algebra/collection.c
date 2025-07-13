@@ -280,6 +280,15 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   struct EquationObject out_buf[2 * length] = {};
   int out_buf_len = 0;
 
+  // Case of single constant left
+  if (out_vars_len <= 0 && coeffs_out >= 0) {
+    out_buf[out_buf_len].type = NUMBER;
+    out_buf[out_buf_len].value.number = coeffs_out[0];
+    out_buf_len++;
+    out_buf[out_buf_len].type = END_LEX;
+    out_buf_len++;
+  }
+
   while (out_vars_len > 0) {
     i = 0;
     count = 0;
@@ -326,7 +335,8 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
     if (out_vars[i].degree != out_vars[i].degree) {
       i++;
     }
-    while (out_vars[i].degree == out_vars[i].degree && i < out_vars_len && orig_coeff != 0) {
+    while (out_vars[i].degree == out_vars[i].degree && i < out_vars_len &&
+           orig_coeff != 0) {
       out_buf[out_buf_len].type = LETTER;
       out_buf[out_buf_len].value.letter = out_vars[i].letter;
       out_buf_len++;
@@ -463,7 +473,8 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
   }
 
   // Sort variables in alphabetical order
-  // vars should be small, this inefficient but readable sorting algorithm is fine
+  // vars should be small, this inefficient but readable sorting algorithm is
+  // fine
   Boolean found = TRUE;
   while (found) {
     int i = 1;
@@ -471,7 +482,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
     while (i < vars_len) {
       struct MulVar first = vars[i - 1];
       struct MulVar second = vars[i];
-      
+
       if (first.letter.letter > second.letter.letter) {
         vars[i - 1] = second;
         vars[i] = first;
@@ -480,7 +491,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
       i++;
     }
   }
-  
+
   for (int j = 0; j < vars_len; j++) {
     if ((out_buf_idx > 0) && out_buf[out_buf_idx - 1].type != MULT) {
       out_buf[out_buf_idx].type = MULT;

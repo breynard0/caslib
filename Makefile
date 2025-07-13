@@ -19,6 +19,7 @@ init:
 
 build: deps
 	echo "Building..."
+	@$(call gcc_call,src/debug_algebra.c,work/debug_algebra.o)
 	@$(call gcc_call,src/debug.c,work/debug.o)
 	@$(call gcc_call,src/main.c,work/main.o)
 	gcc -g -pg work/*.o -o work/main
