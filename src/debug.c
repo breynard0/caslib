@@ -73,7 +73,7 @@ void print_eo(struct EquationObject object) {
 void print_eo_flat(struct EquationObject object) {
   switch (object.type) {
   case NUMBER:
-    printf("%f", object.value.number);
+    printf("%0.1f", object.value.number);
     break;
   case LETTER:
     printf("%c", object.value.letter.letter);

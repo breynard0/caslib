@@ -17,6 +17,7 @@
 #include "utils.h"
 #include "valid.h"
 #include "cauchy.h"
+#include "rearrange.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -25,6 +26,7 @@ void test_solve_consts();
 void test_expansion();
 void test_roots();
 void test_valid();
+void test_rearrange();
 
 void debug_algebra() {
   // printf("%0.11f\n", nth_root(130130, 10));
@@ -62,6 +64,7 @@ void debug_algebra() {
   test_expansion();
   // test_roots();
   // test_valid();
+  // test_rearrange();
 }
 
 void test_lex() {
@@ -143,7 +146,10 @@ void test_expansion() {
   // char *expression = "(x-1)^6";
   // char *expression = "2(3x^2-4x+8(3+2))";
   // char *expression = "3/2";
-  char *expression = "3+x";
+  // char *expression = "3+x";
+  // char *expression = "x:1+3";
+  // char *expression = "xy/x";
+  char *expression = "3+8y";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -155,9 +161,25 @@ void test_expansion() {
   }
 }
 
+void test_rearrange() {
+  char *expression = "d=vt-0.5at^2";
+  
+  printf("Lexing %s...\n", expression);
+  struct EquationObject lex_buffer[1024];
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
+  printf("Rearranging...\n");
+  struct Letter target;
+  target.letter = 'a';
+  target.subscript = ' ';
+  int end_len = rearrange_for_var(lex_buffer, lex_len, target);
+  for (int i = 0; i < end_len; i++) {
+    print_eo(lex_buffer[i]);
+  }
+}
+
 void test_roots() {
   // char *expression = "3/2+(3x/3)/(9x-1)-2";
-  char *expression = "2+x^2+1";
+  char *expression = "(x+2)(x-3)(x^3+18)";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];

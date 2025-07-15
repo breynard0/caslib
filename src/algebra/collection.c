@@ -302,11 +302,13 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
 
     int max = 0;
     int max_n = 0;
+    int max_idx = 0;
 
     while (i < out_vars_len) {
       if (out_vars[i].degree > max) {
         max = out_vars[i].degree;
         max_n = n;
+        max_idx = i;
       }
 
       if (out_vars[i].degree != out_vars[i].degree) {
@@ -318,7 +320,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
 
     double orig_coeff = coeffs_out[max_n];
     if ((orig_coeff != 1 && orig_coeff != 0 &&
-         out_vars[max_n].degree == out_vars[max_n].degree) ||
+         out_vars[max_idx].degree == out_vars[max_idx].degree) ||
         max == 0) {
       out_buf[out_buf_len].type = NUMBER;
       out_buf[out_buf_len].value.number = coeffs_out[max_n];
@@ -377,7 +379,8 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   // Fix some stuff, make adding negatives subtraction
   for (i = 1; i < out_buf_len; i++) {
     // Negative stuff
-    if (out_buf[i].type == NUMBER && out_buf[i].value.number < 0) {
+    if (out_buf[i].type == NUMBER && out_buf[i].value.number < 0 &&
+        (out_buf[i - 1].type == ADD || out_buf[i - 1].type == SUB)) {
       out_buf[i].value.number *= -1;
       if (out_buf[i - 1].type == ADD) {
         out_buf[i - 1].type = SUB;
@@ -463,6 +466,16 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
       }
     }
   }
+  
+  // Remove degree 0 variables
+  for (int i = 0; i < vars_len; i++) {
+    if (vars[i].degree == 0) {
+      for (int j = i; j < vars_len - 1; j++) {
+        vars[j] = vars[j + 1];
+      }
+      vars_len--;
+    }
+  }
 
   // Estimate for longest possible length, refined later
   int out_buf_len = 2 * ((consts != 1.0) + (3 * vars_len)) + 1;
@@ -479,8 +492,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
   }
 
   // Sort variables in alphabetical order
-  // vars should be small, this inefficient but readable sorting algorithm is
-  // fine
+  // vars should be small, this inefficient but readable sorting algorithm is fine
   Boolean found = TRUE;
   while (found) {
     int i = 1;
@@ -498,6 +510,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
     }
   }
 
+  // Push variables
   for (int j = 0; j < vars_len; j++) {
     if ((out_buf_idx > 0) && out_buf[out_buf_idx - 1].type != MULT) {
       out_buf[out_buf_idx].type = MULT;

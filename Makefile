@@ -36,6 +36,7 @@ algebra:
 	@$(call gcc_call,src/algebra/collection.c,work/collection.o)
 	@$(call gcc_call,src/algebra/cull.c,work/cull.o)
 	@$(call gcc_call,src/algebra/cauchy.c,work/cauchy.o)
+	@$(call gcc_call,src/algebra/rearrange.c,work/rearrange.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)
