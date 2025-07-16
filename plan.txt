@@ -1,7 +1,6 @@
 Goals
 - Solve any expression with no variables for a value
 - Solve linear, quadratic, and cubic equations for x
-- Solve linear and quadratic systems via gaussian elimination
 - GCF from any degree
 - Factor quadratic expressions
 - Simplify any expression with degree up to 2
@@ -37,6 +36,5 @@ Buttons
 - Parentheses
 - Solve for value
 - Rearrange for specific variable
-- Solve system
-- Simplify
+- Expand
 - Up/down/left/right buttons

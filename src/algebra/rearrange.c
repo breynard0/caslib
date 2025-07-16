@@ -10,16 +10,19 @@ struct ReplaceObject {
 
 int rearrange_for_var(struct EquationObject *buffer, int length,
                       struct Letter target) {
-  // Construct ReplaceObject array
+  // Grab copy of original
   struct EquationObject original[length] = {};
+  for (int i = 0; i < length; i++) {
+    original[i] = buffer[i];
+  }
+  
+  // Construct ReplaceObject array
   struct ReplaceObject r_objs[length / 2] = {};
   int new_len = length;
   int r_objs_len = 0;
   for (int i = 0; i < length; i++) {
-    original[i] = buffer[i];
-
     struct ReplaceObject temp;
-    temp.letter.letter = '~';
+    temp.letter.letter = '#';
     temp.letter.subscript = r_objs_len;
 
     switch (buffer[i].type) {
@@ -296,6 +299,13 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     }
   }
   
+  // Expand both sides
+  lhs[lhs_len].type = END_LEX;
+  lhs_len++;
+  lhs_len = expand_polynomial(lhs, lhs_len) - 1;
+  rhs[rhs_len].type = END_LEX;
+  rhs_len++;
+  rhs_len = expand_polynomial(rhs, rhs_len) - 1;
 
   // Substitute in values
   for (int i = 0; i < lhs_len; i++) {
@@ -322,14 +332,6 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
       }
     }
   }
-  
-  // Expand both sides
-  lhs[lhs_len].type = END_LEX;
-  lhs_len++;
-  lhs_len = expand_polynomial(lhs, lhs_len) - 1;
-  rhs[rhs_len].type = END_LEX;
-  rhs_len++;
-  rhs_len = expand_polynomial(rhs, rhs_len) - 1;
 
   int out_len = 0;
   for (int i = 0; i < lhs_len; i++) {

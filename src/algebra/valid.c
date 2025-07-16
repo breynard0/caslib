@@ -56,3 +56,18 @@ Boolean valid_expr(struct EquationObject *input, int length) {
 
   return valid;
 }
+
+Boolean is_univariate(struct EquationObject* input, int length) {
+  struct Letter letter = {};
+  Boolean letter_found = FALSE;
+  for (int i = 0; i < length; i++) {
+    if (input[i].type == LETTER) {
+      if (letter_found && (input[i].value.letter.letter != letter.letter || input[i].value.letter.subscript != letter.subscript)) {
+        return FALSE;
+      }
+      letter_found = TRUE;
+      letter = input[i].value.letter;
+    }
+  }
+  return letter_found;
+}

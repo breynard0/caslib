@@ -388,7 +388,8 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       }
 
       if (start != 0) {
-        if (expression[start - 1].type == MULT) {
+        if (expression[start - 1].type == MULT || expression[start - 1].type == DIV) {
+          enum EOType op = expression[start - 1].type;
           int prestart = start - 2;
           while (expression[prestart].type != ADD &&
                  expression[prestart].type != SUB &&
@@ -427,6 +428,10 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
                 new_len++;
                 insert_eo_idx(expression, new_len, j + k, factor[k]);
               }
+            }
+            
+            if (expression[j].type == MULT && op == DIV) {
+              expression[j].type = DIV;
             }
 
             j++;

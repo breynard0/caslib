@@ -49,6 +49,7 @@ operations:
 	@$(call gcc_call,src/operations/pow.c,work/pow.o)
 	@$(call gcc_call,src/operations/fraction.c,work/fraction.o)
 	@$(call gcc_call,src/operations/log.c,work/log.o)
+	@$(call gcc_call,src/operations/derivative.c,work/derivative.o)
 
 auto-deps:
 	@$(call gcc_call,auto-generated/cordic_constants.c,work/cordic_constants.o)

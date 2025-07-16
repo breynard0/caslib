@@ -18,6 +18,7 @@
 #include "valid.h"
 #include "cauchy.h"
 #include "rearrange.h"
+#include "derivative.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -27,6 +28,7 @@ void test_expansion();
 void test_roots();
 void test_valid();
 void test_rearrange();
+void test_derivative();
 
 void debug_algebra() {
   // printf("%0.11f\n", nth_root(130130, 10));
@@ -65,6 +67,7 @@ void debug_algebra() {
   // test_roots();
   // test_valid();
   // test_rearrange();
+  // test_derivative();
 }
 
 void test_lex() {
@@ -138,7 +141,7 @@ void test_expansion() {
   // char *expression = "(x+1)(x+2)(x+3)";
   // char *expression = "(x+1)(x+2)(x+3)(x+4)(x+5)(x+6)";
   // char *expression = "2(x+2)(x+2)+5";
-  // char *expression = "(x+2)^85";
+  // char *expression = "(x+2)^40";
   // char *expression = "x*(x+1)+(x+1)";
   // char *expression = "(x+1)(x+1)";
   // char *expression = "(x+2)(x+y)";
@@ -148,8 +151,8 @@ void test_expansion() {
   // char *expression = "3/2";
   // char *expression = "3+x";
   // char *expression = "x:1+3";
-  // char *expression = "xy/x";
-  char *expression = "3+8y";
+  char *expression = "xyz/(3xz)";
+  // char *expression = "3+8y";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -162,7 +165,7 @@ void test_expansion() {
 }
 
 void test_rearrange() {
-  char *expression = "d=vt-0.5at^2";
+  char *expression = "d=vt-(1/2)at^2";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -197,15 +200,30 @@ void test_roots() {
 }
 
 void test_valid() {
-  char *expression = "(x + 3))";
+  char *expression = "zx";
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
   printf("Checking...\n");
-  Boolean out = valid_expr(lex_buffer, lex_len);
+  // Boolean out = valid_expr(lex_buffer, lex_len);
+  Boolean out = is_univariate(lex_buffer, lex_len);
   if (out) {
     printf("True");
   } else {
     printf("False");
+  }
+}
+
+void test_derivative() {
+  char *expression = "3x^2-4x+9";
+
+  printf("Lexing %s...\n", expression);
+  struct EquationObject lex_buffer[1024];
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
+  printf("Expanding...\n");
+  int new_len = expand_polynomial(lex_buffer, 1024);
+  new_len = power_rule_derivative(lex_buffer, new_len);
+  for (int i = 0; i < new_len; i++) {
+    print_eo(lex_buffer[i]);
   }
 }
