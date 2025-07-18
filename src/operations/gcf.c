@@ -54,13 +54,14 @@ int term_gcf(struct EquationObject *term0, int t0_len,
   int i = 0;
   while (i < t0_len) {
     if (term0[i].type == LETTER) {
+      char ex = term0[i].value.letter.letter;
       double self_power = 1.0;
       if (i < t0_len && term0[i + 1].type == EXP) {
         self_power = term0[i + 2].value.number;
       }
       int j = 0;
-      while (term1[j].type != LETTER &&
-             term1[j].value.letter.letter != term0[i].value.letter.letter &&
+      while (term1[j].type != LETTER ||
+             term1[j].value.letter.letter != term0[i].value.letter.letter ||
              term1[j].value.letter.subscript !=
                  term0[i].value.letter.subscript) {
         if (j >= t1_len - 1) {

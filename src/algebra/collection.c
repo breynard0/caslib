@@ -29,7 +29,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
     start_buf[i] = buffer[i];
   }
 
-  struct EquationObject mid_buf[new_len] = {};
+  struct EquationObject mid_buf[2*new_len] = {};
   int mid_len = 0;
 
   // TODO: refactor this into its own file, this function is getting long
@@ -81,7 +81,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
   while (i < length) {
     if ((i == length - 1) || (start_buf[i].type == END_LEX) ||
         (start_buf[i].type == ADD) || (start_buf[i].type == SUB)) {
-      struct EquationObject tmp_buf[count];
+      struct EquationObject tmp_buf[2*count];
       for (int j = 0; j < count; j++) {
         tmp_buf[j] = start_buf[(i - count) + j];
       }
@@ -89,7 +89,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       int l = simplify_polyterm(tmp_buf, count);
       new_len -= count - l;
 
-      // Insert into buffer
+      // Insert into` buffer
       for (int j = 0; j < l; j++) {
         mid_buf[mid_len] = tmp_buf[j];
         mid_len++;
@@ -408,7 +408,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
     iterator++;
   }
 
-  length += 1;
+  length++;
 
   double consts = 1.0;
   struct MulVar vars[length] = {};

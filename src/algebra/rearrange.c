@@ -1,6 +1,7 @@
 #include "enums.h"
 #include "equation_objects.h"
 #include "expansion.h"
+#include "gcf.h"
 
 struct ReplaceObject {
   struct Letter letter;
@@ -15,7 +16,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
   for (int i = 0; i < length; i++) {
     original[i] = buffer[i];
   }
-  
+
   // Construct ReplaceObject array
   struct ReplaceObject r_objs[length / 2] = {};
   int new_len = length;
@@ -136,8 +137,12 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     if (lhs[i].type == ADD || lhs[i].type == SUB || i == lhs_len - 1) {
       int end = i;
       int start = end - 1;
+      if (i == lhs_len - 1) {
+        start++;
+        end++;
+      }
       Boolean found = FALSE;
-      while (start > 0 && lhs[start].type != ADD && lhs[start].type != SUB) {
+      while (start >= 0 && lhs[start].type != ADD && lhs[start].type != SUB) {
         if (lhs[start].type == LETTER &&
             lhs[start].value.letter.letter == target.letter &&
             lhs[start].value.letter.subscript == target.subscript) {
@@ -145,6 +150,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
         }
         start--;
       }
+      start++;
       if (!found) {
         enum EOType sign = SUB;
         if (start != -1 &&
@@ -184,8 +190,11 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     if (rhs[i].type == ADD || rhs[i].type == SUB || i == rhs_len - 1) {
       int end = i;
       int start = end - 1;
+      if (i == rhs_len - 1) {
+        start++;
+      }
       Boolean found = FALSE;
-      while (start > 0 && rhs[start].type != ADD && rhs[start].type != SUB) {
+      while (start >= 0 && rhs[start].type != ADD && rhs[start].type != SUB) {
         if (rhs[start].type == LETTER &&
             rhs[start].value.letter.letter == target.letter &&
             rhs[start].value.letter.subscript == target.subscript) {
@@ -298,7 +307,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
       }
     }
   }
-  
+
   // Expand both sides
   lhs[lhs_len].type = END_LEX;
   lhs_len++;
@@ -333,15 +342,84 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     }
   }
 
-  int out_len = 0;
-  for (int i = 0; i < lhs_len; i++) {
-    buffer[out_len] = lhs[i];
-    out_len++;
+  // Flatten -1 * num
+  int i = 2;
+  while (i < lhs_len) {
+    if (lhs[i].type == NUMBER && lhs[i - 1].type == MULT &&
+        lhs[i - 2].type == NUMBER) {
+      lhs[i].value.number *= lhs[i - 2].value.number;
+      remove_eo_idx(lhs, lhs_len, i - 2);
+      lhs_len--;
+      remove_eo_idx(lhs, lhs_len, i - 2);
+      lhs_len--;
+    }
+    i++;
   }
-  buffer[out_len].type = EQUAL;
-  out_len++;
-  for (int i = 0; i < rhs_len; i++) {
-    buffer[out_len] = rhs[i];
+  while (i < rhs_len) {
+    if (rhs[i].type == NUMBER && rhs[i - 1].type == MULT &&
+        rhs[i - 2].type == NUMBER) {
+      rhs[i].value.number *= rhs[i - 2].value.number;
+      remove_eo_idx(rhs, rhs_len, i - 2);
+      rhs_len--;
+      remove_eo_idx(rhs, rhs_len, i - 2);
+      rhs_len--;
+    }
+    i++;
+  }
+
+  // Divide by GCF
+  struct EquationObject gcf[length] = {};
+  int gcf_len = 0;
+  int len0 = 0;
+  int pos1 = 0;
+  int len1 = 0;
+  Boolean found = FALSE;
+  Boolean calculated = FALSE;
+  i = 0;
+  while (i < lhs_len) {
+    if (lhs[i].type == ADD || lhs[i].type == SUB || i >= lhs_len - 1) {
+      if (found) {
+        pos1++;
+        len1++;
+        gcf_len = term_gcf(lhs, len0, lhs + pos1, len1, gcf, length);
+        len1 = 0;
+        pos1 = i + 1;
+        calculated = TRUE;
+      } else {
+        found = TRUE;
+      }
+    } else {
+      if (found) {
+        len1++;
+      } else {
+        pos1++;
+        len0++;
+      }
+    }
+    i++;
+  }
+
+  if (!calculated && found) {
+    for (int j = 0; j < lhs_len; j++) {
+      gcf[j] = lhs[j];
+      gcf_len++;
+    }
+  }
+  
+  
+  int out_len = 0;
+  // for (int i = 0; i < lhs_len; i++) {
+  //   buffer[out_len] = lhs[i];
+  //   out_len++;
+  // }
+  // buffer[out_len].type = EQUAL;
+  // out_len++;
+  // for (int i = 0; i < rhs_len; i++) {
+  //   buffer[out_len] = rhs[i];
+  //   out_len++;
+  // }
+  for (int i = 0; i < gcf_len; i++) {
+    buffer[out_len] = gcf[i];
     out_len++;
   }
   buffer[out_len].type = END_LEX;

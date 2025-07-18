@@ -151,8 +151,9 @@ void test_expansion() {
   // char *expression = "3/2";
   // char *expression = "3+x";
   // char *expression = "x:1+3";
-  char *expression = "xyz/(3xz)";
+  // char *expression = "xyz/(3xz)";
   // char *expression = "3+8y";
+  char *expression = "10abc/(5def)";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -165,14 +166,15 @@ void test_expansion() {
 }
 
 void test_rearrange() {
-  char *expression = "d=vt-(1/2)at^2";
+  // char *expression = "d=vt-(1/2)at^2";
+  char *expression = "12axy^3+yz=4xy^2+c";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
   printf("Rearranging...\n");
   struct Letter target;
-  target.letter = 'a';
+  target.letter = 'x';
   target.subscript = ' ';
   int end_len = rearrange_for_var(lex_buffer, lex_len, target);
   for (int i = 0; i < end_len; i++) {

@@ -8,7 +8,7 @@
 
 #include "../../auto-generated/cordic_constants.h"
 
-enum FuncType { SINE, COSINE, TANGENT };
+enum FuncType { fSINE, fCOSINE, fTANGENT };
 
 static double arc_compute(double num, enum FuncType type) {
   short is_negative = 1;
@@ -18,7 +18,7 @@ static double arc_compute(double num, enum FuncType type) {
   }
 
   num = double_abs(num);
-  if (num > 1 && type != TANGENT) {
+  if (num > 1 && type != fTANGENT) {
     return NAN;
   }
 
@@ -33,27 +33,27 @@ static double arc_compute(double num, enum FuncType type) {
   // the workaround The tangent function exported by this file does sinX/cosX to
   // avoid the issues in the arc_compute function
   const float threshold = 0.99;
-  if (num > threshold && type != TANGENT) {
+  if (num > threshold && type != fTANGENT) {
     double cos_x = num;
-    if (type == SINE) {
+    if (type == fSINE) {
       cos_x = square_root(1.0 - pow_di(num, 2));
       return arc_cosine(cos_x);
     }
     return arc_compute(
-        (is_negative * (square_root(1.0 - pow_di(cos_x, 2)) / cos_x)), TANGENT);
+        (is_negative * (square_root(1.0 - pow_di(cos_x, 2)) / cos_x)), fTANGENT);
   }
 
   int i = 0;
   while (i < CORDIC_COUNT) {
     double val;
     switch (type) {
-    case SINE:
+    case fSINE:
       val = y;
       break;
-    case COSINE:
+    case fCOSINE:
       val = x;
       break;
-    case TANGENT:
+    case fTANGENT:
       val = y / x;
       break;
     }
@@ -80,7 +80,7 @@ static double arc_compute(double num, enum FuncType type) {
     i++;
   }
 
-  if (type == COSINE) {
+  if (type == fCOSINE) {
     angle_sum = -angle_sum;
     if (is_negative == -1) {
       return PI - angle_sum;
@@ -92,9 +92,9 @@ static double arc_compute(double num, enum FuncType type) {
   return angle_sum * is_negative;
 }
 
-double arc_sine(double num) { return arc_compute(num, SINE); }
+double arc_sine(double num) { return arc_compute(num, fSINE); }
 
-double arc_cosine(double num) { return arc_compute(num, COSINE); }
+double arc_cosine(double num) { return arc_compute(num, fCOSINE); }
 
 double arc_tangent(double num) {
   return arc_cosine(1 / square_root(1 + num * num));
