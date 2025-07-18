@@ -63,10 +63,10 @@ void debug_algebra() {
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   // test_solve_consts();
-  test_expansion();
+  // test_expansion();
   // test_roots();
   // test_valid();
-  // test_rearrange();
+  test_rearrange();
   // test_derivative();
 }
 
@@ -168,6 +168,7 @@ void test_expansion() {
 void test_rearrange() {
   // char *expression = "d=vt-(1/2)at^2";
   char *expression = "12axy^3+yz=4xy^2+c";
+  // char *expression = "x+4=5";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];

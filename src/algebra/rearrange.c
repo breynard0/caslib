@@ -47,27 +47,6 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
         r_objs_len++;
       }
       break;
-
-    // Blocks
-    // Functions assume that these will be taken care of
-    case BLOCK_END: {
-      int start = i;
-      while (buffer[start].type != BLOCK_START) {
-        start--;
-      }
-      temp.start_idx = start;
-      temp.end_idx = i;
-      buffer[i].type = LETTER;
-      buffer[i].value.letter = temp.letter;
-      for (int j = 0; j < i - start; j++) {
-        remove_eo_idx(buffer, new_len, start);
-        new_len--;
-      }
-      r_objs[r_objs_len] = temp;
-      r_objs_len++;
-    } break;
-
-    // Single input functions
     case SINE:
     case COSINE:
     case TANGENT:
@@ -176,6 +155,9 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
           remove_eo_idx(lhs, lhs_len, start);
           lhs_len--;
         }
+        if (lhs[lhs_len - 1].type == ADD || lhs[lhs_len - 1].type == SUB) {
+          lhs_len--;
+        }
         if (end == 0) {
           rhs[rhs_len] = lhs[0];
           rhs_len++;
@@ -219,9 +201,6 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
         }
 
         for (int j = 0; j < end - start; j++) {
-          if (rhs[start].type == ADD || rhs[start].type == SUB) {
-            j++;
-          }
           lhs[lhs_len] = rhs[start];
           lhs_len++;
           remove_eo_idx(rhs, rhs_len, start);
@@ -317,9 +296,13 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
   rhs_len = expand_polynomial(rhs, rhs_len) - 1;
 
   // Substitute in values
-  for (int i = 0; i < lhs_len; i++) {
+  int max = lhs_len;
+  if (rhs_len > lhs_len) {
+    max = rhs_len;
+  }
+  for (int i = 0; i < max; i++) {
     for (int j = 0; j < r_objs_len; j++) {
-      if (lhs[i].type == LETTER &&
+      if (i < lhs_len && lhs[i].type == LETTER &&
           lhs[i].value.letter.letter == r_objs[j].letter.letter &&
           lhs[i].value.letter.subscript == r_objs[j].letter.subscript) {
         remove_eo_idx(lhs, lhs_len, i);
@@ -329,7 +312,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
           insert_eo_idx(lhs, lhs_len, i + k, original[r_objs[j].start_idx + k]);
         }
       }
-      if (rhs[i].type == LETTER &&
+      if (i < rhs_len && rhs[i].type == LETTER &&
           rhs[i].value.letter.letter == r_objs[j].letter.letter &&
           rhs[i].value.letter.subscript == r_objs[j].letter.subscript) {
         remove_eo_idx(rhs, rhs_len, i);
@@ -405,8 +388,31 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
       gcf_len++;
     }
   }
-  
-  
+
+  i = 0;
+  while (i < gcf_len) {
+    if (gcf[i].type == LETTER && gcf[i].value.letter.letter == target.letter &&
+        gcf[i].value.letter.subscript == target.subscript) {
+      remove_eo_idx(gcf, gcf_len, i);
+      gcf_len--;
+      if (i < gcf_len - 1 && gcf[i].type == EXP) {
+        remove_eo_idx(gcf, gcf_len, i);
+        gcf_len--;
+        remove_eo_idx(gcf, gcf_len, i);
+        gcf_len--;
+      }
+      if (i >= 0 && (gcf[i - 1].type == MULT || gcf[i - 1].type == DIV)) {
+        remove_eo_idx(gcf, gcf_len, i - 1);
+        gcf_len--;
+      } else if (i < gcf_len && (gcf[i].type == MULT || gcf[i].type == DIV)) {
+        remove_eo_idx(gcf, gcf_len, i);
+        gcf_len--;
+      }
+    }
+    i++;
+  }
+
+  // Push
   int out_len = 0;
   // for (int i = 0; i < lhs_len; i++) {
   //   buffer[out_len] = lhs[i];
