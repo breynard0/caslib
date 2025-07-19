@@ -212,7 +212,7 @@ int expand_juxtopposed(struct EquationObject *input, int length,
       case ROOT:
       case EXP:
       case BLOCK_START:
-      case BLOCK_END:
+      // case BLOCK_END:
       case SINE:
       case COSINE:
       case TANGENT:

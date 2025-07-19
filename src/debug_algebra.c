@@ -155,10 +155,10 @@ void test_expansion() {
   // char *expression = "3+8y";
   // char *expression = "10abc/(5def)";
   // char *expression = "(4x^3)/(x^8)";
+  // char *expression = "(4x^3+2x^2)/(2x^2)";
   
   // Not working still
-  char *expression = "(4x^3+2x^2)/(2x^2)";
-  // char *expression = "2^(2^-1)";
+  char *expression = "2^(2^-1)";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];

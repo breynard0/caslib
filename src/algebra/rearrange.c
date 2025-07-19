@@ -388,6 +388,8 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
       gcf_len++;
     }
   }
+  
+  // TODO: Add parentheses and stuff and simplify
 
   i = 0;
   while (i < gcf_len) {

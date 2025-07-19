@@ -9,6 +9,10 @@
 #include "utils.h"
 
 int evaluate_consts(struct EquationObject* expression, int length) {
+  // struct EquationObject expression[length];
+  // for (int i = 0; i < length; i++) {
+  //   expression[i] = expressione[i];
+  // }
   int new_len = length;
   
   // Evaluate constant blocks
@@ -47,6 +51,7 @@ int evaluate_consts(struct EquationObject* expression, int length) {
           remove_eo_idx(expression, new_len, start + 1);
           new_len--;
         }
+        i = start;
       }
     }
 

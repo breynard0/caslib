@@ -424,7 +424,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   new_len++;
 
   // Collect terms
-  new_len = collect_reorder_polynomial(expression, new_len);
+  // new_len = collect_reorder_polynomial(expression, new_len);
 
   for (int m = 0; m < new_len; m++) {
     buffer[m] = expression[m];
