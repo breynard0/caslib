@@ -44,3 +44,5 @@ struct EquationObject {
 void remove_eo_idx(struct EquationObject *list, int length, int idx);
 // Make sure list has enough space, pre-increment
 void insert_eo_idx(struct EquationObject *list, int length, int idx, struct EquationObject object);
+// Quotient is returned in term 0
+int div_terms(struct EquationObject* term0, int t0_len, struct EquationObject* term1, int t1_len);

@@ -3,6 +3,8 @@
 #include "cull.h"
 #include "debug.h"
 #include "equation_objects.h"
+#include "evaluate.h"
+#include "flags.h"
 #include "log.h"
 #include "parse.h"
 #include "pow.h"
@@ -34,7 +36,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     new_len++;
   }
   new_len++;
-  
+
   // Get number of juxtaposed elements to know how long to make buffer
   int extra_count = 0;
   for (int i = 1; i < length; i++) {
@@ -45,7 +47,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       extra_count++;
     }
     if (is_negative(buffer[i], buffer[i - 1])) {
-      extra_count++;
+      extra_count += 3;
     }
     if ((buffer[i].type == NUMBER || buffer[i].type == LETTER ||
          buffer[i].type == BLOCK_START) &&
@@ -72,143 +74,21 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   }
 
   int orig_expr_len = 2 * (new_len + 2 * extra_count) + 1;
-  
+
   struct EquationObject expression[orig_expr_len] = {};
-  
-  new_len = expand_juxtopposed(buffer, new_len, expression,
-                                   orig_expr_len, 0, 0);
+
+  new_len =
+      expand_juxtopposed(buffer, new_len, expression, orig_expr_len, 0, 0);
 
   new_len = 0;
   while (expression[new_len].type != END_LEX) {
     new_len++;
   }
   new_len++;
-  
+
   new_len = cull_the_useless(expression, new_len);
 
-  // Evaluate constant blocks
-  int i = 0;
-  while (i < new_len) {
-    struct EquationObject cur = expression[i];
-
-    if (cur.type == BLOCK_END) {
-      int start = i - 1;
-      int count = 1;
-      Boolean vars = FALSE;
-
-      while (count != 0) {
-        if (expression[start].type == BLOCK_START) {
-          count--;
-        } else if (expression[start].type == BLOCK_END) {
-          count++;
-        } else if (expression[start].type == LETTER) {
-          vars = TRUE;
-        }
-        if (count != 0) {
-          start--;
-        }
-      }
-
-      if (!vars) {
-        struct EquationObject tmp_buf[i - start - 1];
-        for (int j = 1; j < i - start; j++) {
-          tmp_buf[j - 1] = expression[start + j];
-        }
-
-        expression[start].type = NUMBER;
-        expression[start].value.number =
-            solve_const_expr(tmp_buf, i - start - 1, 0, 0);
-        for (int j = 0; j < i - start; j++) {
-          remove_eo_idx(expression, new_len, start + 1);
-          new_len--;
-        }
-      }
-    }
-
-    i++;
-  }
-
-  // Evaluate functions
-  i = 0;
-  while (i < new_len) {
-    struct EquationObject cur = expression[i];
-
-    switch (cur.type) {
-    case PI_VAL:
-      expression[i].type = NUMBER;
-      expression[i].value.number = PI;
-      break;
-    case ROOT:
-      expression[i].type = NUMBER;
-      expression[i].value.number = nth_root(expression[i - 1].value.number,
-                                            expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      remove_eo_idx(expression, new_len, i - 1);
-      new_len--;
-      break;
-    case EXP:
-      if (expression[i - 1].type == NUMBER) {
-        expression[i].type = NUMBER;
-        expression[i].value.number = pow_dd(expression[i - 1].value.number,
-                                            expression[i + 1].value.number);
-        remove_eo_idx(expression, new_len, i + 1);
-        new_len--;
-        remove_eo_idx(expression, new_len, i - 1);
-        new_len--;
-      }
-      break;
-    case SINE:
-      expression[i].type = NUMBER;
-      expression[i].value.number = sine(expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      break;
-    case COSINE:
-      expression[i].type = NUMBER;
-      expression[i].value.number = cosine(expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      break;
-    case TANGENT:
-      expression[i].type = NUMBER;
-      expression[i].value.number = tangent(expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      break;
-    case ARCSINE:
-      expression[i].type = NUMBER;
-      expression[i].value.number = arc_sine(expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      break;
-    case ARCCOSINE:
-      expression[i].type = NUMBER;
-      expression[i].value.number = arc_cosine(expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      break;
-    case ARCTANGENT:
-      expression[i].type = NUMBER;
-      expression[i].value.number = arc_tangent(expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      break;
-    case LOG:
-      expression[i].type = NUMBER;
-      expression[i].value.number =
-          log_n(expression[i - 1].value.number, expression[i + 1].value.number);
-      remove_eo_idx(expression, new_len, i + 1);
-      new_len--;
-      remove_eo_idx(expression, new_len, i - 1);
-      new_len--;
-      break;
-    default:
-      break;
-    }
-
-    i++;
-  }
+  new_len = evaluate_consts(expression, new_len);
 
   new_len = cull_the_useless(expression, new_len);
 
@@ -216,7 +96,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
   mult_obj.type = MULT;
 
   // Expand term powers
-  i = 1;
+  int i = 1;
   while (i < new_len) {
     if (expression[i].type == EXP && expression[i - 1].type == BLOCK_END) {
       double exp = expression[i + 1].value.number;
@@ -253,6 +133,87 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       i = 0;
     }
     i++;
+  }
+
+  // Rewrite division as multiplication of negative exponents
+  struct EquationObject exp_obj;
+  exp_obj.type = EXP;
+  struct EquationObject minus_1_obj;
+  minus_1_obj.type = NUMBER;
+  minus_1_obj.value.number = -1;
+  i = 0;
+  Boolean found = FALSE;
+  while (i < new_len) {
+    if (expression[i].type == DIV) {
+      found = TRUE;
+      expression[i].type = MULT;
+      if (expression[i + 1].type == NUMBER ||
+          expression[i + 1].type == LETTER) {
+        new_len++;
+        insert_eo_idx(expression, new_len, i + 2, minus_1_obj);
+        new_len++;
+        insert_eo_idx(expression, new_len, i + 2, exp_obj);
+      }
+      if (expression[i + 1].type == BLOCK_START) {
+        while (expression[i].type != BLOCK_END) {
+          i++;
+        }
+        i--;
+        int start = i;
+        while (expression[start].type != BLOCK_START) {
+          start--;
+        }
+        start++;
+        struct EquationObject tmp_buf[3 * (i - start + 1)];
+        int tmp_len = 0;
+        for (int k = 0; k < i - start + 1; k++) {
+          tmp_buf[tmp_len] = expression[start + k];
+          tmp_len++;
+        }
+        tmp_buf[tmp_len].type = END_LEX;
+        tmp_len++;
+
+        int inside_len = expand_polynomial(tmp_buf, tmp_len);
+
+        int j = 0;
+        while (j < tmp_len) {
+          if (tmp_buf[j].type == MULT || tmp_buf[j].type == END_LEX ||
+              j >= tmp_len - 1) {
+            if (j >= 2 && tmp_buf[j - 1].type == NUMBER &&
+                tmp_buf[j - 2].type == EXP) {
+              tmp_buf[j - 1].value.number *= -1;
+            } else {
+              tmp_len++;
+              insert_eo_idx(tmp_buf, tmp_len, j, minus_1_obj);
+              tmp_len++;
+              insert_eo_idx(tmp_buf, tmp_len, j, exp_obj);
+              j += 2;
+            }
+          }
+          // Code doesn't know how to divide by polynomials yet
+          // Rearrangment doesn't need it and root-finding can ignore it
+          if (tmp_buf[j].type == ADD || tmp_buf[j].type == SUB) {
+            f_unsupported = TRUE;
+            return 0;
+          }
+          j++;
+        }
+        for (int k = start; k <= i; k++) {
+          remove_eo_idx(expression, new_len, start);
+          new_len--;
+        }
+        for (int k = 0; k < tmp_len - 1; k++) {
+          new_len++;
+          insert_eo_idx(expression, new_len, start + k, tmp_buf[k]);
+        }
+      }
+    }
+
+    i++;
+  }
+
+  if (found) {
+    new_len = evaluate_consts(expression, new_len);
   }
 
   // Rearrange to make solvable
@@ -305,6 +266,10 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
 
       if (expression[dest_start].type == LETTER ||
           expression[dest_start].type == NUMBER) {
+        while (expression[dest_start].type != ADD &&
+               expression[dest_start].type != SUB && dest_start < new_len - 2) {
+          dest_start++;
+        }
         for (int j = 0; j < factor_count; j++) {
           new_len++;
           insert_eo_idx(expression, new_len, dest_start + j + 1, factor[j]);
@@ -358,12 +323,12 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
           remove_eo_idx(expression, new_len, start);
           new_len--;
         }
-        
+
         new_len++;
         struct EquationObject block_start;
         block_start.type = BLOCK_START;
         insert_eo_idx(expression, new_len, start, block_start);
-        
+
         new_len += out_count;
         for (int k = 0; k < out_count; k++) {
           insert_eo_idx(expression, new_len, start + 1 + k, buffer[k]);
@@ -388,7 +353,8 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       }
 
       if (start != 0) {
-        if (expression[start - 1].type == MULT || expression[start - 1].type == DIV) {
+        if (expression[start - 1].type == MULT ||
+            expression[start - 1].type == DIV) {
           enum EOType op = expression[start - 1].type;
           int prestart = start - 2;
           while (expression[prestart].type != ADD &&
@@ -429,7 +395,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
                 insert_eo_idx(expression, new_len, j + k, factor[k]);
               }
             }
-            
+
             if (expression[j].type == MULT && op == DIV) {
               expression[j].type = DIV;
             }
@@ -456,7 +422,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
     new_len++;
   }
   new_len++;
-  
+
   // Collect terms
   new_len = collect_reorder_polynomial(expression, new_len);
 

@@ -1,6 +1,5 @@
 #include "atrig.h"
 #include "dutils.h"
-#include "enums.h"
 #include "pow.h"
 #include "root.h"
 #include "trig.h"

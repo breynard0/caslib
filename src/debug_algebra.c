@@ -63,10 +63,10 @@ void debug_algebra() {
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   // test_solve_consts();
-  // test_expansion();
+  test_expansion();
   // test_roots();
   // test_valid();
-  test_rearrange();
+  // test_rearrange();
   // test_derivative();
 }
 
@@ -153,7 +153,12 @@ void test_expansion() {
   // char *expression = "x:1+3";
   // char *expression = "xyz/(3xz)";
   // char *expression = "3+8y";
-  char *expression = "10abc/(5def)";
+  // char *expression = "10abc/(5def)";
+  // char *expression = "(4x^3)/(x^8)";
+  
+  // Not working still
+  char *expression = "(4x^3+2x^2)/(2x^2)";
+  // char *expression = "2^(2^-1)";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -184,6 +189,9 @@ void test_rearrange() {
 }
 
 void test_roots() {
+  // TODO: amend algorithm if division by polynomial
+  // Frankly, can probably just ignore the denominator. Multiply both sides by the polynomial, but other side is zero
+  
   // char *expression = "3/2+(3x/3)/(9x-1)-2";
   char *expression = "(x+2)(x-3)(x^3+18)";
   
