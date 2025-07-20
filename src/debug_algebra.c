@@ -63,10 +63,10 @@ void debug_algebra() {
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   // test_solve_consts();
-  test_expansion();
+  // test_expansion();
   // test_roots();
   // test_valid();
-  // test_rearrange();
+  test_rearrange();
   // test_derivative();
 }
 
@@ -184,7 +184,7 @@ void test_rearrange() {
   target.subscript = ' ';
   int end_len = rearrange_for_var(lex_buffer, lex_len, target);
   for (int i = 0; i < end_len; i++) {
-    print_eo(lex_buffer[i]);
+    print_eo_flat(lex_buffer[i]);
   }
 }
 

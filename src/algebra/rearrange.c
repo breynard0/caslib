@@ -89,8 +89,8 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     eq_pos++;
   }
 
-  struct EquationObject lhs[2 * length] = {};
-  struct EquationObject rhs[2 * length] = {};
+  struct EquationObject lhs[3 * length] = {};
+  struct EquationObject rhs[3 * length] = {};
   int lhs_len = 0;
   int rhs_len = 0;
 
@@ -364,7 +364,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
       if (found) {
         pos1++;
         len1++;
-        gcf_len = term_gcf(lhs, len0, lhs + pos1, len1, gcf, length);
+        gcf_len = term_gcf(lhs, len0, lhs + pos1, len1, gcf, length, target);
         len1 = 0;
         pos1 = i + 1;
         calculated = TRUE;
@@ -388,8 +388,51 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
       gcf_len++;
     }
   }
-  
-  // TODO: Add parentheses and stuff and simplify
+
+  // Remove letter from GCF
+
+  struct EquationObject bs_obj;
+  bs_obj.type = BLOCK_START;
+
+  lhs_len++;
+  insert_eo_idx(lhs, lhs_len, 0, bs_obj);
+  lhs[lhs_len].type = BLOCK_END;
+  lhs_len++;
+  lhs[lhs_len].type = DIV;
+  lhs_len++;
+  lhs[lhs_len].type = BLOCK_START;
+  lhs_len++;
+
+  rhs_len++;
+  insert_eo_idx(rhs, rhs_len, 0, bs_obj);
+  rhs[rhs_len].type = BLOCK_END;
+  rhs_len++;
+  rhs[rhs_len].type = DIV;
+  rhs_len++;
+  rhs[rhs_len].type = BLOCK_START;
+  rhs_len++;
+
+  i = 0;
+  while (i < gcf_len) {
+    lhs[lhs_len] = gcf[i];
+    lhs_len++;
+    rhs[rhs_len] = gcf[i];
+    rhs_len++;
+
+    i++;
+  }
+
+  lhs[lhs_len].type = BLOCK_END;
+  lhs_len++;
+  lhs[lhs_len].type = END_LEX;
+  lhs_len++;
+  lhs_len = expand_polynomial(lhs, lhs_len) - 1;
+
+  rhs[rhs_len].type = BLOCK_END;
+  rhs_len++;
+  rhs[rhs_len].type = END_LEX;
+  rhs_len++;
+  rhs_len = expand_polynomial(rhs, rhs_len) - 1;
 
   i = 0;
   while (i < gcf_len) {
@@ -414,22 +457,102 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     i++;
   }
 
+  // Take out term if all instances of target have the same degree
+  // If they have different degrees, then too bad for you
+  found = FALSE;
+  Boolean correct = TRUE;
+  i = 0;
+  double degree = 0;
+  while (i < lhs_len) {
+    if (lhs[i].type == LETTER && lhs[i].value.letter.letter == target.letter &&
+        lhs[i].value.letter.subscript == target.subscript) {
+      double my_deg = 1;
+      if (i < lhs_len - 1 && lhs[i + 1].type == EXP) {
+        my_deg = lhs[i + 2].value.number;
+      }
+      if (found) {
+        if (degree != my_deg) {
+          correct = FALSE;
+        }
+      } else {
+        found = TRUE;
+      }
+      degree = my_deg;
+    }
+    i++;
+  }
+  if (correct) {
+    // Update rhs
+    rhs_len++;
+    insert_eo_idx(rhs, rhs_len, 0, bs_obj);
+    rhs[rhs_len].type = BLOCK_END;
+    rhs_len++;
+    rhs[rhs_len].type = DIV;
+    rhs_len++;
+    rhs[rhs_len].type = BLOCK_START;
+    rhs_len++;
+    rhs[rhs_len].type = BLOCK_START;
+    rhs_len++;
+    
+    i = 0;
+    while (i < lhs_len) {
+      rhs[rhs_len] = lhs[i];
+      rhs_len++;
+      i++;
+    }
+
+    rhs[rhs_len].type = BLOCK_END;
+    rhs_len++;
+    rhs[rhs_len].type = DIV;
+    rhs_len++;
+    rhs[rhs_len].type = LETTER;
+    rhs[rhs_len].value.letter = target;
+    rhs_len++;
+    if (degree != 1) {
+      rhs[rhs_len].type = EXP;
+      rhs_len++;
+      rhs[rhs_len].type = NUMBER;
+      rhs[rhs_len].value.number = degree;
+      rhs_len++;
+    }
+    rhs[rhs_len].type = BLOCK_END;
+    rhs_len++;
+    rhs[rhs_len].type = END_LEX;
+    rhs_len++;
+    // rhs_len = expand_polynomial(rhs, rhs_len) - 1;
+
+    // Set lhs
+    lhs_len = 0;
+
+    lhs[lhs_len].type = LETTER;
+    lhs[lhs_len].value.letter = target;
+    lhs_len++;
+
+    if (degree != 1) {
+      lhs[lhs_len].type = EXP;
+      lhs_len++;
+      lhs[lhs_len].type = NUMBER;
+      lhs[lhs_len].value.number = degree;
+      lhs_len++;
+    }
+  }
+
   // Push
   int out_len = 0;
-  // for (int i = 0; i < lhs_len; i++) {
-  //   buffer[out_len] = lhs[i];
-  //   out_len++;
-  // }
-  // buffer[out_len].type = EQUAL;
-  // out_len++;
-  // for (int i = 0; i < rhs_len; i++) {
-  //   buffer[out_len] = rhs[i];
-  //   out_len++;
-  // }
-  for (int i = 0; i < gcf_len; i++) {
-    buffer[out_len] = gcf[i];
+  for (int i = 0; i < lhs_len; i++) {
+    buffer[out_len] = lhs[i];
     out_len++;
   }
+  buffer[out_len].type = EQUAL;
+  out_len++;
+  for (int i = 0; i < rhs_len; i++) {
+    buffer[out_len] = rhs[i];
+    out_len++;
+  }
+  // for (int i = 0; i < gcf_len; i++) {
+  //   buffer[out_len] = gcf[i];
+  //   out_len++;
+  // }
   buffer[out_len].type = END_LEX;
   out_len++;
 

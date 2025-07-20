@@ -25,7 +25,8 @@ void reduce_fraction(struct ImproperFraction *fraction) {
 
 int term_gcf(struct EquationObject *term0, int t0_len,
              struct EquationObject *term1, int t1_len,
-             struct EquationObject *buffer, int max_len) {
+             struct EquationObject *buffer, int max_len,
+             struct Letter exclude) {
   // Push number
   int new_len = 0;
   double t0_coeff = 1.0;
@@ -53,7 +54,9 @@ int term_gcf(struct EquationObject *term0, int t0_len,
   // Push variables
   int i = 0;
   while (i < t0_len) {
-    if (term0[i].type == LETTER) {
+    if (term0[i].type == LETTER &&
+        !(term0[i].value.letter.letter == exclude.letter &&
+          term0[i].value.letter.subscript == exclude.subscript)) {
       char ex = term0[i].value.letter.letter;
       double self_power = 1.0;
       if (i < t0_len && term0[i + 1].type == EXP) {
@@ -83,7 +86,7 @@ int term_gcf(struct EquationObject *term0, int t0_len,
           buffer[new_len].type = LETTER;
           buffer[new_len].value.letter = term0[i].value.letter;
           new_len++;
-          
+
           if (min != 1.0 && new_len < max_len - 1) {
             buffer[new_len].type = EXP;
             new_len++;
@@ -91,7 +94,7 @@ int term_gcf(struct EquationObject *term0, int t0_len,
             buffer[new_len].value.number = min;
             new_len++;
           }
-          
+
           buffer[new_len].type = MULT;
           new_len++;
         }
