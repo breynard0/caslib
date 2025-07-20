@@ -483,6 +483,26 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
   }
   if (correct) {
     // Update rhs
+    lhs_len++;
+    insert_eo_idx(lhs, lhs_len, 0, bs_obj);
+    lhs[lhs_len].type = BLOCK_END;
+    lhs_len++;
+    lhs[lhs_len].type = DIV;
+    lhs_len++;
+    lhs[lhs_len].type = LETTER;
+    lhs[lhs_len].value.letter = target;
+    lhs_len++;
+    if (degree != 1) {
+      lhs[lhs_len].type = EXP;
+      lhs_len++;
+      lhs[lhs_len].type = NUMBER;
+      lhs[lhs_len].value.number = degree;
+      lhs_len++;
+    }
+    lhs[lhs_len].type = END_LEX;
+    lhs_len++;
+    lhs_len = expand_polynomial(lhs, lhs_len) - 1;
+
     rhs_len++;
     insert_eo_idx(rhs, rhs_len, 0, bs_obj);
     rhs[rhs_len].type = BLOCK_END;
@@ -491,35 +511,24 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     rhs_len++;
     rhs[rhs_len].type = BLOCK_START;
     rhs_len++;
-    rhs[rhs_len].type = BLOCK_START;
-    rhs_len++;
-    
     i = 0;
+    Boolean found_add_sub = FALSE;
     while (i < lhs_len) {
       rhs[rhs_len] = lhs[i];
       rhs_len++;
+      if (lhs[i].type == ADD || lhs[i].type == SUB) {
+        found_add_sub = TRUE;
+      }
+
       i++;
     }
-
     rhs[rhs_len].type = BLOCK_END;
     rhs_len++;
-    rhs[rhs_len].type = DIV;
-    rhs_len++;
-    rhs[rhs_len].type = LETTER;
-    rhs[rhs_len].value.letter = target;
-    rhs_len++;
-    if (degree != 1) {
-      rhs[rhs_len].type = EXP;
+    if (!found_add_sub) {
+      rhs[rhs_len].type = END_LEX;
       rhs_len++;
-      rhs[rhs_len].type = NUMBER;
-      rhs[rhs_len].value.number = degree;
-      rhs_len++;
+      rhs_len = expand_polynomial(rhs, rhs_len) - 1;
     }
-    rhs[rhs_len].type = BLOCK_END;
-    rhs_len++;
-    rhs[rhs_len].type = END_LEX;
-    rhs_len++;
-    // rhs_len = expand_polynomial(rhs, rhs_len) - 1;
 
     // Set lhs
     lhs_len = 0;
