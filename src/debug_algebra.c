@@ -66,8 +66,10 @@ void debug_algebra() {
   // test_expansion();
   // test_roots();
   // test_valid();
+  printf("Test rearrange...\n");
   test_rearrange();
-  // test_derivative();
+  printf("Test power rule...\n");
+  test_derivative();
 }
 
 void test_lex() {
@@ -226,15 +228,17 @@ void test_valid() {
 }
 
 void test_derivative() {
-  char *expression = "3x^2-4x+9";
+  // char *expression = "3x^2-4x+9";
+  // char *expression = "78x^4-2x^3+6x^2+8x-4";
+  char *expression = "x^4-x^3+x^2+x-4";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
-  printf("Expanding...\n");
+  printf("Calculating derivative...\n");
   int new_len = expand_polynomial(lex_buffer, 1024);
-  new_len = power_rule_derivative(lex_buffer, new_len);
+  new_len = power_rule_derivative_univariate(lex_buffer, new_len);
   for (int i = 0; i < new_len; i++) {
-    print_eo(lex_buffer[i]);
+    print_eo_flat(lex_buffer[i]);
   }
 }
