@@ -17,7 +17,12 @@ Boolean valid_expr(struct EquationObject *input, int length) {
     case EQUAL:
       if (i == length - 1 || (i == 0 && eo.type != SUB)) {
         valid = FALSE;
-      } 
+      }
+      if (i >= 1 && (input[i - 1].type == ADD || input[i - 1].type == SUB ||
+                     input[i - 1].type == MULT || input[i - 1].type == DIV ||
+                     input[i - 1].type == EQUAL) && eo.type != SUB) {
+        valid = FALSE;
+      }
       break;
     case BLOCK_START:
       block_count++;
@@ -31,14 +36,14 @@ Boolean valid_expr(struct EquationObject *input, int length) {
     case ARCSINE:
     case ARCCOSINE:
     case ARCTANGENT:
-    break;
+      break;
     case ROOT:
     case EXP:
     case LOG:
-    if (i == 0 || i == length - 2) {
-      valid = FALSE;
-    }
-    break;
+      if (i == 0 || i == length - 2) {
+        valid = FALSE;
+      }
+      break;
     case END_LEX:
     case NUMBER:
     case LETTER:
@@ -57,12 +62,14 @@ Boolean valid_expr(struct EquationObject *input, int length) {
   return valid;
 }
 
-Boolean is_univariate(struct EquationObject* input, int length) {
+Boolean is_univariate(struct EquationObject *input, int length) {
   struct Letter letter = {};
   Boolean letter_found = FALSE;
   for (int i = 0; i < length; i++) {
     if (input[i].type == LETTER) {
-      if (letter_found && (input[i].value.letter.letter != letter.letter || input[i].value.letter.subscript != letter.subscript)) {
+      if (letter_found &&
+          (input[i].value.letter.letter != letter.letter ||
+           input[i].value.letter.subscript != letter.subscript)) {
         return FALSE;
       }
       letter_found = TRUE;
