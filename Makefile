@@ -38,6 +38,7 @@ algebra:
 	@$(call gcc_call,src/algebra/cauchy.c,work/cauchy.o)
 	@$(call gcc_call,src/algebra/rearrange.c,work/rearrange.o)
 	@$(call gcc_call,src/algebra/evaluate.c,work/evaluate.o)
+	@$(call gcc_call,src/algebra/bundan.c,work/bundan.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)

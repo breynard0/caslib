@@ -19,6 +19,7 @@
 #include "cauchy.h"
 #include "rearrange.h"
 #include "derivative.h"
+#include "bundan.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -64,8 +65,8 @@ void debug_algebra() {
   // test_lex();
   // test_solve_consts();
   // test_expansion();
-  // test_roots();
-  test_valid();
+  test_roots();
+  // test_valid();
   // printf("Test rearrange...\n");
   // test_rearrange();
   // printf("Test power rule...\n");
@@ -195,7 +196,8 @@ void test_roots() {
   // Frankly, can probably just ignore the denominator. Multiply both sides by the polynomial, but other side is zero
   
   // char *expression = "3/2+(3x/3)/(9x-1)-2";
-  char *expression = "(x+2)(x-3)(x^3+18)";
+  // char *expression = "(x+2)(x-3)(x^3+18)";
+  char *expression = "x^3-x^2+8x+4";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -209,6 +211,9 @@ void test_roots() {
   printf("Calculating bound...\n");
   double bound_abs = get_bound_abs(lex_buffer, new_len);
   printf("Bound calculated: %f < x < %f\n", -bound_abs, bound_abs);
+  printf("Getting number of roots...\n");
+  int sign_changes = get_sign_changes(lex_buffer, new_len);
+  printf("Sign changes: %i\n", sign_changes);
   printf("Solving...\n");
 }
 
