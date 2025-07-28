@@ -1,5 +1,8 @@
 #include "atrig.h"
+#include "bundan.h"
+#include "cauchy.h"
 #include "debug.h"
+#include "derivative.h"
 #include "dutils.h"
 #include "enums.h"
 #include "equation_objects.h"
@@ -7,20 +10,17 @@
 #include "flags.h"
 #include "fraction.h"
 #include "gcf.h"
+#include "isolation.h"
 #include "lex.h"
 #include "log.h"
 #include "parse.h"
 #include "pow.h"
+#include "rearrange.h"
 #include "root.h"
 #include "solve_consts.h"
 #include "trig.h"
 #include "utils.h"
 #include "valid.h"
-#include "cauchy.h"
-#include "rearrange.h"
-#include "derivative.h"
-#include "bundan.h"
-#include "isolation.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -160,9 +160,10 @@ void test_expansion() {
   // char *expression = "10abc/(5def)";
   // char *expression = "(4x^3)/(x^8)";
   // char *expression = "(4x^3+2x^2)/(2x^2)";
-  
+  char *expression = "-(4x^3+2x^2-32x+9)";
+
   // Not working still
-  char *expression = "2^(2^-1)";
+  // char *expression = "2^(2^-1)";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -178,7 +179,7 @@ void test_rearrange() {
   // char *expression = "d=vt-(1/2)at^2";
   char *expression = "12axy^3+yz=4xy^2+c";
   // char *expression = "x+4=5";
-  
+
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
@@ -194,13 +195,15 @@ void test_rearrange() {
 
 void test_roots() {
   // TODO: amend algorithm if division by polynomial
-  // Frankly, can probably just ignore the denominator. Multiply both sides by the polynomial, but other side is zero
-  
+  // Frankly, can probably just ignore the denominator. Multiply both sides by
+  // the polynomial, but other side is zero
+
   // char *expression = "3/2+(3x/3)/(9x-1)-2";
-  // char *expression = "(x+2)(x-3)(x^3+18)";
+  // char *expression = "(x+2)(x-3)(x^3-18)";
+  // char *expression = "x^5-x^4-6x^3-18x^2+18x+108";
   // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
-  char *expression = "(x-0.0000001)(x-0.00000002)";
-  
+  char *expression = "(x-2)(x+3)";
+
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
@@ -222,9 +225,12 @@ void test_roots() {
   int roots = bundan_max_roots(lex_buffer, new_len, 0.0, bound_abs);
   printf("Max roots: %i\n", roots);
   printf("Solving...\n");
-  double delimiters[roots] = {};
-  int out_delim_len = get_isolation_delimiter_positions(lex_buffer, new_len, delimiters);
-  printf("Root: %0.12f\n", delimiters[0]);
+  double delimiters[new_len] = {};
+  int out_delim_len =
+      get_isolation_delimiter_positions(lex_buffer, new_len, delimiters);
+  for (int i = 0; i < out_delim_len; i++) {
+    printf("Root: %0.8f\n", delimiters[i]);
+  }
 }
 
 void test_valid() {
