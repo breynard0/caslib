@@ -197,7 +197,8 @@ void test_roots() {
   
   // char *expression = "3/2+(3x/3)/(9x-1)-2";
   // char *expression = "(x+2)(x-3)(x^3+18)";
-  char *expression = "x^3-x^2+8x+4";
+  char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
+  // char *expression = "(x-3)(x-4)";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -214,6 +215,12 @@ void test_roots() {
   printf("Getting number of roots...\n");
   int sign_changes = get_sign_changes(lex_buffer, new_len);
   printf("Sign changes: %i\n", sign_changes);
+  double l = 1.9;
+  double r = 2.0;
+  printf("Getting roots between %f and %f\n", l, r);
+  int roots = bundan_max_roots(lex_buffer, new_len, l, r);
+  printf("Max roots: %i\n", roots);
+  
   printf("Solving...\n");
 }
 
