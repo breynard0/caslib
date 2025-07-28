@@ -20,6 +20,7 @@
 #include "rearrange.h"
 #include "derivative.h"
 #include "bundan.h"
+#include "isolation.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -197,8 +198,8 @@ void test_roots() {
   
   // char *expression = "3/2+(3x/3)/(9x-1)-2";
   // char *expression = "(x+2)(x-3)(x^3+18)";
-  char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
-  // char *expression = "(x-3)(x-4)";
+  // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
+  char *expression = "(x-0.0000001)(x-0.00000002)";
   
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -212,16 +213,18 @@ void test_roots() {
   printf("Calculating bound...\n");
   double bound_abs = get_bound_abs(lex_buffer, new_len);
   printf("Bound calculated: %f < x < %f\n", -bound_abs, bound_abs);
-  printf("Getting number of roots...\n");
-  int sign_changes = get_sign_changes(lex_buffer, new_len);
-  printf("Sign changes: %i\n", sign_changes);
-  double l = 1.9;
-  double r = 2.0;
-  printf("Getting roots between %f and %f\n", l, r);
-  int roots = bundan_max_roots(lex_buffer, new_len, l, r);
+  // printf("Getting number of roots...\n");
+  // int sign_changes = get_sign_changes(lex_buffer, new_len);
+  // printf("Sign changes: %i\n", sign_changes);
+  // double l = 1.9;
+  // double r = 2.0;
+  // printf("Getting roots between %f and %f\n", l, r);
+  int roots = bundan_max_roots(lex_buffer, new_len, 0.0, bound_abs);
   printf("Max roots: %i\n", roots);
-  
   printf("Solving...\n");
+  double delimiters[roots] = {};
+  int out_delim_len = get_isolation_delimiter_positions(lex_buffer, new_len, delimiters);
+  printf("Root: %0.12f\n", delimiters[0]);
 }
 
 void test_valid() {
