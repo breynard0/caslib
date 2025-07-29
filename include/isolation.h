@@ -1,7 +1,7 @@
 #include "equation_objects.h"
 
-#ifndef ISOLATION_STRUCTS
-#define ISOLATION_STRUCTS
+#ifndef ISOLATION_STUFF
+#define ISOLATION_STUFF
 struct RootRange {
   double min;
   double max;

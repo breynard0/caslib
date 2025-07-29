@@ -1,4 +1,5 @@
 #include "atrig.h"
+#include "bisection.h"
 #include "bundan.h"
 #include "cauchy.h"
 #include "debug.h"
@@ -204,9 +205,11 @@ void test_roots() {
   // char *expression = "(x+2)(x-3)(x^3-8)";
   // char *expression = "x^5-x^4-6x^3-18x^2+18x+108";
   // char *expression = "(x-2)(x-3)(x-5)(x-7)(x-8)(x-36)";
-  char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
+  // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
   // char *expression = "(x-2)(x+3)(x-3)";
   // char *expression = "(x-2)(x-2.05)";
+  // char *expression = "(x-2)(x-3)";
+  char *expression = "x^2-5x+6";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -234,11 +237,11 @@ void test_roots() {
   struct RootRange delimiters[new_len] = {};
   int out_delim_len =
       get_isolation_delimiter_positions(lex_buffer, new_len, delimiters);
-  // double out[out_delim_len] = {};
-  // int final_len =
-  //     return_check_roots(lex_buffer, new_len, delimiters, out_delim_len, out);
   for (int i = 0; i < out_delim_len; i++) {
-    printf("Root interval: %0.8f-%0.8f\n", delimiters[i].min, delimiters[i].max);
+    printf("Root interval: %0.8f-%0.8f\n", delimiters[i].min,
+           delimiters[i].max);
+    double solution = get_root_bisection(delimiters[i], lex_buffer, new_len);
+    printf("Solution: %0.8f\n", solution);
   }
 }
 

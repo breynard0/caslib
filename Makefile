@@ -40,6 +40,7 @@ algebra:
 	@$(call gcc_call,src/algebra/evaluate.c,work/evaluate.o)
 	@$(call gcc_call,src/algebra/bundan.c,work/bundan.o)
 	@$(call gcc_call,src/algebra/isolation.c,work/isolation.o)
+	@$(call gcc_call,src/algebra/bisection.c,work/bisection.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)

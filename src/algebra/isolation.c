@@ -9,8 +9,11 @@
 #include "solve_consts.h"
 #include "utils.h"
 
+// I want 8 sig fig answers, so this'll be 9
+#define THRESHOLD 0.0000000001
+
 // Loosely based on Mignotte's separation bound
-double get_threshold(struct EquationObject *expression, int length) {
+double get_small_enough(struct EquationObject *expression, int length) {
   double avg_sum = 0;
   int avg_count = 0;
   int avg_amount = 0;
@@ -57,8 +60,6 @@ double get_threshold(struct EquationObject *expression, int length) {
   for (int i = 0; i < avg_amount; i++) {
     determinate_estimate *= avg_sum / avg_count;
   }
-  
-  return 0.00000000001;
 
   return determinate_estimate /
          (pow_ll(terms, terms / 2 + 1) *
@@ -68,8 +69,6 @@ double get_threshold(struct EquationObject *expression, int length) {
 
 struct RootRange next_delimiter(struct EquationObject *expression, int length,
                                 double offset, double bound) {
-  double threshold = get_threshold(expression, length);
-
   struct RootRange out;
   int starting_roots = bundan_max_roots(expression, length, offset, bound);
   if (starting_roots == 0) {
@@ -81,7 +80,7 @@ struct RootRange next_delimiter(struct EquationObject *expression, int length,
   double delim_guess = (bound - offset) / 2.0;
   double uncertainty = (bound - offset) / 2.0;
 
-  while (uncertainty > threshold) {
+  while (uncertainty > THRESHOLD) {
     int lower_roots =
         bundan_max_roots(expression, length, delim_guess - uncertainty + offset,
                          delim_guess + offset);
@@ -109,7 +108,6 @@ struct RootRange next_delimiter(struct EquationObject *expression, int length,
 int get_isolation_delimiter_positions(struct EquationObject *expression,
                                       int length,
                                       struct RootRange *delimiters) {
-  double threshold = get_threshold(expression, length);
   int out_len = 0;
   // Positive roots
   {
@@ -121,7 +119,7 @@ int get_isolation_delimiter_positions(struct EquationObject *expression,
         break;
       }
       delimiters[out_len] = last_delim;
-      bound = last_delim.min - (threshold / 2);
+      bound = last_delim.min - (THRESHOLD / 2);
       out_len++;
     }
   }
@@ -162,7 +160,7 @@ int get_isolation_delimiter_positions(struct EquationObject *expression,
       last_delim.max = -old_min;
 
       delimiters[out_len] = last_delim;
-      bound = -last_delim.max - threshold;
+      bound = -last_delim.max - THRESHOLD;
       out_len++;
     }
   }
@@ -172,7 +170,6 @@ int get_isolation_delimiter_positions(struct EquationObject *expression,
 
 int return_check_roots(struct EquationObject *expression, int length,
                        double *tentative, int tentative_len, double *out) {
-  double threshold = get_threshold(expression, length);
   int out_len = 0;
 
   struct InputVar target_var;
@@ -186,7 +183,7 @@ int return_check_roots(struct EquationObject *expression, int length,
     target_var.value = tentative[i];
     double thing = tentative[i];
     double comp = solve_const_expr(expression, length, &target_var, 1);
-    if (double_abs(comp) <= 10 * threshold) {
+    if (double_abs(comp) <= get_small_enough(expression, length)) {
       out[out_len] = tentative[i];
       out_len++;
     }
