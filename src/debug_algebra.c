@@ -98,11 +98,12 @@ void test_solve_consts() {
   // char *expression = "6+5*2-10/2";
   // char *expression = "6-5*5-72/2";
   // char *expression = "2(1+(-32))";
-  char *expression = "2*-2";
+  // char *expression = "2*-2";
   // char *expression = "-2+2*4^2";
   // char *expression = "2^3.5";
   // char *expression = "(28\\r1600)-(100/(3^8))";
   // char *expression = "(1/(2+2))";
+  char *expression = "x^2+x-6";
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[256];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
@@ -110,7 +111,7 @@ void test_solve_consts() {
   struct InputVar var;
   var.letter.letter = 'x';
   var.letter.subscript = ' ';
-  var.value = 3.0;
+  var.value = -3.0;
   struct InputVar vars[1] = {var};
   double solution = solve_const_expr(lex_buffer, lex_len, vars, 1);
   printf("%0.10f", solution);
@@ -160,7 +161,8 @@ void test_expansion() {
   // char *expression = "10abc/(5def)";
   // char *expression = "(4x^3)/(x^8)";
   // char *expression = "(4x^3+2x^2)/(2x^2)";
-  char *expression = "-(4x^3+2x^2-32x+9)";
+  // char *expression = "-(4x^3+2x^2-32x+9)";
+  char *expression = "3*(x+2)^3";
 
   // Not working still
   // char *expression = "2^(2^-1)";
@@ -199,10 +201,12 @@ void test_roots() {
   // the polynomial, but other side is zero
 
   // char *expression = "3/2+(3x/3)/(9x-1)-2";
-  // char *expression = "(x+2)(x-3)(x^3-18)";
+  // char *expression = "(x+2)(x-3)(x^3-8)";
   // char *expression = "x^5-x^4-6x^3-18x^2+18x+108";
-  // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
-  char *expression = "(x-2)(x+3)";
+  // char *expression = "(x-2)(x-3)(x-5)(x-7)(x-8)(x-36)";
+  char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
+  // char *expression = "(x-2)(x+3)(x-3)";
+  // char *expression = "(x-2)(x-2.05)";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -219,17 +223,22 @@ void test_roots() {
   // printf("Getting number of roots...\n");
   // int sign_changes = get_sign_changes(lex_buffer, new_len);
   // printf("Sign changes: %i\n", sign_changes);
-  // double l = 1.9;
-  // double r = 2.0;
+  // 2.00086212-2.00331116
+  // double l = 2.00086212;
+  // double r = 2.00331116;
   // printf("Getting roots between %f and %f\n", l, r);
+  // int roots = bundan_max_roots(lex_buffer, new_len, l, r);
   int roots = bundan_max_roots(lex_buffer, new_len, 0.0, bound_abs);
   printf("Max roots: %i\n", roots);
   printf("Solving...\n");
-  double delimiters[new_len] = {};
+  struct RootRange delimiters[new_len] = {};
   int out_delim_len =
       get_isolation_delimiter_positions(lex_buffer, new_len, delimiters);
+  // double out[out_delim_len] = {};
+  // int final_len =
+  //     return_check_roots(lex_buffer, new_len, delimiters, out_delim_len, out);
   for (int i = 0; i < out_delim_len; i++) {
-    printf("Root: %0.8f\n", delimiters[i]);
+    printf("Root interval: %0.8f-%0.8f\n", delimiters[i].min, delimiters[i].max);
   }
 }
 
