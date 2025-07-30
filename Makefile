@@ -41,6 +41,7 @@ algebra:
 	@$(call gcc_call,src/algebra/bundan.c,work/bundan.o)
 	@$(call gcc_call,src/algebra/isolation.c,work/isolation.o)
 	@$(call gcc_call,src/algebra/bisection.c,work/bisection.o)
+	@$(call gcc_call,src/algebra/parentheses.c,work/parentheses.o)
 	
 operations:
 	@$(call gcc_call,src/operations/utils.c,work/utils.o)
@@ -54,6 +55,7 @@ operations:
 	@$(call gcc_call,src/operations/fraction.c,work/fraction.o)
 	@$(call gcc_call,src/operations/log.c,work/log.o)
 	@$(call gcc_call,src/operations/derivative.c,work/derivative.o)
+	@$(call gcc_call,src/operations/poly_div.c,work/poly_div.o)
 
 auto-deps:
 	@$(call gcc_call,auto-generated/cordic_constants.c,work/cordic_constants.o)

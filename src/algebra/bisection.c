@@ -2,7 +2,7 @@
 #include "isolation.h"
 #include "solve_consts.h"
 #include "utils.h"
-#include <stdio.h>
+#include "dutils.h"
 
 double get_root_bisection(struct RootRange range,
                           struct EquationObject *expression, int length) {
@@ -16,8 +16,10 @@ double get_root_bisection(struct RootRange range,
 
   // Check for no roots in interval
   target.value = range.min;
+  // double e = solve_const_expr(expression, length, &target, 1);
   short sign_min = solve_const_expr(expression, length, &target, 1) > 0;
   target.value = range.max;
+  // double f = solve_const_expr(expression, length, &target, 1);
   short sign_max = solve_const_expr(expression, length, &target, 1) > 0;
   if (sign_min == sign_max) {
     return NAN;
@@ -37,11 +39,11 @@ double get_root_bisection(struct RootRange range,
 
   double y = 1.0;
 
-  while (y != 0.0) {
+  while (double_abs(y) >= 0.000000001) {
     c = (a + b) / 2.0;
 
     target.value = a;
-    double a_pos = solve_const_expr(expression, length, &target, 1) > 0;
+    short a_pos = solve_const_expr(expression, length, &target, 1) > 0;
 
     target.value = c;
     y = solve_const_expr(expression, length, &target, 1);

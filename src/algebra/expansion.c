@@ -6,6 +6,7 @@
 #include "evaluate.h"
 #include "flags.h"
 #include "log.h"
+#include "parentheses.h"
 #include "parse.h"
 #include "pow.h"
 #include "root.h"
@@ -244,22 +245,27 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       }
 
       // Replace subtraction with negative addition
-      int k = 0;
-      while (k < new_len) {
-        if (expression[k].type == SUB) {
-          expression[k].type = ADD;
+      // int k = 0;
+      // while (k < new_len) {
+      //   if (expression[k].type == SUB) {
+      //     // Fix subtracting blocks
+      //     if (expression[k + 1].type == MULT) {
+      //       i += 2;
+      //     }
 
-          struct EquationObject obj;
-          obj.type = NUMBER;
-          obj.value.number = -1.0;
+      //     expression[k].type = ADD;
 
-          new_len++;
-          insert_eo_idx(expression, new_len, k + 1, mult_obj);
-          new_len++;
-          insert_eo_idx(expression, new_len, k + 1, obj);
-        }
-        k++;
-      }
+      //     struct EquationObject obj;
+      //     obj.type = NUMBER;
+      //     obj.value.number = -1.0;
+
+      //     new_len++;
+      //     insert_eo_idx(expression, new_len, k + 1, mult_obj);
+      //     new_len++;
+      //     insert_eo_idx(expression, new_len, k + 1, obj);
+      //   }
+      //   k++;
+      // }
 
       int dest_start = i + 1;
       int end = -1;
@@ -342,10 +348,29 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
 
   new_len = cull_the_useless(expression, new_len);
 
+  // Replace subtracting with negative addition
+  // It helps make distribution work better
+  i = 1;
+  while (i < new_len) {
+    if (expression[i - 1].type == SUB) {
+      expression[i - 1].type = ADD;
+
+      struct EquationObject obj;
+      obj.type = NUMBER;
+      obj.value.number = -1.0;
+
+      new_len++;
+      insert_eo_idx(expression, new_len, i, mult_obj);
+      new_len++;
+      insert_eo_idx(expression, new_len, i, obj);
+    }
+    i++;
+  }
+
   // Distributive property
   i = 0;
   while (i < new_len) {
-    // while (0) {
+  // while (0) {
     if (expression[i].type == BLOCK_END) {
       int start = i;
       while (expression[start].type != BLOCK_START) {
@@ -402,6 +427,13 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
 
             j++;
           }
+        } else if (expression[start - 1].type == BLOCK_START) {
+          // Double parentheses
+          remove_eo_idx(expression, new_len, i);
+          new_len--;
+          remove_eo_idx(expression, new_len, start);
+          new_len--;
+          i = 0;
         }
       }
     }

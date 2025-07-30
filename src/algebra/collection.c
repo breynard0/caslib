@@ -2,6 +2,7 @@
 #include "debug.h"
 #include "enums.h"
 #include "equation_objects.h"
+#include "parentheses.h"
 #include "utils.h"
 
 static int simplify_polyterm(struct EquationObject *buffer, int length);
@@ -29,59 +30,18 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
     start_buf[i] = buffer[i];
   }
 
-  struct EquationObject mid_buf[2*new_len] = {};
+  struct EquationObject mid_buf[2 * new_len] = {};
   int mid_len = 0;
 
-  // TODO: refactor this into its own file, this function is getting long
-  // Remove redundant parentheses
-  int i = 0;
-  while (i < new_len) {
-    if (start_buf[i].type == BLOCK_END) {
-      int start = i - 1;
-      int blocks = 1;
-      while (blocks != 0) {
-        if (start_buf[start].type == BLOCK_START) {
-          blocks--;
-        }
-        if (start_buf[start].type == BLOCK_END) {
-          blocks++;
-        }
-        start--;
-      }
-      start++;
-
-      Boolean is_before =
-          start != 0 && (start_buf[start - 1].type == ADD ||
-                         start_buf[start - 1].type == SUB ||
-                         start_buf[start - 1].type == BLOCK_START);
-      Boolean is_after =
-          i < new_len - 1 &&
-          (start_buf[i + 1].type == ADD || start_buf[i + 1].type == SUB ||
-           start_buf[i + 1].type == BLOCK_END);
-
-      if ((is_before && is_after) || (start == 0 && is_after) ||
-          ((i >= new_len - 1 || start_buf[i + 1].type == END_LEX) &&
-           is_before) ||
-          (start == 0 &&
-           (i >= new_len - 1 || start_buf[i + 1].type == END_LEX))) {
-        remove_eo_idx(start_buf, new_len, i);
-        new_len--;
-        remove_eo_idx(start_buf, new_len, start);
-        new_len--;
-        i -= 2;
-      }
-    }
-
-    i++;
-  }
+  new_len = remove_redundant_parentheses(start_buf, new_len);
 
   // Collect factors within terms
-  i = 0;
+  int i = 0;
   int count = 0;
   while (i < length) {
     if ((i == length - 1) || (start_buf[i].type == END_LEX) ||
         (start_buf[i].type == ADD) || (start_buf[i].type == SUB)) {
-      struct EquationObject tmp_buf[2*count];
+      struct EquationObject tmp_buf[2 * count];
       for (int j = 0; j < count; j++) {
         tmp_buf[j] = start_buf[(i - count) + j];
       }
@@ -371,6 +331,12 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
     // Remove separator
     remove_mv_idx(out_vars, out_vars_len, i);
     out_vars_len--;
+
+    // If coefficient of zero, remove variable
+    if (orig_coeff == 0) {
+      remove_mv_idx(out_vars, out_vars_len, i);
+      out_vars_len--;
+    }
   }
 
   // Replace trailing add with endlex
@@ -466,7 +432,7 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
       }
     }
   }
-  
+
   // Remove degree 0 variables
   for (int i = 0; i < vars_len; i++) {
     if (vars[i].degree == 0) {
@@ -492,7 +458,8 @@ int simplify_polyterm(struct EquationObject *buffer, int length) {
   }
 
   // Sort variables in alphabetical order
-  // vars should be small, this inefficient but readable sorting algorithm is fine
+  // vars should be small, this inefficient but readable sorting algorithm is
+  // fine
   Boolean found = TRUE;
   while (found) {
     int i = 1;
