@@ -11,3 +11,4 @@ short double_digits_whole(double num);
 short double_digits_partial(double num);
 double deg_to_rad(double degrees);
 long lmaximum(long x, long y);
+int imaximum(int x, int y);

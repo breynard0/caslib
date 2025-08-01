@@ -165,7 +165,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
           start--;
         }
         start++;
-        struct EquationObject tmp_buf[3 * (i - start + 1)];
+        struct EquationObject tmp_buf[4 * (i - start + 1)];
         int tmp_len = 0;
         for (int k = 0; k < i - start + 1; k++) {
           tmp_buf[tmp_len] = expression[start + k];

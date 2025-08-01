@@ -1,5 +1,8 @@
 #include "gcf.h"
+#include "enums.h"
 #include "equation_objects.h"
+#include "expansion.h"
+#include "poly_div.h"
 #include "utils.h"
 
 // Euclidean algorithm
@@ -15,6 +18,160 @@ long gcf(long x, long y) {
     }
   }
   return lmaximum(x, y);
+}
+
+// GCF is returned in the first expression
+int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
+                   struct EquationObject *expr1, int expr1_len) {
+  // Debugging arrays
+  // struct EquationObject expr0[expr0_len] = {};
+  // for (int i = 0; i < expr0_len; i++) {
+  //   expr0[i] = expr0a[i];
+  // }
+  // struct EquationObject expr1[expr1_len] = {};
+  // for (int i = 0; i < expr1_len; i++) {
+  //   expr1[i] = expr1a[i];
+  // }
+  //
+
+  // Case of 2 constants
+  if (expr0_len <= 2 && expr0[0].type == NUMBER && expr1_len <= 2 &&
+      expr1[0].type == NUMBER) {
+    expr0[0].value.number = 1.0;
+    return 2;
+  }
+
+  int max_len = expr0_len;
+  if (expr1_len > expr0_len) {
+    max_len = expr1_len;
+  }
+
+  int new_l0 = expr0_len;
+  int new_l1 = expr1_len;
+
+  Boolean expr0_larger = TRUE;
+
+  int n = 0;
+
+  while (new_l0 != 0 && new_l1 != 0) {
+    n++;
+
+    double threshold = 0.00000000001;
+    if (expr0[0].type == NUMBER && expr0[0].value.number < threshold) {
+      break;
+    }
+    if (expr1[0].type == NUMBER && expr1[0].value.number < threshold) {
+      break;
+    }
+
+    double expr0_degree = 1;
+    Boolean expr0_letter_found = FALSE;
+    for (int i = 0; i < new_l0; i++) {
+      if (expr0[i].type == EXP) {
+        expr0_degree = expr0[i + 1].value.number;
+      } else if (expr0[i].type == LETTER) {
+        expr0_letter_found = TRUE;
+      } else if (i != 0 && (expr0[i].type == ADD || expr0[i].type == SUB)) {
+        break;
+      }
+    }
+    if (!expr0_letter_found) {
+      expr0_degree = 0;
+    }
+    double expr1_degree = 1;
+    Boolean expr1_letter_found = FALSE;
+    for (int i = 0; i < new_l1; i++) {
+      if (expr1[i].type == EXP) {
+        expr1_degree = expr1[i + 1].value.number;
+      } else if (expr1[i].type == LETTER) {
+        expr1_letter_found = TRUE;
+      } else if (i != 0 && (expr1[i].type == ADD || expr1[i].type == SUB)) {
+        break;
+      }
+    }
+    if (!expr0_letter_found) {
+      expr0_degree = 0;
+    }
+
+    expr0_larger = expr0_degree >= expr1_degree;
+
+    struct EquationObject quotient[8 * max_len] = {};
+    struct EquationObject remainder[8 * max_len] = {};
+    for (int i = 0; i < new_l0; i++) {
+      if (expr0_larger) {
+        quotient[i] = expr0[i];
+      } else {
+        remainder[i] = expr0[i];
+      }
+    }
+
+    for (int i = 0; i < new_l1; i++) {
+      if (expr0_larger) {
+        remainder[i] = expr1[i];
+      } else {
+        quotient[i] = expr1[i];
+      }
+    }
+
+    int quotient_len = new_l1;
+    int remainder_len = new_l0;
+    if (expr0_larger) {
+      quotient_len = new_l0;
+      remainder_len = new_l1;
+    }
+
+    polynomial_division(quotient, quotient_len, remainder, remainder_len);
+
+    remainder_len = 0;
+    while (remainder[remainder_len].type != END_LEX) {
+      remainder_len++;
+    }
+    remainder_len++;
+
+    if (remainder_len <= 2 && remainder[0].type == NUMBER &&
+        remainder[0].value.number < threshold) {
+      remainder_len = 0;
+    }
+
+    if (expr0_larger) {
+      for (int i = 0; i < remainder_len; i++) {
+        expr0[i] = remainder[i];
+      }
+
+      if (remainder_len == 0 && n <= 1) {
+        for (int i = 0; i < quotient_len; i++) {
+          expr0[i] = quotient[i];
+        }
+      }
+      new_l0 = remainder_len;
+    } else {
+      for (int i = 0; i < remainder_len; i++) {
+        expr1[i] = remainder[i];
+      }
+
+      if (remainder_len == 0 && n <= 1) {
+        for (int i = 0; i < quotient_len; i++) {
+          expr1[i] = quotient[i];
+        }
+      }
+      new_l1 = remainder_len;
+    }
+  }
+
+  if ((expr0[0].type == NUMBER && expr0[0].value.number == 0) || new_l0 == 0) {
+    for (int i = 0; i < new_l1; i++) {
+      expr0[i] = expr1[i];
+    }
+  }
+
+  int out_len = expand_polynomial(expr0, imaximum(new_l0, new_l1));
+
+  // If only a constant, GCD is 1
+  if (expr0[0].type == NUMBER && imaximum(new_l0, new_l1) == 2) {
+    expr0[0].value.number = 1;
+  }
+
+  return out_len;
 }
 
 void reduce_fraction(struct ImproperFraction *fraction) {

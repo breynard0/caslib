@@ -34,6 +34,7 @@ void test_valid();
 void test_rearrange();
 void test_derivative();
 void test_polydiv();
+void test_polygcf();
 
 void debug_algebra() {
   // printf("%0.11f\n", nth_root(130130, 10));
@@ -75,7 +76,8 @@ void debug_algebra() {
   // test_rearrange();
   // printf("Test power rule...\n");
   // test_derivative();
-  test_polydiv();
+  // test_polydiv();
+  test_polygcf();
 }
 
 void test_lex() {
@@ -179,7 +181,8 @@ void test_expansion() {
   // Not working still
   // char *expression = "2^(2^-1)";
   // char *expression = "(13x^2-13x+9)-(13x^2-39x+52)";
-  char *expression = "(13x^2-13x+9)-(13)(x^2-3x+4)";
+  // char *expression = "(13x^2-13x+9)-(13)(x^2-3x+4)";
+  char *expression = "(x^3)-(x)(x^2)";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -297,8 +300,26 @@ void test_polydiv() {
   // char *dividend = "2x^4+3x^3+3x^2-5x-3";
   // char *divisor = "2x^2-x-1";
   
-  char *dividend = "-x^5+7x^3-x";
-  char *divisor = "x^3-x^2+1";
+  // char *dividend = "-x^5+7x^3-x";
+  // char *divisor = "x^3-x^2+1";
+  
+  // char *dividend = "9x^2+3x-6";
+  // char *divisor = "3";
+  
+  // char *dividend = "x^2-3x+2";
+  // char *divisor = "6x-12";
+  
+  // char *dividend = "2x+3";
+  // char *divisor = "3x+2";
+  
+  // char *dividend = "x^4-1";
+  // char *divisor = "x^3+x^2+x+1";
+  
+  // char *dividend = "x^3";
+  // char *divisor = "x^2";
+  
+  char *dividend = "15x^2+10x";
+  char *divisor = "9x+6";
   
   printf("Lexing %s...\n", dividend);
   struct EquationObject dividend_buffer[1024];
@@ -318,5 +339,56 @@ void test_polydiv() {
   printf("Remainder: ");
   for (int i = 0; divisor_buffer[i - 1].type != END_LEX; i++) {
     print_eo_flat(divisor_buffer[i]);
+  }
+}
+
+void test_polygcf() {
+  // char *dividend = "3x^3+4x^2-x+9";
+  // char *divisor = "x^2-3x+4";
+  
+  // char *dividend = "2x^4+3x^3+3x^2-5x-3";
+  // char *divisor = "2x^2-x-1";
+  
+  // char *dividend = "-x^5+7x^3-x";
+  // char *divisor = "x^3-x^2+1";
+  
+  // char *dividend = "x^5-2x^4+x^2-x-2";
+  // char *divisor = "x^3-x^2-x-2";
+  
+  // char *dividend = "(x-2)(x-4)(x-3)";
+  // char *divisor = "(x-2)(x-1)";
+  
+  // char *dividend = "x^4-1";
+  // char *divisor = "x^3+x^2+x+1";
+  
+  // char *dividend = "0";
+  // char *divisor = "x^2+1";
+  
+  // char *dividend = "x^3";
+  // char *divisor = "x^2";
+  
+  // char *dividend = "5";
+  // char *divisor = "7";
+  
+  // char *dividend = "6x^3+18x^2+12x";
+  // char *divisor = "4x^2+8x";
+  
+  char *dividend = "15x^2+10x";
+  char *divisor = "9x+6";
+  
+  printf("Lexing %s...\n", dividend);
+  struct EquationObject dividend_buffer[1024];
+  int dividend_len = lex(dividend, strlen(dividend), dividend_buffer, 64);
+  printf("Lexing %s...\n", divisor);
+  struct EquationObject divisor_buffer[1024];
+  int divisor_len = lex(divisor, strlen(divisor), divisor_buffer, 64);
+  printf("Expanding...\n");
+  dividend_len = expand_polynomial(dividend_buffer, dividend_len);
+  divisor_len = expand_polynomial(divisor_buffer, divisor_len);
+  printf("Getting GCF...\n");
+  int out_len = polynomial_gcf(dividend_buffer, dividend_len, divisor_buffer, divisor_len);
+  printf("GCF: ");
+  for (int i = 0; i < out_len; i++) {
+    print_eo_flat(dividend_buffer[i]);
   }
 }

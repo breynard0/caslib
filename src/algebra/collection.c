@@ -355,6 +355,14 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       }
     }
   }
+  
+  // Make it zero if out_buf is empty
+  if (out_buf_len == 0) {
+    out_buf[0].type = NUMBER;
+    out_buf[0].value.number = 0;
+    out_buf[1].type = END_LEX;
+    out_buf_len = 2;
+  }
 
   out_buf_len = cull_the_useless(out_buf, out_buf_len);
 

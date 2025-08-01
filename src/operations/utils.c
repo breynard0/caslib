@@ -86,6 +86,14 @@ short double_digits_partial(double num) {
 
 double deg_to_rad(double degrees) { return PI * degrees / 180; }
 
+int imaximum(int x, int y) {
+  if (x > y) {
+    return x;
+  } else {
+    return y;
+  }
+}
+
 long lmaximum(long x, long y) {
   if (x > y) {
     return x;
