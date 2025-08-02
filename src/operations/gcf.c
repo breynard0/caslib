@@ -4,6 +4,7 @@
 #include "expansion.h"
 #include "poly_div.h"
 #include "utils.h"
+#include "dutils.h"
 
 // Euclidean algorithm
 long gcf(long x, long y) {
@@ -32,7 +33,7 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
   // for (int i = 0; i < expr1_len; i++) {
   //   expr1[i] = expr1a[i];
   // }
-  //
+  
 
   // Case of 2 constants
   if (expr0_len <= 2 && expr0[0].type == NUMBER && expr1_len <= 2 &&
@@ -57,10 +58,10 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
     n++;
 
     double threshold = 0.00000000001;
-    if (expr0[0].type == NUMBER && expr0[0].value.number < threshold) {
+    if (expr0[0].type == NUMBER && double_abs(expr0[0].value.number) < threshold) {
       break;
     }
-    if (expr1[0].type == NUMBER && expr1[0].value.number < threshold) {
+    if (expr1[0].type == NUMBER && double_abs(expr1[0].value.number) < threshold) {
       break;
     }
 
@@ -129,7 +130,7 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
     remainder_len++;
 
     if (remainder_len <= 2 && remainder[0].type == NUMBER &&
-        remainder[0].value.number < threshold) {
+        double_abs(remainder[0].value.number) < threshold) {
       remainder_len = 0;
     }
 
@@ -170,6 +171,18 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
   if (expr0[0].type == NUMBER && imaximum(new_l0, new_l1) == 2) {
     expr0[0].value.number = 1;
   }
+  
+  // Make first coefficient 1
+  if (expr0[0].type == NUMBER && expr0[0].value.number != 1) {
+    double reciprocal = 1.0 / expr0[0].value.number;
+    for (int i = 0; i < out_len; i++) {
+      enum EOType last = expr0[i - 1].type;
+      if (expr0[i].type == NUMBER && (i == 0 || last == ADD || last == SUB)) {
+        expr0[i].value.number *= reciprocal;
+      }
+    }
+  }
+  out_len = expand_polynomial(expr0, out_len);
 
   return out_len;
 }

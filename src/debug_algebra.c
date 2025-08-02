@@ -23,6 +23,7 @@
 #include "utils.h"
 #include "valid.h"
 #include "poly_div.h"
+#include "yun.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -35,6 +36,7 @@ void test_rearrange();
 void test_derivative();
 void test_polydiv();
 void test_polygcf();
+void test_yun();
 
 void debug_algebra() {
   // printf("%0.11f\n", nth_root(130130, 10));
@@ -78,6 +80,7 @@ void debug_algebra() {
   // test_derivative();
   // test_polydiv();
   test_polygcf();
+  // test_yun();
 }
 
 void test_lex() {
@@ -373,8 +376,11 @@ void test_polygcf() {
   // char *dividend = "6x^3+18x^2+12x";
   // char *divisor = "4x^2+8x";
   
-  char *dividend = "15x^2+10x";
-  char *divisor = "9x+6";
+  // char *dividend = "15x^2+10x";
+  // char *divisor = "9x+6";
+  
+  char *dividend = "x^3+7x^2+16x+12";
+  char *divisor = "3x^2+14x+16";
   
   printf("Lexing %s...\n", dividend);
   struct EquationObject dividend_buffer[1024];
@@ -390,5 +396,21 @@ void test_polygcf() {
   printf("GCF: ");
   for (int i = 0; i < out_len; i++) {
     print_eo_flat(dividend_buffer[i]);
+  }
+}
+
+void test_yun() {
+  char *expression = "x^3+7x^2+16x+12";
+
+  printf("Lexing %s...\n", expression);
+  struct EquationObject lex_buffer[1024];
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
+  printf("Decomposing...\n");
+  int new_len = expand_polynomial(lex_buffer, 1024);
+  new_len = yun_decompose(lex_buffer, new_len);
+  
+  printf("Square free decomposition: ");
+  for (int i = 0; i < new_len; i++) {
+    print_eo_flat(lex_buffer[i]);
   }
 }
