@@ -18,6 +18,11 @@
 // denominators.
 // Length should also be one less than the length of the buffer
 int expand_polynomial(struct EquationObject *buffer, int length) {
+  // If a single thing, do nothing
+  if (length <= 2) {
+    return length;
+  }
+  
   // Remove empty parentheses
   int par_idx = 1;
   while (par_idx < length) {

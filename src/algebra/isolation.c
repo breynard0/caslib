@@ -9,9 +9,6 @@
 #include "solve_consts.h"
 #include "utils.h"
 
-// I want 8 sig fig answers, so this'll be 9
-#define THRESHOLD 0.0000000001
-
 // Loosely based on Mignotte's separation bound
 double get_small_enough(struct EquationObject *expression, int length) {
   double avg_sum = 0;

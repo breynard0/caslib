@@ -1,4 +1,5 @@
 #include "equation_objects.h"
+#include "enums.h"
 #include "expansion.h"
 
 void remove_eo_idx(struct EquationObject *list, int length, int idx) {
@@ -39,12 +40,30 @@ int div_terms(struct EquationObject *term0, int t0_len,
   }
   tmp_buf[tmp_len].type = BLOCK_END;
   tmp_len++;
-  
+
   int new_len = expand_polynomial(tmp_buf, tmp_len);
-  
+
   for (int i = 0; i < new_len; i++) {
     term0[i] = tmp_buf[i];
   }
-  
+
   return new_len;
+}
+
+int get_polynomial_degree(struct EquationObject *expression, int length) {
+  int highest_degree = 0;
+  Boolean letter_found = FALSE;
+  for (int i = 0; i < length; i++) {
+    if (expression[i].type == EXP &&
+        expression[i + 1].value.number > highest_degree) {
+      highest_degree = expression[i + 1].value.number;
+    } else if (expression[i].type == LETTER) {
+      letter_found = TRUE;
+    }
+  }
+  if (letter_found && highest_degree == 0) {
+    highest_degree = 1;
+  }
+  
+  return highest_degree;
 }

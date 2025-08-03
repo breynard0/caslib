@@ -101,3 +101,12 @@ long lmaximum(long x, long y) {
     return y;
   }
 }
+
+double round_to_threshold(double num) {
+  double rounded = dround(num);
+  double checked = double_abs(num - rounded);
+  if (double_abs(rounded - num) <= THRESHOLD) {
+    return rounded;
+  }
+  return num;
+}

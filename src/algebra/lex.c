@@ -121,11 +121,13 @@ int lex(char *input, int length, struct EquationObject *buffer,
           eo.value.number *= 10;
           eo.value.number += num;
         } else {
-          eo.value.number =
-              dfloor(eo.value.number * pow_di(10.0, decimal_digits)) /
-              pow_di(10.0, decimal_digits);
-          eo.value.number += ((double)num) / pow_di(10.0, decimal_digits + 1);
-          decimal_digits++;
+          if (decimal_digits < 12) {
+            eo.value.number =
+                dfloor(eo.value.number * pow_di(10.0, decimal_digits)) /
+                pow_di(10.0, decimal_digits);
+            eo.value.number += ((double)num) / pow_di(10.0, decimal_digits + 1);
+            decimal_digits++;
+          }
         }
         state = 2;
       } else if (c == '.') {

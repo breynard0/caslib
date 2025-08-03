@@ -9,11 +9,21 @@ int power_rule_derivative_univariate(struct EquationObject *function,
   //   function[i] = fudnction[i];
   // }
 
+  // If highest degree is 1 or lower, return 1
+  int degree = get_polynomial_degree(function, length);
+  if (degree <= 1) {
+    function[0].type = NUMBER;
+    function[0].value.number = 1.0;
+    function[1].type = END_LEX;
+    return 2;
+  }
+
   int new_len = length;
 
   int i = 0;
   while (i < new_len) {
-    if (function[i].type == ADD || function[i].type == SUB || function[i].type == END_LEX || i == new_len - 1) {
+    if (function[i].type == ADD || function[i].type == SUB ||
+        function[i].type == END_LEX || i == new_len - 1) {
       int start = i - 1;
       while (function[start].type != ADD && function[start].type != SUB &&
              start > 0) {
@@ -99,6 +109,6 @@ int power_rule_derivative_univariate(struct EquationObject *function,
   }
 
   new_len = expand_polynomial(function, new_len);
-  
+
   return new_len;
 }

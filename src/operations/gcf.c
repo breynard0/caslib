@@ -24,7 +24,7 @@ long gcf(long x, long y) {
 // GCF is returned in the first expression
 int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
                    struct EquationObject *expr1, int expr1_len) {
-  // Debugging arrays
+  // Debugging stuff
   // struct EquationObject expr0[expr0_len] = {};
   // for (int i = 0; i < expr0_len; i++) {
   //   expr0[i] = expr0a[i];
@@ -34,6 +34,13 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
   //   expr1[i] = expr1a[i];
   // }
   
+  // #include "debug.h"
+  // for (int i = 0; i < expr0_len; i++) {
+  //   print_eo_flat(expr0[i]);
+  // }
+  // for (int i = 0; i < expr1_len; i++) {
+  //   print_eo_flat(expr1[i]);
+  // }
 
   // Case of 2 constants
   if (expr0_len <= 2 && expr0[0].type == NUMBER && expr1_len <= 2 &&
@@ -57,11 +64,10 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
   while (new_l0 != 0 && new_l1 != 0) {
     n++;
 
-    double threshold = 0.00000000001;
-    if (expr0[0].type == NUMBER && double_abs(expr0[0].value.number) < threshold) {
+    if (expr0[0].type == NUMBER && double_abs(expr0[0].value.number) < THRESHOLD) {
       break;
     }
-    if (expr1[0].type == NUMBER && double_abs(expr1[0].value.number) < threshold) {
+    if (expr1[0].type == NUMBER && double_abs(expr1[0].value.number) < THRESHOLD) {
       break;
     }
 
@@ -130,7 +136,7 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
     remainder_len++;
 
     if (remainder_len <= 2 && remainder[0].type == NUMBER &&
-        double_abs(remainder[0].value.number) < threshold) {
+        double_abs(remainder[0].value.number) < THRESHOLD) {
       remainder_len = 0;
     }
 

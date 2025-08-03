@@ -45,10 +45,10 @@ int cull_the_useless(struct EquationObject *expression, int length) {
   i = 0;
   while (i < new_len) {
     // 1*
-    if ((buf[i].type == NUMBER && buf[i].value.number == 1 &&
+    if (i != 0 && ((buf[i].type == NUMBER && buf[i].value.number == 1 &&
          buf[i - 1].type == MULT) ||
         (buf[i].type == MULT && buf[i - 1].type == NUMBER &&
-         buf[i - 1].value.number == 1)) {
+         buf[i - 1].value.number == 1))) {
       remove_eo_idx(buf, new_len, i - 1);
       new_len--;
       remove_eo_idx(buf, new_len, i - 1);

@@ -199,7 +199,7 @@ int collect_reorder_polynomial(struct EquationObject *buffer, int length) {
       }
 
       // Push here
-      coeffs_out[out_coeffs_len] = coeff;
+      coeffs_out[out_coeffs_len] = round_to_threshold(coeff);
       out_coeffs_len++;
       if (i != 0 && vars[i - 1].degree != vars[i - 1].degree) {
         out_vars[out_vars_len].letter.letter = 'x';

@@ -27,10 +27,12 @@ double double_abs(double num) {
 double dceil(double num) { return -dfloor(-num); }
 
 double dround(double num) {
-  if (dmodulo(num, 1.0) < 0.5) {
-    return dfloor(num);
+  double abs = double_abs(num);
+  double sign = num / abs;
+  if (dmodulo(abs, 1.0) < 0.5) {
+    return dfloor(abs) * sign;
   } else {
-    return dceil(num);
+    return dceil(abs) * sign;
   }
 }
 
