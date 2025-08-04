@@ -29,6 +29,8 @@ int yun_decompose(struct EquationObject *expression, int length) {
   d_len = power_rule_derivative_univariate(d, d_len);
 
   Boolean eq_1 = FALSE;
+  
+  int n = 0;
 
   while (!eq_1) {
     // Check if should exit
@@ -111,8 +113,8 @@ int yun_decompose(struct EquationObject *expression, int length) {
       a_len = expand_polynomial(a, a_len);
     }
 
-    // Push a, so long as it isn't a single number 1
-    if (a[0].type != NUMBER || a[0].value.number != 1) {
+    // Push a, so long as it isn't a single number 1 and it isn't a0
+    if ((a[0].type != NUMBER || a[0].value.number != 1) && n > 0) {
       int i = 0;
       expression[out_len].type = BLOCK_START;
       out_len++;
@@ -184,6 +186,7 @@ int yun_decompose(struct EquationObject *expression, int length) {
     while (d[d_len].type != END_LEX) {
       d_len++;
     }
+    n++;
   }
 
   expression[out_len].type = END_LEX;

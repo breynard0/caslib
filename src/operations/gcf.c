@@ -134,6 +134,12 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
       remainder_len++;
     }
     remainder_len++;
+    remainder_len = expand_polynomial(remainder, remainder_len);
+    
+    // #include "debug.h"
+    // for (int i = 0; i < remainder_len; i++) {
+    //   print_eo_flat(remainder[i]);
+    // }
 
     if (remainder_len <= 2 && remainder[0].type == NUMBER &&
         double_abs(remainder[0].value.number) < THRESHOLD) {

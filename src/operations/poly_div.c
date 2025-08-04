@@ -167,6 +167,10 @@ void polynomial_division(struct EquationObject *dividend, int dividend_len,
     temp_len++;
     temp[temp_len].type = END_LEX;
     temp_len++;
+    // #include "debug.h"
+    // for (int j = 0; j < temp_len; j++) {
+    //   print_eo_flat(temp[j]);
+    // }
     temp_len = expand_polynomial(temp, temp_len);
 
     temp_degree = 1;
