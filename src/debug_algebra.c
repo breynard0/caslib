@@ -15,6 +15,7 @@
 #include "lex.h"
 #include "log.h"
 #include "parse.h"
+#include "poly_div.h"
 #include "pow.h"
 #include "rearrange.h"
 #include "root.h"
@@ -22,7 +23,6 @@
 #include "trig.h"
 #include "utils.h"
 #include "valid.h"
-#include "poly_div.h"
 #include "yun.h"
 #include <stdio.h>
 #include <string.h>
@@ -50,12 +50,13 @@ void debug_algebra() {
   // f.numerator = 6;
   // f.denominator = 10;
   // reduce_fraction(&f);
-  // double d = 1.137;
+  // double d = 1.33333333333333567;
   // struct MixedFraction f = double_to_mixed_fraction(d);
   // struct ImproperFraction f = double_to_fraction(d);
   // printf("%f to mixed fraction...\n", d);
   // printf("     %lli \n%li -----\n     %li \n", f.numerator, f.integer,
-  // f.denominator); printf(" %lli \n------------------, %li\n %li \n",
+  //        f.denominator);
+  // printf(" %lli \n------------------, %li\n %li \n",
   // f.numerator, 0, f.denominator); printf("%0.11f", d - (double)f.numerator  /
   // (double)f.denominator); printf("%0.10f", log_n(16, 10)); printf("%f",
   // pow_frac(10.0, f)); printf("%f", pow_dd(2.0, 4.3)); printf("%f", pow_di(3,
@@ -71,7 +72,7 @@ void debug_algebra() {
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   // test_solve_consts();
-  test_expansion();
+  // test_expansion();
   // test_roots();
   // test_valid();
   // printf("Test rearrange...\n");
@@ -80,7 +81,7 @@ void debug_algebra() {
   // test_derivative();
   // test_polydiv();
   // test_polygcf();
-  // test_yun();
+  test_yun();
 }
 
 void test_lex() {
@@ -187,8 +188,8 @@ void test_expansion() {
   // char *expression = "1/1";
 
   // Not working still
-  // char *expression = "x^3+1.0000000000000314x^2-12.999999999999997x+13.9999999999999999999999999999999999934";
-  char *expression = "x+13.9999999999999999999999999999999999934";
+  char *expression = "x^3+1.0000000000000314x^2-12.999999999999997x+13."
+                     "9999999999999999999999999999999999934";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -304,31 +305,34 @@ void test_derivative() {
 void test_polydiv() {
   // char *dividend = "3x^3+4x^2-x+9";
   // char *divisor = "x^2-3x+4";
-  
+
   // char *dividend = "2x^4+3x^3+3x^2-5x-3";
   // char *divisor = "2x^2-x-1";
-  
+
   // char *dividend = "-x^5+7x^3-x";
   // char *divisor = "x^3-x^2+1";
-  
+
   // char *dividend = "9x^2+3x-6";
   // char *divisor = "3";
-  
+
   // char *dividend = "x^2-3x+2";
   // char *divisor = "6x-12";
-  
+
   // char *dividend = "2x+3";
   // char *divisor = "3x+2";
-  
+
   // char *dividend = "x^4-1";
   // char *divisor = "x^3+x^2+x+1";
-  
+
   // char *dividend = "x^3";
   // char *divisor = "x^2";
+
+  // char *dividend = "15x^2+10x";
+  // char *divisor = "9x+6";
   
-  char *dividend = "15x^2+10x";
-  char *divisor = "9x+6";
-  
+  char *dividend = "3x+4";
+  char *divisor = "3x+4";
+
   printf("Lexing %s...\n", dividend);
   struct EquationObject dividend_buffer[1024];
   int dividend_len = lex(dividend, strlen(dividend), dividend_buffer, 64);
@@ -339,7 +343,8 @@ void test_polydiv() {
   dividend_len = expand_polynomial(dividend_buffer, dividend_len);
   divisor_len = expand_polynomial(divisor_buffer, divisor_len);
   printf("Dividing...\n");
-  polynomial_division(dividend_buffer, dividend_len, divisor_buffer, divisor_len);
+  polynomial_division(dividend_buffer, dividend_len, divisor_buffer,
+                      divisor_len);
   printf("Quotient: ");
   for (int i = 0; dividend_buffer[i - 1].type != END_LEX; i++) {
     print_eo_flat(dividend_buffer[i]);
@@ -353,43 +358,50 @@ void test_polydiv() {
 void test_polygcf() {
   // char *dividend = "3x^3+4x^2-x+9";
   // char *divisor = "x^2-3x+4";
-  
+
   // char *dividend = "2x^4+3x^3+3x^2-5x-3";
   // char *divisor = "2x^2-x-1";
-  
+
   // char *dividend = "-x^5+7x^3-x";
   // char *divisor = "x^3-x^2+1";
-  
+
   // char *dividend = "x^5-2x^4+x^2-x-2";
   // char *divisor = "x^3-x^2-x-2";
-  
+
   // char *dividend = "(x-2)(x-4)(x-3)";
   // char *divisor = "(x-2)(x-1)";
-  
+
   // char *dividend = "x^4-1";
   // char *divisor = "x^3+x^2+x+1";
-  
+
   // char *dividend = "0";
   // char *divisor = "x^2+1";
-  
+
   // char *dividend = "x^3";
   // char *divisor = "x^2";
-  
+
   // char *dividend = "5";
   // char *divisor = "7";
-  
+
   // char *dividend = "6x^3+18x^2+12x";
   // char *divisor = "4x^2+8x";
-  
+
   // char *dividend = "15x^2+10x";
   // char *divisor = "9x+6";
-  
+
   // char *dividend = "x^3+7x^2+16x+12";
   // char *divisor = "3x^2+14x+16";
-  
-  char *dividend = "x^3+1.0000000000000314x^2-12.999999999999997x+13.99999999999934";
-  char *divisor = "x^2+3.00000000000001x-6.99999999999";
-  
+
+  // char *dividend =
+  // "x^3+1.0000000000000314x^2-12.999999999999997x+13.99999999999934"; char
+  // *divisor = "x^2+3.00000000000001x-6.9999999999999999999";
+
+  // char *dividend = "3x^3-8x^2-4x+16";
+  // char *divisor = "9x^2-16x-4";
+
+  char *dividend = "0";
+  char *divisor = "4x+5";
+
   printf("Lexing %s...\n", dividend);
   struct EquationObject dividend_buffer[1024];
   int dividend_len = lex(dividend, strlen(dividend), dividend_buffer, 64);
@@ -400,7 +412,8 @@ void test_polygcf() {
   dividend_len = expand_polynomial(dividend_buffer, dividend_len);
   divisor_len = expand_polynomial(divisor_buffer, divisor_len);
   printf("Getting GCF...\n");
-  int out_len = polynomial_gcf(dividend_buffer, dividend_len, divisor_buffer, divisor_len);
+  int out_len = polynomial_gcf(dividend_buffer, dividend_len, divisor_buffer,
+                               divisor_len);
   printf("GCF: ");
   for (int i = 0; i < out_len; i++) {
     print_eo_flat(dividend_buffer[i]);
@@ -410,7 +423,10 @@ void test_polygcf() {
 void test_yun() {
   // char *expression = "x^3+7x^2+16x+12";
   // char *expression = "x^5-87x^4+9x^3+7x^2-3";
-  char *expression = "x^4-x^3-15x^2+40x-28";
+  // char *expression = "x^4-x^3-15x^2+40x-28";
+  char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(3x+4)";
+  // char *expression = "(x-2)(x-2)(3x+4)";
+  // char *expression = "3x^3-8x^2-4x+16";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -418,7 +434,7 @@ void test_yun() {
   printf("Decomposing...\n");
   int new_len = expand_polynomial(lex_buffer, 1024);
   new_len = yun_decompose(lex_buffer, new_len);
-  
+
   printf("Square free decomposition: ");
   for (int i = 0; i < new_len; i++) {
     print_eo_flat(lex_buffer[i]);

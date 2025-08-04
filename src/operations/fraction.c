@@ -35,10 +35,11 @@ static long long fix_long_long(long long num) {
     int count = 0;
     int c = 0;
 
+    // Make flip true if there are at least 5 of the same digit in a row
     while (i <= num) {
       long thing = pow_ll(10, count);
       short digit = ((num - last) % i) / pow_ll(10, count);
-      if (digit == last) {
+      if (digit == last && digit == 0) {
         c++;
       } else {
         c = 0;
@@ -86,7 +87,7 @@ static long long fix_long_long(long long num) {
   return num;
 }
 
-const double MULTIPLIER = 1000000000000000000.0;
+const double MULTIPLIER = 1000000000000.0;
 struct ImproperFraction double_to_fraction(double num) {
   short negative_mul = 2 * (num >= 0) - 1;
   num = double_abs(num);

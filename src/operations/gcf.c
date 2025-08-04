@@ -178,7 +178,7 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
     expr0[0].value.number = 1;
   }
   
-  // Make first coefficient 1
+  // Make monic
   if (expr0[0].type == NUMBER && expr0[0].value.number != 1) {
     double reciprocal = 1.0 / expr0[0].value.number;
     for (int i = 0; i < out_len; i++) {
