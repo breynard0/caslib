@@ -18,19 +18,30 @@ void debug_display() {
     set_pixel(i, i, ON, buffer, WIDTH);
   }
 
-  InitWindow(WIDTH, HEIGHT, "Computer Algebra Solver");
+  SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+  InitWindow(4 * WIDTH, 800, "Computer Algebra Solver");
   SetTargetFPS(30);
 
   while (!WindowShouldClose()) {
     // Update
+    int scaling = GetRenderWidth() / WIDTH;
+    int image_width = scaling * WIDTH;
+    int image_height = scaling * HEIGHT;
 
     // Draw
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    ClearBackground(GRAY);
+    for (int i = 0; i < SIZE; i++) {
+      Color c = WHITE;
+      if (buffer[i] != 0) {
+        c = BLACK;
+      }
 
-    DrawText("Congrats! You created your first window!", 190, 200, 20,
-             LIGHTGRAY);
+      DrawRectangle((GetRenderWidth() - scaling * WIDTH) / 2.0 +
+                        scaling * (i % WIDTH),
+                    scaling * (i / WIDTH), scaling, scaling, c);
+    }
 
     EndDrawing();
   }

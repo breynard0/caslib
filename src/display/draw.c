@@ -1,6 +1,8 @@
+#include "draw.h"
+
 void clear_display(char *buffer, short length) {
   for (int i = 0; i < length; i++) {
-    buffer[i] = 0;
+    buffer[i] = OFF;
   }
 }
 
