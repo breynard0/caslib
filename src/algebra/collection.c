@@ -1,5 +1,4 @@
 #include "cull.h"
-#include "debug.h"
 #include "enums.h"
 #include "equation_objects.h"
 #include "parentheses.h"

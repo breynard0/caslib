@@ -1,7 +1,6 @@
 #include "atrig.h"
 #include "collection.h"
 #include "cull.h"
-#include "debug.h"
 #include "equation_objects.h"
 #include "evaluate.h"
 #include "flags.h"

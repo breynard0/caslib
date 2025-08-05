@@ -29,7 +29,7 @@ int yun_decompose(struct EquationObject *expression, int length) {
   d_len = power_rule_derivative_univariate(d, d_len);
 
   Boolean eq_1 = FALSE;
-  
+
   int n = 0;
 
   while (!eq_1) {
@@ -52,6 +52,18 @@ int yun_decompose(struct EquationObject *expression, int length) {
     for (int i = 0; i < d_len; i++) {
       d_clone[i] = d[i];
     }
+
+    bc_len = 0;
+    while (b_clone[bc_len].type != END_LEX) {
+      bc_len++;
+    }
+    bc_len++;
+    
+    d_len = 0;
+    while (d_clone[d_len].type != END_LEX) {
+      d_len++;
+    }
+    d_len++;
 
     bc_len = polynomial_gcf(b_clone, bc_len, d_clone, d_len);
     for (int i = 0; i < bc_len; i++) {

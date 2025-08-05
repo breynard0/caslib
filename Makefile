@@ -5,7 +5,7 @@
 # 	$(eval $@_DEST = $(2))
 # 	gcc -g -pg -c ${@_SOURCE} -o ${@_DEST}
 # endef
-gcc_call = gcc -I./include -g -pg -c $(1) -o $(2)
+gcc_call = gcc -I./include -I/usr/include/ -L/usr/lib64 -llibraylib -g -pg -c $(1) -o $(2)
 	
 run: init build
 	echo "Running..."
@@ -20,11 +20,12 @@ init:
 build: deps
 	echo "Building..."
 	@$(call gcc_call,src/debug_algebra.c,work/debug_algebra.o)
+	@$(call gcc_call,src/debug_display.c,work/debug_display.o)
 	@$(call gcc_call,src/debug.c,work/debug.o)
 	@$(call gcc_call,src/main.c,work/main.o)
 	gcc -g -pg work/*.o -o work/main
 
-deps: auto-deps operations algebra
+deps: auto-deps operations algebra display
 	
 algebra:
 	@$(call gcc_call,src/algebra/lex.c,work/lex.o)
@@ -57,6 +58,9 @@ operations:
 	@$(call gcc_call,src/operations/log.c,work/log.o)
 	@$(call gcc_call,src/operations/derivative.c,work/derivative.o)
 	@$(call gcc_call,src/operations/poly_div.c,work/poly_div.o)
+
+display:
+	@$(call gcc_call,src/display/draw.c,work/draw.o)
 
 auto-deps:
 	@$(call gcc_call,auto-generated/cordic_constants.c,work/cordic_constants.o)

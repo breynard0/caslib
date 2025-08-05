@@ -236,7 +236,9 @@ void test_roots() {
   // char *expression = "(x-2)(x-2.05)";
   // char *expression = "(x-2)(x-3)";
   // char *expression = "x^2-5x+6";
-  char *expression = "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024";
+  // char *expression = "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024";
+  char *expression = "(x-2)(x-2)(x-3)(x-3)(x^2-128)";
+  // char *expression = "((x-2)(x-2)(x-3)(x-3)(x^2-128))/(3x+4)";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -244,6 +246,9 @@ void test_roots() {
   printf("Expanding...\n");
   int new_len = expand_polynomial(lex_buffer, 1024);
   printf("Expanded: ");
+  if (f_unsupported == 1) {
+    printf("Unsupported\n");
+  }
   for (int i = 0; i < new_len; i++) {
     print_eo_flat(lex_buffer[i]);
   }
@@ -263,8 +268,8 @@ void test_roots() {
   printf("Calculating bound...\n");
   double bound_abs = get_bound_abs(lex_buffer, new_len);
   printf("Bound calculated: %f < x < %f\n", -bound_abs, bound_abs);
-  int roots = bundan_max_roots(lex_buffer, new_len, 0.0, bound_abs);
-  printf("Max positive roots: %i\n", roots);
+  // int roots = bundan_max_roots(lex_buffer, new_len, 0.0, bound_abs);
+  // printf("Max positive roots: %i\n", roots);
   printf("Solving...\n");
   struct RootRange delimiters[new_len] = {};
   int out_delim_len =
@@ -447,7 +452,8 @@ void test_yun() {
   // char *expression = "x^5-87x^4+9x^3+7x^2-3";
   // char *expression = "x^4-x^3-15x^2+40x-28";
   // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(3x+4)";
-  char *expression = "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024";
+  char *expression = "x^5-14x^4+77x^3-208x^2+276x-144";
+  // char *expression = "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024";
   // char *expression = "(x-2)(x-2)(3x+4)";
   // char *expression = "3x^3-8x^2-4x+16";
 
