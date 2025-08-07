@@ -69,8 +69,9 @@ void debug_display() {
   // draw_line(0, 0, 128, 40, buffer, WIDTH);
   // draw_line(128, 4, 128, 40, buffer, WIDTH);
   // draw_line(11, 11, 11, 10+40-1, buffer, WIDTH);
+  // draw_rect(10, 5, 172, 54, buffer, WIDTH);
   
-  draw_letter('0', 10, 10, 20, 40, buffer, WIDTH);
+  draw_letter('0', 96, 10, 8, 24, buffer, WIDTH);
 
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   InitWindow(4 * WIDTH, 800, "Computer Algebra Solver");

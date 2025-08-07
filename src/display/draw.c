@@ -12,10 +12,29 @@ void set_pixel(short x, short y, short value, char *buffer, short width) {
   buffer[y * width + x] = value;
 }
 
+int i_min(int a, int b) {
+  if (a < b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+int i_max(int a, int b) {
+  if (a > b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
 void draw_line(short x0, short y0, short x1, short y1, char *buffer,
                short width) {
   short rise = y1 - y0;
   short run = x1 - x0;
+  int max = rise;
+  if (run > rise) {
+    max = run;
+  }
 
   if (x0 == x1) {
     short higher = y0;
@@ -71,7 +90,7 @@ void draw_line(short x0, short y0, short x1, short y1, char *buffer,
     higher_x = x1;
     lower_x = x0;
   }
-  
+
   if (run > rise) {
     double length = f_run / f_rise;
 
@@ -83,11 +102,20 @@ void draw_line(short x0, short y0, short x1, short y1, char *buffer,
     }
   } else {
     double length = f_rise / f_run;
-    
+
     for (int i = 0; i < higher_x - lower_x; i++) {
       for (int j = -1; j < length; j++) {
         set_pixel(lower_x + i, lower_y + (i + length) + j, ON, buffer, width);
       }
+    }
+  }
+}
+
+void draw_rect(short x, short y, short width, short height, char *buffer,
+               short buf_width) {
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      set_pixel(x + j, y + i, ON, buffer, buf_width);
     }
   }
 }
