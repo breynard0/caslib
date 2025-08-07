@@ -88,7 +88,8 @@ void test_lex() {
   // char *expression =
   //     "(22+a:2)*23.12/\\r2\\4=-(0.6^9-e^(-2\\p)+\\g(0.3x:6)\\l26\\";
   // char *expression = "-2+2*4^2";
-  char *expression = "4xy";
+  // char *expression = "4xy";
+  char *expression = "60\\d";
   printf("Lexing %s\n", expression);
   struct EquationObject buffer[256];
 
@@ -237,7 +238,8 @@ void test_roots() {
   // char *expression = "(x-2)(x-3)";
   // char *expression = "x^2-5x+6";
   // char *expression = "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024";
-  char *expression = "(x-2)(x-2)(x-3)(x-3)(x^2-128)";
+  // char *expression = "(x-2)(x-2)(x-3)(x-3)(x^2-128)";
+  char *expression = "x^6-10x^5-91x^4+1220x^3-4700x^2+7680x-4608";
   // char *expression = "((x-2)(x-2)(x-3)(x-3)(x^2-128))/(3x+4)";
 
   printf("Lexing %s...\n", expression);

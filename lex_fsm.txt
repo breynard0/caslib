@@ -34,4 +34,5 @@ if 't': push TANGENT, 1
 if 'a': push ARCSINE, 1
 if 'o': push ARCCOSINE, 1
 if 'g': push ARCTANGENT, 1
-if 'l': push LOG, 1 (format n\rn)
+if 'd': push DEGREE, 1
+if 'l': push LOG, 1 (format n\ln)

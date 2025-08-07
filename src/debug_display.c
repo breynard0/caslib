@@ -1,6 +1,7 @@
 #include "buttons.h"
 #include "draw.h"
 #include "enums.h"
+#include "letters.h"
 
 #include <raylib.h>
 
@@ -9,8 +10,8 @@
 #define SIZE WIDTH *HEIGHT
 
 Boolean draw_button(char *text, int x, int y, int width, int height,
-                    int mouse_x, int mouse_y, Boolean pressed, Boolean capital,
-                    Boolean second, char *alt_text) {
+                    int mouse_x, int mouse_y, Boolean pressed, Boolean second,
+                    char *alt_text) {
   Boolean hover = FALSE;
   if (mouse_x >= x && mouse_x <= x + width && mouse_y >= y &&
       mouse_y <= y + height) {
@@ -40,32 +41,13 @@ Boolean draw_button(char *text, int x, int y, int width, int height,
     text_height -= 4;
   }
 
-  // I want to avoid the standard library for learning reasons. I know it's
-  // stupid to do it like this
-  char show_text[16];
-  int show_text_len = 0;
-
   if (second && !(alt_text[0] == 'n' && alt_text[1] == 'u' &&
                   alt_text[2] == 'l' && alt_text[3] == 'l')) {
-    for (int i = 0; alt_text[i] != '\0'; i++) {
-      if (capital) {
-        show_text[i] = alt_text[i] - ('a' - 'A');
-      } else {
-        show_text[i] = alt_text[i];
-      }
-      show_text_len++;
-    }
-  } else {
-    for (int i = 0; text[i] != '\0'; i++) {
-      show_text[i] = text[i];
-      show_text_len++;
-    }
+    text = alt_text;
   }
-  show_text[show_text_len] = '\0';
-  show_text_len++;
 
-  DrawText(show_text, x + (width - text_width) / 2.0,
-           y + (height - text_height) / 2, text_height, WHITE);
+  DrawText(text, x + (width - text_width) / 2.0, y + (height - text_height) / 2,
+           text_height, WHITE);
 
   return hover;
 }
@@ -81,6 +63,14 @@ void debug_display() {
   // for (int i = 0; i < HEIGHT; i++) {
   //   set_pixel(i, i, ON, buffer, WIDTH);
   // }
+  // draw_line(0, 20, 100, 20, buffer, WIDTH);
+  // draw_line(20, 0, 20, HEIGHT / 2, buffer, WIDTH);
+  // draw_line(0, 0, 128, 4, buffer, WIDTH);
+  // draw_line(0, 0, 128, 40, buffer, WIDTH);
+  // draw_line(128, 4, 128, 40, buffer, WIDTH);
+  // draw_line(11, 11, 11, 10+40-1, buffer, WIDTH);
+  
+  draw_letter('0', 10, 10, 20, 40, buffer, WIDTH);
 
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   InitWindow(4 * WIDTH, 800, "Computer Algebra Solver");
@@ -89,9 +79,12 @@ void debug_display() {
   int cursor_pos = 0;
 
   Boolean second = FALSE;
-  Boolean capital = FALSE;
-  
+  Boolean subscript = FALSE;
+
   char input_string[128] = {};
+  int input_string_len = 0;
+
+  int last_digit = -1;
 
   while (!WindowShouldClose()) {
     // Update
@@ -104,7 +97,7 @@ void debug_display() {
     // Draw display
     int scaling = GetRenderWidth() / WIDTH;
     for (int i = 0; i < SIZE; i++) {
-      Color c = WHITE;
+      Color c = (Color){111, 153, 64, 255};
       if (buffer[i] != 0) {
         c = BLACK;
       }
@@ -113,8 +106,9 @@ void debug_display() {
                         scaling * (i % WIDTH),
                     scaling * (i / WIDTH), scaling, scaling, c);
     }
-    
+
     // Print input_string for now
+    input_string[input_string_len] = '\0';
     DrawText(input_string, 20, 20, 48, BLACK);
 
     // Draw buttons
@@ -129,279 +123,245 @@ void debug_display() {
     Boolean pressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
     int row = 0;
 
-    enum PushButton button_type = B_NUMBER_LETTER;
+    enum PushButton button_type = B_NONE;
     union PushButtonData button_data;
 
     if (draw_button("sin", 0 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_SIN;
     }
     if (draw_button("cos", 1 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_COS;
     }
     if (draw_button("tan", 2 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_TAN;
     }
     if (draw_button("DEL", 3 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_DEL;
     }
     if (draw_button("^", 4 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_UP;
     }
     if (draw_button("C", 5 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_CLEAR;
     }
 
     row = 1;
     if (draw_button("asin", 0 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_ASIN;
     }
     if (draw_button("acos", 1 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_ACOS;
     }
     if (draw_button("atan", 2 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_ATAN;
     }
     if (draw_button("<", 3 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_LEFT;
     }
     if (draw_button("v", 4 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_DOWN;
     }
     if (draw_button(">", 5 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_RIGHT;
     }
 
     row = 2;
     if (draw_button("sqrt", 0 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_SQRT;
     }
     if (draw_button("cbrt", 1 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_CBRT;
     }
     if (draw_button("nrt", 2 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_ROOT;
     }
-    if (draw_button("ln", 3 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
-      button_type = B_LN;
+    if (draw_button("", 3 * button_x, row * button_y + scaling * HEIGHT,
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
+      // button_type = ;
     }
     if (draw_button("log", 4 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_LOG;
     }
     if (draw_button("2nd", 5 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_2ND;
     }
 
     row = 3;
     if (draw_button("^2", 0 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_SQR;
     }
     if (draw_button("^3", 1 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_CB;
     }
     if (draw_button("^n", 2 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_POW;
     }
     if (draw_button("PI", 3 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_PI;
     }
     if (draw_button("DEG", 4 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_DEG;
     }
     if (draw_button("SSCR", 5 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_SUBSCRIPT;
     }
 
     row = 4;
     if (draw_button("7", 0 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "abc")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "a")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 7;
     }
     if (draw_button("8", 1 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "def")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "b")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 8;
     }
     if (draw_button("9", 2 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "ghi")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "c")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 9;
     }
     if (draw_button("EXPD", 3 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_EXPAND;
     }
     if (draw_button("=", 4 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_EQUAL;
     }
-    if (draw_button("CAP", 5 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
-      button_type = B_CAPITAL;
+    if (draw_button("", 5 * button_x, row * button_y + scaling * HEIGHT,
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
+      // button_type = B_CAPITAL;
     }
 
     row = 5;
     if (draw_button("4", 0 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "jkl")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "d")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 4;
     }
     if (draw_button("5", 1 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "mno")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "e")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 5;
     }
     if (draw_button("6", 2 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "pqr")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "f")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 6;
     }
     if (draw_button("RAR", 3 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_REARRANGE;
     }
     if (draw_button("(", 4 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_BLOCK_START;
     }
     if (draw_button(")", 5 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_BLOCK_END;
     }
     row = 6;
     if (draw_button("1", 0 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "stu")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "x")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 1;
     }
     if (draw_button("2", 1 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "vwx")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "y")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 2;
     }
     if (draw_button("3", 2 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "yz")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "w")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 3;
     }
     if (draw_button("GTRT", 3 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_GET_ROOT;
     }
     if (draw_button("*", 4 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_MULT;
     }
     if (draw_button("/", 5 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_DIV;
     }
     row = 7;
     if (draw_button("+/-", 0 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_NEGATE;
     }
     if (draw_button("0", 1 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_NUMBER_LETTER;
       button_data.number = 0;
     }
     if (draw_button(".", 2 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_DOT;
     }
     if (draw_button("SLV", 3 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_SOLVE;
     }
     if (draw_button("+", 4 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_PLUS;
     }
     if (draw_button("-", 5 * button_x, row * button_y + scaling * HEIGHT,
-                    button_x, button_y, m_x, m_y, pressed, capital, second,
-                    "null")) {
+                    button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_MINUS;
     }
 
-    if (pressed) {
+    if (pressed && button_type != B_NONE) {
+      Boolean second_before = second;
       second = button_type == B_2ND;
-      if (button_type == B_CAPITAL) {
-        capital = TRUE;
-        second = TRUE;
-      } else if (button_type != B_2ND) {
-        capital = FALSE;
+
+      if (button_type == B_SUBSCRIPT) {
+        subscript = TRUE;
+        second = second_before;
+      }
+
+      if (input_string_len < 128 && button_type != B_DEL &&
+          button_type != B_CLEAR && button_type != B_GET_ROOT &&
+          button_type != B_SOLVE && button_type != B_REARRANGE &&
+          button_type != B_EXPAND) {
+        cursor_pos = button_update(input_string, &input_string_len, cursor_pos,
+                                   button_type, button_data, second, subscript,
+                                   last_digit);
+      }
+      if (button_type == B_NUMBER_LETTER) {
+        last_digit = button_data.number;
+      } else {
+        last_digit = -1;
       }
     }
 

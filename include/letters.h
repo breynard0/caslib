@@ -1,0 +1,1 @@
+void draw_letter(char letter, short x, short y, short width, short height, char* buffer, short buf_width);

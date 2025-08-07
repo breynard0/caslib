@@ -16,7 +16,6 @@ enum PushButton {
   B_SQR,
   B_CB,
   B_POW,
-  B_LN,
   B_LOG,
   B_NUMBER_LETTER,
   B_PLUS,
@@ -43,6 +42,7 @@ enum PushButton {
   B_CLEAR,
   B_DEG,
   B_DOT,
+  B_NONE,
 };
 union PushButtonData {
     int number;
@@ -50,4 +50,4 @@ union PushButtonData {
 #endif
 
 // Returns new cursor position
-int button_update(char* buffer, int* length, short cursor_pos, enum PushButton button, union PushButtonData data, Boolean second, Boolean capital, short last_digit);
+short button_update(char* buffer, int* length, short cursor_pos, enum PushButton button, union PushButtonData data, Boolean second, Boolean capital, short last_digit);

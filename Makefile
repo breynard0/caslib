@@ -62,6 +62,7 @@ operations:
 display:
 	@$(call gcc_call,src/display/draw.c,work/draw.o)
 	@$(call gcc_call,src/display/buttons.c,work/buttons.o)
+	@$(call gcc_call,src/display/letters.c,work/letters.o)
 
 auto-deps:
 	@$(call gcc_call,auto-generated/cordic_constants.c,work/cordic_constants.o)

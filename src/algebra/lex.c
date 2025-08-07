@@ -244,6 +244,11 @@ int lex(char *input, int length, struct EquationObject *buffer,
         out_len++;
         state = 1;
         break;
+      case 'd':
+        if (buffer[out_len - 1].type == NUMBER) {
+          buffer[out_len - 1].value.number *= PI / 180.0;
+        }
+        break;
       }
       break;
     }
