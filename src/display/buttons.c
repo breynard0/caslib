@@ -5,52 +5,50 @@ short button_update(char *buffer, int *length, short cursor_pos,
                     enum PushButton button, union PushButtonData data,
                     Boolean second, Boolean subscript) {
   short cursor = cursor_pos;
+
+  // Make space for new thing
+  if (cursor < *length - 1 &&
+      !(button == B_NEGATE || button == B_SOLVE || button == B_REARRANGE ||
+        button == B_GET_ROOT || button == B_EXPAND || button == B_SUBSCRIPT ||
+        button == B_CAPITAL || button == B_2ND || button == B_UP ||
+        button == B_DOWN || button == B_LEFT || button == B_RIGHT ||
+        button == B_DEL || button == B_CLEAR || button == B_START ||
+        button == B_END || button == B_NONE)) {
+    for (int i = *length; i >= cursor; i--) {
+      buffer[i] = buffer[i - 1];
+    }
+    buffer[cursor] = ' ';
+    (*length)++;
+  }
+
   switch (button) {
   case B_SIN:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 's';
+    buffer[cursor] = '[';
     (*length)++;
     cursor++;
     break;
   case B_COS:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'c';
+    buffer[cursor] = ']';
     (*length)++;
     cursor++;
     break;
   case B_TAN:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 't';
+    buffer[cursor] = ';';
     (*length)++;
     cursor++;
     break;
   case B_ASIN:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'a';
+    buffer[cursor] = '`';
     (*length)++;
     cursor++;
     break;
   case B_ACOS:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'o';
+    buffer[cursor] = '~';
     (*length)++;
     cursor++;
     break;
   case B_ATAN:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'g';
+    buffer[cursor] = '$';
     (*length)++;
     cursor++;
     break;
@@ -58,10 +56,7 @@ short button_update(char *buffer, int *length, short cursor_pos,
     buffer[cursor] = '2';
     (*length)++;
     cursor++;
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'r';
+    buffer[cursor] = '#';
     (*length)++;
     cursor++;
     break;
@@ -69,18 +64,12 @@ short button_update(char *buffer, int *length, short cursor_pos,
     buffer[cursor] = '3';
     (*length)++;
     cursor++;
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'r';
+    buffer[cursor] = '#';
     (*length)++;
     cursor++;
     break;
   case B_ROOT:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'r';
+    buffer[cursor] = '#';
     (*length)++;
     cursor++;
     break;
@@ -106,10 +95,7 @@ short button_update(char *buffer, int *length, short cursor_pos,
     cursor++;
     break;
   case B_LOG:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'l';
+    buffer[cursor] = '&';
     (*length)++;
     cursor++;
     break;
@@ -210,10 +196,7 @@ short button_update(char *buffer, int *length, short cursor_pos,
   case B_2ND:
     break;
   case B_PI:
-    buffer[cursor] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[cursor] = 'p';
+    buffer[cursor] = '@';
     (*length)++;
     cursor++;
     break;
@@ -227,27 +210,29 @@ short button_update(char *buffer, int *length, short cursor_pos,
   case B_RIGHT:
     cursor++;
     break;
-  case B_DEL:
+  case B_DEL: {
+    Boolean cursor_at_end = TRUE;
     if (cursor != *length) {
+      cursor_at_end = FALSE;
       for (int i = cursor; i < *length - 1; i++) {
         buffer[i] = buffer[i + 1];
       }
     }
-
     if (length >= 0) {
       (*length)--;
+      if (cursor_at_end) {
+        cursor = *length - 1;
+      }
     }
     break;
+  }
   case B_CLEAR:
     *length = 0;
     cursor = 0;
     buffer[0] = '\0';
     break;
   case B_DEG:
-    buffer[*length] = '\\';
-    (*length)++;
-    cursor++;
-    buffer[*length] = 'd';
+    buffer[*length] = '%';
     (*length)++;
     cursor++;
     break;
@@ -255,6 +240,12 @@ short button_update(char *buffer, int *length, short cursor_pos,
     buffer[*length] = '.';
     (*length)++;
     cursor++;
+    break;
+  case B_START:
+    cursor = 0;
+    break;
+  case B_END:
+    cursor = *length;
     break;
   case B_NONE:
     break;

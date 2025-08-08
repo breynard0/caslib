@@ -36,5 +36,6 @@ if 'o' '~': push ARCCOSINE, 1
 if 'g' '$': push ARCTANGENT, 1
 if 'd' '%': push DEGREE, 1
 if 'l' '&': push LOG, 1 (format n\ln)
+First character is for lexer, second is for display 
 
 Error symbol: ?
