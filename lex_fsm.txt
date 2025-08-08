@@ -26,13 +26,15 @@ if ':': subscript flag, 3
 if anything else: push LETTER, decrement counter, 1
 
 State 4:
-if 'p': push PI, 1
-if 'r': push ROOT, 1 (format n\rn)
-if 's': push SINE, 1
-if 'c': push COSINE, 1
-if 't': push TANGENT, 1
-if 'a': push ARCSINE, 1
-if 'o': push ARCCOSINE, 1
-if 'g': push ARCTANGENT, 1
-if 'd': push DEGREE, 1
-if 'l': push LOG, 1 (format n\ln)
+if 'p' '@': push PI, 1
+if 'r' '#': push ROOT, 1 (format n\rn)
+if 's' '[': push SINE, 1
+if 'c' ']': push COSINE, 1
+if 't' ';': push TANGENT, 1
+if 'a' '`: push ARCSINE, 1
+if 'o' '~': push ARCCOSINE, 1
+if 'g' '$': push ARCTANGENT, 1
+if 'd' '%': push DEGREE, 1
+if 'l' '&': push LOG, 1 (format n\ln)
+
+Error symbol: ?

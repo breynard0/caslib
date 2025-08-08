@@ -74,17 +74,45 @@ void debug_display() {
   // draw_line(10, 20, 80, 20, buffer, WIDTH);
   // draw_line(20, 20, 10, 10, buffer, WIDTH);
   // draw_rect(10, 5, 172, 54, buffer, WIDTH);
-  
-  draw_letter('0', 10, 10, 8, 24, buffer, WIDTH);
-  draw_letter('1', 25, 10, 8, 24, buffer, WIDTH);
-  draw_letter('2', 40, 10, 8, 24, buffer, WIDTH);
-  draw_letter('3', 55, 10, 8, 24, buffer, WIDTH);
-  draw_letter('4', 70, 10, 8, 24, buffer, WIDTH);
-  draw_letter('5', 85, 10, 8, 24, buffer, WIDTH);
-  draw_letter('6', 100, 10, 8, 24, buffer, WIDTH);
-  draw_letter('7', 115, 10, 8, 24, buffer, WIDTH);
-  draw_letter('8', 130, 10, 8, 24, buffer, WIDTH);
-  draw_letter('9', 145, 10, 8, 24, buffer, WIDTH);
+
+  // draw_letter('0', 0, 6, 16, buffer, WIDTH);
+  // draw_letter('1', 16, 6, 16, buffer, WIDTH);
+  // draw_letter('2', 32, 6, 16, buffer, WIDTH);
+  // draw_letter('3', 48, 6, 16, buffer, WIDTH);
+  // draw_letter('4', 64, 6, 16, buffer, WIDTH);
+  // draw_letter('5', 80, 6, 16, buffer, WIDTH);
+  // draw_letter('6', 96, 6, 16, buffer, WIDTH);
+  // draw_letter('7', 112, 6, 16, buffer, WIDTH);
+  // draw_letter('8', 128, 6, 16, buffer, WIDTH);
+  // draw_letter('9', 144, 6, 16, buffer, WIDTH);
+  // draw_letter('@', 160, 6, 16, buffer, WIDTH);
+  // draw_letter('%', 176, 6, 16, buffer, WIDTH);
+
+  // draw_letter('#', 0, 28, 16, buffer, WIDTH);
+  // draw_letter('a', 16, 28, 16, buffer, WIDTH);
+  // draw_letter('b', 32, 28, 16, buffer, WIDTH);
+  // draw_letter('c', 48, 28, 16, buffer, WIDTH);
+  // draw_letter('d', 64, 28, 16, buffer, WIDTH);
+  // draw_letter('e', 80, 28, 16, buffer, WIDTH);
+  // draw_letter('f', 96, 28, 16, buffer, WIDTH);
+  // draw_letter('g', 112, 28, 16, buffer, WIDTH);
+  // draw_letter('i', 128, 28, 16, buffer, WIDTH);
+  // draw_letter('l', 144, 28, 16, buffer, WIDTH);
+  // draw_letter('n', 160, 28, 16, buffer, WIDTH);
+  // draw_letter('o', 176, 28, 16, buffer, WIDTH);
+
+  // draw_letter('t', 0, 46, 16, buffer, WIDTH);
+  // draw_letter('s', 16, 46, 16, buffer, WIDTH);
+  // draw_letter('+', 32, 46, 16, buffer, WIDTH);
+  // draw_letter('-', 48, 46, 16, buffer, WIDTH);
+  // draw_letter('*', 64, 46, 16, buffer, WIDTH);
+  // draw_letter('/', 80, 46, 16, buffer, WIDTH);
+  // draw_letter('^', 96, 46, 16, buffer, WIDTH);
+  // draw_letter('(', 112, 46, 16, buffer, WIDTH);
+  draw_letter(')', 128, 46, 16, buffer, WIDTH);
+  // draw_letter('=', 144, 46, 16, buffer, WIDTH);
+  // draw_letter('.', 160, 46, 16, buffer, WIDTH);
+  // draw_letter('?', 176, 46, 16, buffer, WIDTH);
 
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   InitWindow(4 * WIDTH, 800, "Computer Algebra Solver");

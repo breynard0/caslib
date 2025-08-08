@@ -218,6 +218,8 @@ short button_update(char *buffer, int *length, short cursor_pos,
     (*length)++;
     cursor++;
     break;
+  case B_NONE:
+    break;
   }
 
   return cursor;
