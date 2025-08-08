@@ -3,7 +3,7 @@
 
 short button_update(char *buffer, int *length, short cursor_pos,
                     enum PushButton button, union PushButtonData data,
-                    Boolean second, Boolean subscript, short last_digit) {
+                    Boolean second, Boolean subscript) {
   short cursor = cursor_pos;
   switch (button) {
   case B_SIN:
@@ -119,14 +119,44 @@ short button_update(char *buffer, int *length, short cursor_pos,
       (*length)++;
       cursor++;
     }
-    
-    if (second) {
 
+    if (second) {
+      char letter = 'a';
+      switch (data.number) {
+      case 7:
+        letter = 'a';
+        break;
+      case 8:
+        letter = 'b';
+        break;
+      case 9:
+        letter = 'c';
+        break;
+      case 4:
+        letter = 'd';
+        break;
+      case 5:
+        letter = 'e';
+        break;
+      case 6:
+        letter = 'f';
+        break;
+      case 1:
+        letter = 'x';
+        break;
+      case 2:
+        letter = 'y';
+        break;
+      case 3:
+        letter = 'w';
+        break;
+      }
+      buffer[cursor] = letter;
     } else {
       buffer[cursor] = data.number + '0';
-      (*length)++;
-      cursor++;
     }
+    (*length)++;
+    cursor++;
     break;
   case B_PLUS:
     buffer[cursor] = '+';
@@ -198,7 +228,15 @@ short button_update(char *buffer, int *length, short cursor_pos,
     cursor++;
     break;
   case B_DEL:
-    // TODO
+    if (cursor != *length) {
+      for (int i = cursor; i < *length - 1; i++) {
+        buffer[i] = buffer[i + 1];
+      }
+    }
+
+    if (length >= 0) {
+      (*length)--;
+    }
     break;
   case B_CLEAR:
     *length = 0;

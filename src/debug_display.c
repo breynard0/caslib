@@ -75,47 +75,47 @@ void debug_display() {
   // draw_line(20, 20, 10, 10, buffer, WIDTH);
   // draw_rect(10, 5, 172, 54, buffer, WIDTH);
 
-  draw_letter('0', 0, 6, 16, buffer, WIDTH);
-  draw_letter('1', 16, 6, 16, buffer, WIDTH);
-  draw_letter('2', 32, 6, 16, buffer, WIDTH);
-  draw_letter('3', 48, 6, 16, buffer, WIDTH);
-  draw_letter('4', 64, 6, 16, buffer, WIDTH);
-  draw_letter('5', 80, 6, 16, buffer, WIDTH);
-  draw_letter('6', 96, 6, 16, buffer, WIDTH);
-  draw_letter('7', 112, 6, 16, buffer, WIDTH);
-  draw_letter('8', 128, 6, 16, buffer, WIDTH);
-  draw_letter('9', 144, 6, 16, buffer, WIDTH);
-  draw_letter('@', 160, 6, 16, buffer, WIDTH);
-  draw_letter('%', 176, 6, 16, buffer, WIDTH);
+  // draw_letter('0', 0, 6, 16, buffer, WIDTH);
+  // draw_letter('1', 16, 6, 16, buffer, WIDTH);
+  // draw_letter('2', 32, 6, 16, buffer, WIDTH);
+  // draw_letter('3', 48, 6, 16, buffer, WIDTH);
+  // draw_letter('4', 64, 6, 16, buffer, WIDTH);
+  // draw_letter('5', 80, 6, 16, buffer, WIDTH);
+  // draw_letter('6', 96, 6, 16, buffer, WIDTH);
+  // draw_letter('7', 112, 6, 16, buffer, WIDTH);
+  // draw_letter('8', 128, 6, 16, buffer, WIDTH);
+  // draw_letter('9', 144, 6, 16, buffer, WIDTH);
+  // draw_letter('@', 160, 6, 16, buffer, WIDTH);
+  // draw_letter('%', 176, 6, 16, buffer, WIDTH);
 
-  draw_letter('#', 0, 28, 16, buffer, WIDTH);
-  draw_letter('a', 16, 28, 16, buffer, WIDTH);
-  draw_letter('b', 32, 28, 16, buffer, WIDTH);
-  draw_letter('c', 48, 28, 16, buffer, WIDTH);
-  draw_letter('d', 64, 28, 16, buffer, WIDTH);
-  draw_letter('e', 80, 28, 16, buffer, WIDTH);
-  draw_letter('f', 96, 28, 16, buffer, WIDTH);
-  draw_letter('g', 112, 28, 16, buffer, WIDTH);
-  draw_letter('i', 128, 28, 16, buffer, WIDTH);
-  draw_letter('l', 144, 28, 16, buffer, WIDTH);
-  draw_letter('n', 160, 28, 16, buffer, WIDTH);
-  draw_letter('o', 176, 28, 16, buffer, WIDTH);
+  // draw_letter('#', 0, 28, 16, buffer, WIDTH);
+  // draw_letter('a', 16, 28, 16, buffer, WIDTH);
+  // draw_letter('b', 32, 28, 16, buffer, WIDTH);
+  // draw_letter('c', 48, 28, 16, buffer, WIDTH);
+  // draw_letter('d', 64, 28, 16, buffer, WIDTH);
+  // draw_letter('e', 80, 28, 16, buffer, WIDTH);
+  // draw_letter('f', 96, 28, 16, buffer, WIDTH);
+  // draw_letter('g', 112, 28, 16, buffer, WIDTH);
+  // draw_letter('i', 128, 28, 16, buffer, WIDTH);
+  // draw_letter('l', 144, 28, 16, buffer, WIDTH);
+  // draw_letter('n', 160, 28, 16, buffer, WIDTH);
+  // draw_letter('o', 176, 28, 16, buffer, WIDTH);
 
-  draw_letter('t', 0, 46, 16, buffer, WIDTH);
-  draw_letter('s', 16, 46, 16, buffer, WIDTH);
-  draw_letter('+', 32, 46, 16, buffer, WIDTH);
-  draw_letter('-', 48, 46, 16, buffer, WIDTH);
-  draw_letter('*', 64, 46, 16, buffer, WIDTH);
-  draw_letter('/', 80, 46, 16, buffer, WIDTH);
-  draw_letter('^', 96, 46, 16, buffer, WIDTH);
-  draw_letter('(', 112, 46, 16, buffer, WIDTH);
-  draw_letter(')', 128, 46, 16, buffer, WIDTH);
+  // draw_letter('t', 0, 46, 16, buffer, WIDTH);
+  // draw_letter('s', 16, 46, 16, buffer, WIDTH);
+  // draw_letter('+', 32, 46, 16, buffer, WIDTH);
+  // draw_letter('-', 48, 46, 16, buffer, WIDTH);
+  // draw_letter('*', 64, 46, 16, buffer, WIDTH);
+  // draw_letter('/', 80, 46, 16, buffer, WIDTH);
+  // draw_letter('^', 96, 46, 16, buffer, WIDTH);
+  // draw_letter('(', 112, 46, 16, buffer, WIDTH);
+  // draw_letter(')', 128, 46, 16, buffer, WIDTH);
   // draw_letter('=', 144, 46, 16, buffer, WIDTH);
   // draw_letter('.', 160, 46, 16, buffer, WIDTH);
   // draw_letter('?', 176, 46, 16, buffer, WIDTH);
-  draw_letter('x', 144, 46, 16, buffer, WIDTH);
-  draw_letter('y', 160, 46, 16, buffer, WIDTH);
-  draw_letter('w', 176, 46, 16, buffer, WIDTH);
+  // draw_letter('x', 144, 46, 16, buffer, WIDTH);
+  // draw_letter('y', 160, 46, 16, buffer, WIDTH);
+  // draw_letter('w', 176, 46, 16, buffer, WIDTH);
 
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   InitWindow(4 * WIDTH, 800, "Computer Algebra Solver");
@@ -129,10 +129,16 @@ void debug_display() {
   char input_string[128] = {};
   int input_string_len = 0;
 
-  int last_digit = -1;
-
+  Boolean changed = FALSE;
+  
   while (!WindowShouldClose()) {
     // Update
+    // Update display
+    if (changed) {
+      clear_display(buffer, SIZE);
+      draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len, cursor_pos);
+      changed = FALSE;
+    }
 
     // Draw
     BeginDrawing();
@@ -151,10 +157,10 @@ void debug_display() {
                         scaling * (i % WIDTH),
                     scaling * (i / WIDTH), scaling, scaling, c);
     }
-
+    
     // Print input_string for now
-    input_string[input_string_len] = '\0';
-    DrawText(input_string, 20, 20, 48, BLACK);
+    // input_string[input_string_len] = '\0';
+    // DrawText(input_string, 20, 20, 48, BLACK);
 
     // Draw buttons
     int button_x_count = 6;
@@ -167,7 +173,7 @@ void debug_display() {
 
     Boolean pressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
     int row = 0;
-
+    
     enum PushButton button_type = B_NONE;
     union PushButtonData button_data;
 
@@ -235,9 +241,9 @@ void debug_display() {
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_ROOT;
     }
-    if (draw_button("", 3 * button_x, row * button_y + scaling * HEIGHT,
+    if (draw_button("START", 3 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
-      // button_type = ;
+      button_type = B_START;
     }
     if (draw_button("log", 4 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
@@ -261,15 +267,15 @@ void debug_display() {
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_POW;
     }
-    if (draw_button("PI", 3 * button_x, row * button_y + scaling * HEIGHT,
+    if (draw_button("END", 3 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
-      button_type = B_PI;
+      button_type = B_END;
     }
     if (draw_button("DEG", 4 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_DEG;
     }
-    if (draw_button("SSCR", 5 * button_x, row * button_y + scaling * HEIGHT,
+    if (draw_button("SSC", 5 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_SUBSCRIPT;
     }
@@ -298,9 +304,9 @@ void debug_display() {
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_EQUAL;
     }
-    if (draw_button("", 5 * button_x, row * button_y + scaling * HEIGHT,
+    if (draw_button("PI", 5 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
-      // button_type = B_CAPITAL;
+      button_type = B_PI;
     }
 
     row = 5;
@@ -387,26 +393,23 @@ void debug_display() {
     }
 
     if (pressed && button_type != B_NONE) {
+      changed = TRUE;
+      
       Boolean second_before = second;
       second = button_type == B_2ND;
 
       if (button_type == B_SUBSCRIPT) {
         subscript = TRUE;
         second = second_before;
+      } else {
+        subscript = FALSE;
       }
 
-      if (input_string_len < 128 && button_type != B_DEL &&
-          button_type != B_CLEAR && button_type != B_GET_ROOT &&
+      if (input_string_len < 128 && button_type != B_GET_ROOT &&
           button_type != B_SOLVE && button_type != B_REARRANGE &&
           button_type != B_EXPAND) {
         cursor_pos = button_update(input_string, &input_string_len, cursor_pos,
-                                   button_type, button_data, second, subscript,
-                                   last_digit);
-      }
-      if (button_type == B_NUMBER_LETTER) {
-        last_digit = button_data.number;
-      } else {
-        last_digit = -1;
+                                   button_type, button_data, second_before, subscript);
       }
     }
 

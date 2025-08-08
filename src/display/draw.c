@@ -1,6 +1,7 @@
 #include "draw.h"
 #include "dutils.h"
 #include "gcf.h"
+#include "letters.h"
 
 void clear_display(char *buffer, short length) {
   for (int i = 0; i < length; i++) {
@@ -9,7 +10,17 @@ void clear_display(char *buffer, short length) {
 }
 
 void set_pixel(short x, short y, short value, char *buffer, short width) {
+  if (x < 0 || x > width || y < 0) {
+    return;
+  }
   buffer[y * width + x] = value;
+}
+
+void set_pixel_on(short x, short y, char *buffer, short width) {
+  if (x < 0 || x > width || y < 0) {
+    return;
+  }
+  buffer[y * width + x] = ON;
 }
 
 int i_min(int a, int b) {
@@ -116,5 +127,115 @@ void draw_rect(short x, short y, short width, short height, char *buffer,
     for (int j = 0; j < width; j++) {
       set_pixel(x + j, y + i, ON, buffer, buf_width);
     }
+  }
+}
+
+void draw_expression(short x, short y, short size, char *buffer,
+                     short buf_width, char *expression_in, short length,
+                     short cursor) {
+  char expression[length] = {};
+  int new_len = 0;
+  for (int i = 0; i < length; i++) {
+    if (expression_in[i] == '\\') {
+      i++;
+      switch (expression_in[i]) {
+      case 'p':
+        expression[new_len] = '@';
+        break;
+      case 'r':
+        expression[new_len] = '#';
+        break;
+      case 's':
+        expression[new_len] = '[';
+        break;
+      case 'c':
+        expression[new_len] = ']';
+        break;
+      case 't':
+        expression[new_len] = ';';
+        break;
+      case 'a':
+        expression[new_len] = '`';
+        break;
+      case 'o':
+        expression[new_len] = '~';
+        break;
+      case 'g':
+        expression[new_len] = '$';
+        break;
+      case 'd':
+        expression[new_len] = '%';
+        break;
+      case 'l':
+        expression[new_len] = '&';
+        break;
+      default:
+        break;
+      }
+    } else {
+      expression[new_len] = expression_in[i];
+    }
+    new_len++;
+  }
+
+  short offset = 0;
+  // if (cursor * size >= buf_width) {
+  //   offset = (size * cursor) - 16;
+  // }
+  // if ((buf_width / size) >= length - cursor) {
+  //   offset = (size * length) - buf_width;
+  // }
+
+  int i = 0;
+  int draw_spot = offset;
+
+  while (i < new_len) {
+    char cur_let = expression[i];
+
+    if (cur_let == '\\') {
+      i++;
+    }
+
+    switch (cur_let) {
+    // Sine
+    case '[': {
+      short cumul_draw_spot = 0;
+      draw_letter('s', x + cumul_draw_spot + draw_spot, y, size, buffer,
+                  buf_width);
+      cumul_draw_spot += size - (size / 4);
+      draw_letter('i', x + cumul_draw_spot + draw_spot, y, size, buffer,
+                  buf_width);
+      cumul_draw_spot += size - (size / 4);
+      draw_letter('n', x + cumul_draw_spot + draw_spot, y, size, buffer,
+                  buf_width);
+      cumul_draw_spot += size - (size / 4);
+      draw_spot += cumul_draw_spot;
+      break;
+    }
+    // Cosine
+    case ']':
+      break;
+    // Tangent
+    case ';':
+      break;
+    // Arc Sine
+    case '`':
+      break;
+    // Arc Cosine
+    case '~':
+      break;
+    // Arc Tangent
+    case '$':
+      break;
+    // Log
+    case '&':
+      break;
+    default:
+      draw_letter(expression[i], x + draw_spot, y, size, buffer, buf_width);
+      draw_spot += size;
+      break;
+    }
+
+    i++;
   }
 }

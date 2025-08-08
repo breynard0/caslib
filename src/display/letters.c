@@ -247,13 +247,13 @@ const char LETL[8] = {
 
 const char LETG[8] = { 
     0b00000000,
-    0b00000000,
-    0b00000000,
     0b00111110,
+    0b01000010,
     0b01000010,
     0b00111110,
     0b00000010,
-    0b00011110
+    0b00000100,
+    0b00111000,
 };
 
 const char LETB[8] = { 
@@ -422,13 +422,12 @@ const char LETX[8] = {
 
 const char LETY[8] = { 
     0b00000000,
-    0b00000000,
     0b00100010,
     0b00100010,
     0b00011110,
     0b00000010,
-    0b00000010,
-    0b00111100,
+    0b00000100,
+    0b00111000,
 };
 
 const char LETW[8] = { 
@@ -444,22 +443,6 @@ const char LETW[8] = {
 
 // clang-format on
 
-void scale_ratio(short *width, short *height, short h_ratio, short w_ratio) {
-  float w_float = (float)*width;
-  float h_float = (float)*height;
-  float hr_float = (float)h_ratio;
-  float wr_float = (float)w_ratio;
-  float ratio = hr_float / wr_float;
-
-  if (w_float > h_float) {
-    w_float = h_float / ratio;
-    *width = (short)dround(w_float);
-  } else {
-    h_float = w_float * ratio;
-    *height = (short)dround(h_float);
-  }
-}
-
 void draw_bitmap(const char bitmap[8], struct DrawData data, char *buffer) {
   short x = data.x;
   short y = data.y;
@@ -472,8 +455,10 @@ void draw_bitmap(const char bitmap[8], struct DrawData data, char *buffer) {
       short pix_state = bitmap[i] & (0b10000000 >> j);
       for (int k = 0; k < res; k++) {
         for (int l = 0; l < res; l++) {
-          set_pixel(x + (j * res) + k, y + (i * res) + l, pix_state, buffer,
-                    buf_width);
+          if (pix_state) {
+            set_pixel_on(x + (j * res) + k, y + (i * res) + l, buffer,
+                         buf_width);
+          }
         }
       }
     }
@@ -583,6 +568,7 @@ void draw_letter(char letter, short x, short y, short size, char *buffer,
     draw_bitmap(LETL, data, buffer);
     break;
   case 'g':
+    data.y += 3;
     draw_bitmap(LETG, data, buffer);
     break;
   case 'b':
@@ -601,6 +587,7 @@ void draw_letter(char letter, short x, short y, short size, char *buffer,
     draw_bitmap(LETX, data, buffer);
     break;
   case 'y':
+    data.y += 3;
     draw_bitmap(LETY, data, buffer);
     break;
   case 'w':
