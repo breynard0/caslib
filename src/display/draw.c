@@ -29,8 +29,20 @@ int i_max(int a, int b) {
 
 void draw_line(short x0, short y0, short x1, short y1, char *buffer,
                short width) {
-  short rise = y1 - y0;
-  short run = x1 - x0;
+  short higher_y = y0;
+  short lower_y = y1;
+  if (y1 > y0) {
+    higher_y = y1;
+    lower_y = y0;
+  }
+  short higher_x = x0;
+  short lower_x = x1;
+  if (x1 > x0) {
+    higher_x = x1;
+    lower_x = x0;
+  }
+  short rise = higher_y - lower_y;
+  short run = higher_x - lower_x;
   int max = rise;
   if (run > rise) {
     max = run;
@@ -78,33 +90,20 @@ void draw_line(short x0, short y0, short x1, short y1, char *buffer,
   float f_rise = (float)rise;
   float f_run = (float)run;
 
-  short higher_y = y0;
-  short lower_y = y1;
-  if (y1 > y0) {
-    higher_y = y1;
-    lower_y = y0;
-  }
-  short higher_x = x0;
-  short lower_x = x1;
-  if (x1 > x0) {
-    higher_x = x1;
-    lower_x = x0;
-  }
-
   if (run > rise) {
-    double length = f_run / f_rise;
+    double length = f_run / (f_rise + 1);
 
-    for (int i = 0; i < higher_y - lower_y; i++) {
+    for (int i = 0; i <= higher_y - lower_y; i++) {
       i = i;
       for (int j = -1; j < length; j++) {
         set_pixel(lower_x + (i * length) + j, lower_y + i, ON, buffer, width);
       }
     }
   } else {
-    double length = f_rise / f_run;
+    double length = f_rise / (f_run + 1);
 
-    for (int i = 0; i < higher_x - lower_x; i++) {
-      for (int j = -1; j < length; j++) {
+    for (int i = 0; i <= higher_x - lower_x; i++) {
+      for (int j = 0; j < length; j++) {
         set_pixel(lower_x + i, lower_y + (i + length) + j, ON, buffer, width);
       }
     }
