@@ -294,7 +294,7 @@ const char LETF[8] = {
     0b00000000,
     0b00111110,
     0b01000000,
-    0b01111110,
+    0b01111100,
     0b01000000,
     0b01000000,
     0b01000000,
@@ -303,11 +303,11 @@ const char LETF[8] = {
 const char LETADD[8] = { 
     0b00000000,
     0b00000000,
-    0b00000000,
-    0b00010000,
-    0b00111000,
-    0b00010000,
-    0b00000000,
+    0b00001000,
+    0b00001000,
+    0b00111110,
+    0b00001000,
+    0b00001000,
     0b00000000,
 };
 
@@ -325,10 +325,10 @@ const char LETSUB[8] = {
 const char LETMUL[8] = { 
     0b00000000,
     0b00000000,
-    0b00000000,
+    0b00100100,
     0b00011000,
     0b00011000,
-    0b00000000,
+    0b00100100,
     0b00000000,
     0b00000000,
 };
@@ -356,25 +356,25 @@ const char LETEXP[8] = {
 };
 
 const char LETBS[8] = { 
-    0b00001100,
-    0b00011000,
-    0b00110000,
-    0b00110000,
-    0b00110000,
-    0b00110000,
-    0b00011000,
-    0b00001100,
+    0b00000100,
+    0b00001000,
+    0b00010000,
+    0b00010000,
+    0b00010000,
+    0b00010000,
+    0b00001000,
+    0b00000100,
 };
 
 const char LETBE[8] = { 
-    0b00110000,
-    0b00011000,
-    0b00001100,
-    0b00001100,
-    0b00001100,
-    0b00001100,
-    0b00011000,
-    0b00110000,
+    0b00100000,
+    0b00010000,
+    0b00001000,
+    0b00001000,
+    0b00001000,
+    0b00001000,
+    0b00010000,
+    0b00100000,
 };
 
 const char LETEQ[8] = { 
@@ -408,6 +408,38 @@ const char LETERR[8] = {
     0b10100101,
     0b11000011,
     0b11111111,
+};
+
+const char LETX[8] = { 
+    0b00000000,
+    0b00000000,
+    0b01000100,
+    0b00101000,
+    0b00010000,
+    0b00101000,
+    0b01000100,
+};
+
+const char LETY[8] = { 
+    0b00000000,
+    0b00000000,
+    0b00100010,
+    0b00100010,
+    0b00011110,
+    0b00000010,
+    0b00000010,
+    0b00111100,
+};
+
+const char LETW[8] = { 
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b01010100,
+    0b01010100,
+    0b01010100,
+    0b01010100,
+    0b00101000,
 };
 
 // clang-format on
@@ -507,8 +539,10 @@ void draw_letter(char letter, short x, short y, short size, char *buffer,
     break;
   case ')':
     draw_bitmap(LETBE, data, buffer);
+    break;
   case '=':
     draw_bitmap(LETEQ, data, buffer);
+    break;
   case '.':
     draw_bitmap(LETDOT, data, buffer);
     break;
@@ -562,6 +596,15 @@ void draw_letter(char letter, short x, short y, short size, char *buffer,
     break;
   case 'f':
     draw_bitmap(LETF, data, buffer);
+    break;
+  case 'x':
+    draw_bitmap(LETX, data, buffer);
+    break;
+  case 'y':
+    draw_bitmap(LETY, data, buffer);
+    break;
+  case 'w':
+    draw_bitmap(LETW, data, buffer);
     break;
   }
 }
