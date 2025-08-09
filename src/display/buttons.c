@@ -7,7 +7,7 @@ short button_update(char *buffer, int *length, short cursor_pos,
   short cursor = cursor_pos;
 
   // Make space for new thing
-  if (cursor < *length - 1 &&
+  if (cursor < *length &&
       !(button == B_NEGATE || button == B_SOLVE || button == B_REARRANGE ||
         button == B_GET_ROOT || button == B_EXPAND || button == B_SUBSCRIPT ||
         button == B_CAPITAL || button == B_2ND || button == B_UP ||
@@ -18,7 +18,14 @@ short button_update(char *buffer, int *length, short cursor_pos,
       buffer[i] = buffer[i - 1];
     }
     buffer[cursor] = ' ';
-    (*length)++;
+  }
+  if (cursor < *length &&
+      (button == B_SQRT || button == B_CBRT || button == B_CB ||
+       button == B_SQR || (button == B_NUMBER_LETTER && subscript))) {
+    for (int i = *length + 1; i >= cursor; i--) {
+      buffer[i] = buffer[i - 1];
+    }
+    buffer[cursor] = ' ';
   }
 
   switch (button) {
@@ -142,7 +149,10 @@ short button_update(char *buffer, int *length, short cursor_pos,
       buffer[cursor] = data.number + '0';
     }
     (*length)++;
-    cursor++;
+    if (!subscript) {
+      cursor++;
+    }
+
     break;
   case B_PLUS:
     buffer[cursor] = '+';
@@ -205,24 +215,52 @@ short button_update(char *buffer, int *length, short cursor_pos,
   case B_DOWN:
     break;
   case B_LEFT:
-    cursor--;
+    if (cursor > 0) {
+      cursor--;
+    }
     break;
-  case B_RIGHT:
-    cursor++;
+  case B_RIGHT: {
+    int num_subscript = 0;
+    for (int i = 0; i < *length; i++) {
+      if (buffer[i] == ':') {
+        num_subscript++;
+      }
+    }
+
+    if (cursor < (*length - num_subscript)) {
+      cursor++;
+    }
     break;
+  }
   case B_DEL: {
+    if (*length == 0) {
+      return cursor;
+    }
+
+    int del_pos = cursor - 1;
+    if (del_pos < 0) {
+      del_pos = 0;
+    }
+
+    char del_char = buffer[del_pos];
+
     Boolean cursor_at_end = TRUE;
     if (cursor != *length) {
       cursor_at_end = FALSE;
-      for (int i = cursor; i < *length - 1; i++) {
+      for (int i = del_pos; i < *length - 1; i++) {
         buffer[i] = buffer[i + 1];
       }
     }
     if (length >= 0) {
       (*length)--;
       if (cursor_at_end) {
-        cursor = *length - 1;
+        cursor = *length;
+      } else {
+        cursor--;
       }
+    }
+    if (del_char == ':') {
+      button_update(buffer, length, del_pos + 1, B_DEL, data, second, subscript);
     }
     break;
   }

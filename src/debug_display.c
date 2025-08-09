@@ -121,7 +121,7 @@ void debug_display() {
   InitWindow(4 * WIDTH, 800, "Computer Algebra Solver");
   SetTargetFPS(30);
 
-  int cursor_pos = 0;
+  short cursor_pos = 0;
 
   Boolean second = FALSE;
   Boolean subscript = FALSE;
@@ -136,7 +136,7 @@ void debug_display() {
     // Update display
     if (changed) {
       clear_display(buffer, SIZE);
-      draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len, cursor_pos);
+      draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len, &cursor_pos, 0);
       changed = FALSE;
     }
 
@@ -159,8 +159,8 @@ void debug_display() {
     }
     
     // Print input_string for now
-    // input_string[input_string_len] = '\0';
-    // DrawText(input_string, 20, 20, 48, BLACK);
+    input_string[input_string_len] = '\0';
+    DrawText(input_string, 20, 20, 48, BLACK);
 
     // Draw buttons
     int button_x_count = 6;
@@ -398,6 +398,7 @@ void debug_display() {
       Boolean second_before = second;
       second = button_type == B_2ND;
 
+      Boolean subscript_before = subscript;
       if (button_type == B_SUBSCRIPT) {
         subscript = TRUE;
         second = second_before;
@@ -409,7 +410,7 @@ void debug_display() {
           button_type != B_SOLVE && button_type != B_REARRANGE &&
           button_type != B_EXPAND) {
         cursor_pos = button_update(input_string, &input_string_len, cursor_pos,
-                                   button_type, button_data, second_before, subscript);
+                                   button_type, button_data, second_before, subscript_before);
       }
     }
 

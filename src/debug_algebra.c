@@ -39,7 +39,7 @@ void test_polygcf();
 void test_yun();
 
 void debug_algebra() {
-  // printf("%0.11f\n", nth_root(130130, 10));
+  printf("%0.11f\n", nth_root(10000, 1000000));
   // struct SinCos out = angle_pair(deg_to_rad(-315.0));
   // printf("%0.11f %0.11f\n", out.cos, out.sin);
   // printf("%0.11f\n", sine(cosine(tangent(43))));
@@ -73,7 +73,7 @@ void debug_algebra() {
   // test_lex();
   // test_solve_consts();
   // test_expansion();
-  test_roots();
+  // test_roots();
   // test_valid();
   // printf("Test rearrange...\n");
   // test_rearrange();

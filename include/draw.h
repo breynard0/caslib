@@ -10,6 +10,7 @@ void draw_line(short x0, short y0, short x1, short y1, char *buffer,
                short width);
 void draw_rect(short x, short y, short width, short height, char *buffer,
                short buf_width);
-void draw_expression(short x, short y, short size, char *buffer,
-                     short buf_width, char *expression, short length,
-                     short cursor);
+// Returns position of the draw cursor at the end
+int draw_expression(short x, short y, short size, char *buffer,
+                     short buf_width, char *expression_in, short length,
+                     short* cursor, short offset);
