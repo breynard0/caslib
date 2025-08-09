@@ -130,13 +130,14 @@ void debug_display() {
   int input_string_len = 0;
 
   Boolean changed = FALSE;
-  
+
   while (!WindowShouldClose()) {
     // Update
     // Update display
     if (changed) {
       clear_display(buffer, SIZE);
-      draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len, &cursor_pos, 0);
+      draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len,
+                      &cursor_pos, FALSE);
       changed = FALSE;
     }
 
@@ -157,7 +158,7 @@ void debug_display() {
                         scaling * (i % WIDTH),
                     scaling * (i / WIDTH), scaling, scaling, c);
     }
-    
+
     // Print input_string for now
     input_string[input_string_len] = '\0';
     DrawText(input_string, 20, 20, 48, BLACK);
@@ -173,7 +174,7 @@ void debug_display() {
 
     Boolean pressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
     int row = 0;
-    
+
     enum PushButton button_type = B_NONE;
     union PushButtonData button_data;
 
@@ -394,7 +395,7 @@ void debug_display() {
 
     if (pressed && button_type != B_NONE) {
       changed = TRUE;
-      
+
       Boolean second_before = second;
       second = button_type == B_2ND;
 
@@ -410,7 +411,8 @@ void debug_display() {
           button_type != B_SOLVE && button_type != B_REARRANGE &&
           button_type != B_EXPAND) {
         cursor_pos = button_update(input_string, &input_string_len, cursor_pos,
-                                   button_type, button_data, second_before, subscript_before);
+                                   button_type, button_data, second_before,
+                                   subscript_before);
       }
     }
 

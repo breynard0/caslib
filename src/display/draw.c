@@ -133,8 +133,8 @@ void draw_rect(short x, short y, short width, short height, char *buffer,
 }
 
 int draw_expression(short x, short y, short size, char *buffer, short buf_width,
-                    char *expression_in, short length, short* cursor,
-                    short offset) {
+                    char *expression_in, short length, short *cursor,
+                    Boolean cursor_calculation) {
   char expression[length] = {};
   int new_len = 0;
   // Get all subscripts
@@ -149,9 +149,20 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       new_len++;
     }
   }
-  
+
+  // Set offset
+  short offset = 0;
+  if (!cursor_calculation) {
+    short cursor_pos = draw_expression(x, y, size, buffer, buf_width,
+                                       expression_in, length, cursor, TRUE);
+    // x -= i_max(cursor_pos - buf_width, 0);
+    if (cursor_pos >= buf_width) {
+      offset = -i_max(cursor_pos - buf_width + buf_width / 4, 0);
+    }
+  }
+
   int i = 0;
-  int draw_spot = offset;
+  int draw_spot = 0;
   while (i < new_len) {
     int draw_spot_before = draw_spot;
 
@@ -165,8 +176,10 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
     for (int j = 0; j < sub_len; j++) {
       if (i == subscripts[j]) {
         is_subscript = TRUE;
-        draw_letter('0', x + draw_spot, y + (size - 8), size - 8, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('0', x + draw_spot + offset, y + (size - 8), size - 8,
+                      buffer, buf_width);
+        }
         draw_spot += size - 8;
       }
     }
@@ -176,14 +189,20 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       // Sine
       case '[': {
         short cumul_draw_spot = 0;
-        draw_letter('s', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('s', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 4);
-        draw_letter('i', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('i', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 4);
-        draw_letter('n', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('n', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size;
         draw_spot += cumul_draw_spot;
         break;
@@ -191,14 +210,20 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       // Cosine
       case ']': {
         short cumul_draw_spot = 0;
-        draw_letter('c', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('c', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('o', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('o', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('s', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('s', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size;
         draw_spot += cumul_draw_spot;
         break;
@@ -206,14 +231,20 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       // Tangent
       case ';': {
         short cumul_draw_spot = 0;
-        draw_letter('t', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('t', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 4);
-        draw_letter('a', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('a', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('n', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('n', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size;
         draw_spot += cumul_draw_spot;
         break;
@@ -221,17 +252,25 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       // Arc Sine
       case '`': {
         short cumul_draw_spot = 0;
-        draw_letter('a', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('a', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('s', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('s', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 4);
-        draw_letter('i', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('i', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 4);
-        draw_letter('n', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('n', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size;
         draw_spot += cumul_draw_spot;
         break;
@@ -239,17 +278,25 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       // Arc Cosine
       case '~': {
         short cumul_draw_spot = 0;
-        draw_letter('a', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('a', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('c', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('c', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('o', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('o', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('s', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('s', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size;
         draw_spot += cumul_draw_spot;
         break;
@@ -257,17 +304,25 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       // Arc Tangent
       case '$': {
         short cumul_draw_spot = 0;
-        draw_letter('a', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('a', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('t', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('t', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 4);
-        draw_letter('a', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('a', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 8);
-        draw_letter('n', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('n', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size;
         draw_spot += cumul_draw_spot;
         break;
@@ -275,14 +330,20 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       // Log
       case '&': {
         short cumul_draw_spot = 0;
-        draw_letter('l', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('l', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 6);
-        draw_letter('o', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('o', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size - (size / 6);
-        draw_letter('g', x + cumul_draw_spot + draw_spot, y, size, buffer,
-                    buf_width);
+        if (!cursor_calculation) {
+          draw_letter('g', x + cumul_draw_spot + draw_spot + offset, y, size,
+                      buffer, buf_width);
+        }
         cumul_draw_spot += size;
         draw_spot += cumul_draw_spot;
         break;
@@ -290,12 +351,18 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       // Dot
       case '.': {
         draw_spot -= (size / 3);
-        draw_letter(expression[i], x + draw_spot, y, size, buffer, buf_width);
+        if (!cursor_calculation) {
+          draw_letter(expression[i], x + draw_spot + offset, y, size, buffer,
+                      buf_width);
+        }
         draw_spot += 2 * (size / 3);
         break;
       }
       default:
-        draw_letter(expression[i], x + draw_spot, y, size, buffer, buf_width);
+        if (!cursor_calculation) {
+          draw_letter(expression[i], x + draw_spot + offset, y, size, buffer,
+                      buf_width);
+        }
         draw_spot += size;
         break;
       }
@@ -303,18 +370,25 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
 
     // Draw cursor
     if (*cursor == i) {
-      draw_line(draw_spot_before + x + offset, y - 2,
-                draw_spot_before + x + offset, y + size + 2, buffer, buf_width);
+      if (!cursor_calculation) {
+        draw_line(draw_spot_before + x + offset, y - 2,
+                  draw_spot_before + x + offset, y + size + 2, buffer,
+                  buf_width);
+      } else {
+        return draw_spot_before + x + offset;
+      }
     }
 
     i++;
   }
 
   // Draw cursor at end
-  if (*cursor == new_len || new_len == 0) {
-    draw_line(draw_spot + x + offset, y + size + 2,
-              draw_spot + x + offset + size, y + size + 2, buffer, buf_width);
+  if (!cursor_calculation) {
+    if (*cursor == new_len || new_len == 0) {
+      draw_line(draw_spot + x + offset, y + size + 2,
+                draw_spot + x + offset + size, y + size + 2, buffer, buf_width);
+    }
   }
 
-  return x + draw_spot;
+  return x + draw_spot + offset;
 }

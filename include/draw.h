@@ -1,5 +1,6 @@
 #ifndef DRAW_STUFF
 #define DRAW_STUFF
+#include "enums.h"
 enum PixelState { OFF, ON };
 #endif
 
@@ -13,4 +14,4 @@ void draw_rect(short x, short y, short width, short height, char *buffer,
 // Returns position of the draw cursor at the end
 int draw_expression(short x, short y, short size, char *buffer,
                      short buf_width, char *expression_in, short length,
-                     short* cursor, short offset);
+                     short* cursor, Boolean cursor_calculation);
