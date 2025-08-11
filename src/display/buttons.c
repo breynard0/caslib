@@ -2,7 +2,9 @@
 #include "enums.h"
 #include "equation_objects.h"
 #include "expansion.h"
+#include "flags.h"
 #include "lex.h"
+#include "valid.h"
 
 void insert_char_idx(char *buffer, int length, char c, int idx) {
   for (int i = length - 2; i >= idx; i--) {
@@ -271,12 +273,16 @@ short button_update(char *buffer, int *length, short cursor_pos,
     // This is larger than the character buffer to handle juxtposition, etc.
     struct EquationObject expression[192] = {};
     int lex_len = lex(buffer, *length, expression, 192);
+    if (!valid_expr(expression, lex_len)) {
+      f_bad_equation = TRUE;
+      break;
+    }
     int out_len = expand_polynomial(expression, lex_len);
     out_len = 0;
     while (expression[out_len].type != END_LEX) {
       out_len++;
     }
-    
+
     // Convert back to chars
     int buf_len = eo_to_string(expression, out_len, buffer);
     *length = buf_len;

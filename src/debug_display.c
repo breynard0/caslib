@@ -1,7 +1,9 @@
 #include "buttons.h"
 #include "draw.h"
 #include "enums.h"
+#include "flags.h"
 #include "letters.h"
+#include "valid.h"
 
 #include <raylib.h>
 
@@ -129,6 +131,8 @@ void debug_display() {
   char input_string[128] = {};
   int input_string_len = 0;
 
+  enum StateMode mode = M_EXPRESSION;
+  
   Boolean changed = FALSE;
 
   while (!WindowShouldClose()) {
@@ -406,6 +410,16 @@ void debug_display() {
         second = second_before;
       } else {
         subscript = FALSE;
+      }
+      
+      f_bad_equation = FALSE;
+      f_bad_term = FALSE;
+      f_buffer_overflow = FALSE;
+      f_overflow = FALSE;
+      f_undefined = FALSE;
+      f_unsupported = FALSE;
+      if (button_type == B_CLEAR) {
+        mode = M_EXPRESSION;
       }
 
       if (input_string_len < 128 && button_type != B_GET_ROOT &&

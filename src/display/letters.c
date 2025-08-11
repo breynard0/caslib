@@ -399,15 +399,15 @@ const char LETDOT[8] = {
     0b00011000,
 };
 
-const char LETERR[8] = { 
-    0b11111111,
-    0b11000011,
-    0b10100101,
-    0b10011001,
-    0b10011001,
-    0b10100101,
-    0b11000011,
-    0b11111111,
+const char LETQUES[8] = { 
+  0b00111100,
+  0b01000010,
+  0b00000010,
+  0b00000100,
+  0b00001000,
+  0b00001000,
+  0b00000000,
+  0b00001000,
 };
 
 const char LETX[8] = { 
@@ -554,7 +554,7 @@ void draw_letter(char letter, short x, short y, short size, char *buffer,
     draw_bitmap(LETDOT, data, buffer);
     break;
   case '?':
-    draw_bitmap(LETERR, data, buffer);
+    draw_bitmap(LETQUES, data, buffer);
     break;
   case '@':
     draw_bitmap(LETPI, data, buffer);

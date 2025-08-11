@@ -1,7 +1,7 @@
 #ifndef DRAW_STUFF
 #define DRAW_STUFF
 enum PixelState { OFF, ON };
-enum StateMode { EXPRESSION, WHICH_VAR, VAR_VALUE, SHOW_ROOTS };
+enum StateMode { M_EXPRESSION, M_WHICH_VAR, M_VAR_VALUE, M_SHOW_ROOTS };
 #endif
 #include "enums.h"
 

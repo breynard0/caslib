@@ -70,9 +70,9 @@ void debug_algebra() {
   // printf("%0.10f\n", log_2(160000));
   // printf("%0.10f\n", ln(200000));
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
-  // test_lex();
+  test_lex();
   // test_solve_consts();
-  test_expansion();
+  // test_expansion();
   // test_roots();
   // test_valid();
   // printf("Test rearrange...\n");
@@ -89,7 +89,8 @@ void test_lex() {
   //     "(22+a:2)*23.12/\\r2\\4=-(0.6^9-e^(-2\\p)+\\g(0.3x:6)\\l26\\";
   // char *expression = "-2+2*4^2";
   // char *expression = "4xy";
-  char *expression = "60\\d";
+  // char *expression = "60\\d";
+  char *expression = "3x+4";
   printf("Lexing %s\n", expression);
   struct EquationObject buffer[256];
 

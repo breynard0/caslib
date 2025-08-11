@@ -20,7 +20,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
 
   Boolean subscript = FALSE;
 
-  while (i <= length) {
+  while (i < length) {
     if (out_len + 3 >= max_length) {
       break;
     }
@@ -256,9 +256,11 @@ int lex(char *input, int length, struct EquationObject *buffer,
   }
 
   buffer[out_len] = eo;
+  out_len++;
   eo = eo_def;
   eo.type = END_LEX;
   buffer[out_len] = eo;
+  out_len++;
 
   return out_len;
 }
