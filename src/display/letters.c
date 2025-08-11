@@ -441,6 +441,28 @@ const char LETW[8] = {
     0b00101000,
 };
 
+const char LETU[8] = { 
+  0b00000000,
+  0b00000000,
+  0b00000000,
+  0b01000010,
+  0b01000010,
+  0b01000010,
+  0b00111110,
+  0b00000010,
+};
+
+const char LETM[8] = { 
+  0b00000000,
+  0b00000000,
+  0b00000000,
+  0b01000000,
+  0b01111110,
+  0b01010010,
+  0b01010010,
+  0b01010010,
+};
+
 // clang-format on
 
 void draw_bitmap(const char bitmap[8], struct DrawData data, char *buffer) {
@@ -592,6 +614,12 @@ void draw_letter(char letter, short x, short y, short size, char *buffer,
     break;
   case 'w':
     draw_bitmap(LETW, data, buffer);
+    break;
+  case 'u':
+    draw_bitmap(LETU, data, buffer);
+    break;
+  case 'm':
+    draw_bitmap(LETM, data, buffer);
     break;
   }
 }

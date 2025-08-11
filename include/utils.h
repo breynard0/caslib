@@ -8,6 +8,7 @@
 
 int int_abs(int num);
 long long_abs(long num);
+long long long_long_abs(long long num);
 short long_long_digits(long long num);
 short double_digits_whole(double num);
 short double_digits_partial(double num);

@@ -138,6 +138,7 @@ void debug_display() {
       clear_display(buffer, SIZE);
       draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len,
                       &cursor_pos, FALSE);
+      draw_top_bar(WIDTH, buffer, 8, second, subscript);
       changed = FALSE;
     }
 
@@ -159,9 +160,9 @@ void debug_display() {
                     scaling * (i / WIDTH), scaling, scaling, c);
     }
 
-    // Print input_string for now
-    input_string[input_string_len] = '\0';
-    DrawText(input_string, 20, 20, 48, BLACK);
+    // Print input_string for debugging
+    // input_string[input_string_len] = '\0';
+    // DrawText(input_string, 20, 20, 48, BLACK);
 
     // Draw buttons
     int button_x_count = 6;
@@ -272,11 +273,11 @@ void debug_display() {
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_END;
     }
-    if (draw_button("DEG", 4 * button_x, row * button_y + scaling * HEIGHT,
+    if (draw_button("RST", 4 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
-      button_type = B_DEG;
+      // Does nothing here, will be connected directly to rst pin of MCU
     }
-    if (draw_button("SSC", 5 * button_x, row * button_y + scaling * HEIGHT,
+    if (draw_button("SBSC", 5 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
       button_type = B_SUBSCRIPT;
     }
@@ -367,9 +368,9 @@ void debug_display() {
       button_type = B_DIV;
     }
     row = 7;
-    if (draw_button("+/-", 0 * button_x, row * button_y + scaling * HEIGHT,
+    if (draw_button("DEG", 0 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
-      button_type = B_NEGATE;
+      button_type = B_DEG;
     }
     if (draw_button("0", 1 * button_x, row * button_y + scaling * HEIGHT,
                     button_x, button_y, m_x, m_y, pressed, second, "null")) {
@@ -408,8 +409,7 @@ void debug_display() {
       }
 
       if (input_string_len < 128 && button_type != B_GET_ROOT &&
-          button_type != B_SOLVE && button_type != B_REARRANGE &&
-          button_type != B_EXPAND) {
+          button_type != B_SOLVE && button_type != B_REARRANGE) {
         cursor_pos = button_update(input_string, &input_string_len, cursor_pos,
                                    button_type, button_data, second_before,
                                    subscript_before);

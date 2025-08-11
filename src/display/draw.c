@@ -177,8 +177,8 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
       if (i == subscripts[j]) {
         is_subscript = TRUE;
         if (!cursor_calculation) {
-          draw_letter('0', x + draw_spot + offset, y + (size - 8), size - 8,
-                      buffer, buf_width);
+          draw_letter(expression[i], x + draw_spot + offset, y + (size - 8),
+                      size - 8, buffer, buf_width);
         }
         draw_spot += size - 8;
       }
@@ -391,4 +391,65 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
   }
 
   return x + draw_spot + offset;
+}
+
+#include "flags.h"
+void draw_top_bar(short width, char *buffer, short size, Boolean second,
+                  Boolean ssc) {
+  short side_spacing = width / 10;
+
+  if (second) {
+    draw_letter('2', side_spacing, 0, size, buffer, width);
+    draw_letter('n', side_spacing + size, 0, size, buffer, width);
+    draw_letter('d', side_spacing + 2 * size, 0, size, buffer, width);
+  }
+
+  if (ssc) {
+    draw_letter('s', side_spacing + width / 4, 0, size, buffer, width);
+    draw_letter('b', side_spacing + width / 4 + size, 0, size, buffer, width);
+    draw_letter('s', side_spacing + width / 4 + 2 * size, 0, size, buffer,
+                width);
+    draw_letter('c', side_spacing + width / 4 + 3 * size, 0, size, buffer,
+                width);
+  }
+
+  short draw_pos = side_spacing + width / 2;
+  if (f_overflow || f_buffer_overflow) {
+    draw_letter('o', draw_pos, 0, size, buffer, width);
+    draw_letter('f', draw_pos + size, 0, size, buffer, width);
+    draw_letter('l', draw_pos + 2 * size, 0, size, buffer, width);
+    draw_letter('o', draw_pos + 3 * size, 0, size, buffer, width);
+    draw_letter('w', draw_pos + 4 * size, 0, size, buffer, width);
+    return;
+  }
+  if (f_bad_equation) {
+    draw_letter('b', draw_pos, 0, size, buffer, width);
+    draw_letter('a', draw_pos + size, 0, size, buffer, width);
+    draw_letter('d', draw_pos + 2 * size, 0, size, buffer, width);
+    draw_letter('e', draw_pos + 4 * size, 0, size, buffer, width);
+    draw_letter('x', draw_pos + 5 * size, 0, size, buffer, width);
+    return;
+  }
+  if (f_bad_term) {
+    draw_letter('b', draw_pos, 0, size, buffer, width);
+    draw_letter('a', draw_pos + size, 0, size, buffer, width);
+    draw_letter('d', draw_pos + 2 * size, 0, size, buffer, width);
+    draw_letter('t', draw_pos + 4 * size, 0, size, buffer, width);
+    draw_letter('m', draw_pos + 5 * size, 0, size, buffer, width);
+    return;
+  }
+  if (f_undefined) {
+    draw_letter('u', draw_pos, 0, size, buffer, width);
+    draw_letter('d', draw_pos + size, 0, size, buffer, width);
+    draw_letter('e', draw_pos + 2 * size, 0, size, buffer, width);
+    draw_letter('f', draw_pos + 3 * size, 0, size, buffer, width);
+    return;
+  }
+  if (f_unsupported) {
+    draw_letter('u', draw_pos, 0, size, buffer, width);
+    draw_letter('s', draw_pos + size, 0, size, buffer, width);
+    draw_letter('u', draw_pos + 2 * size, 0, size, buffer, width);
+    draw_letter('d', draw_pos + 3 * size, 0, size, buffer, width);
+    return;
+  }
 }

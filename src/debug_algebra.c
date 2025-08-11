@@ -39,7 +39,7 @@ void test_polygcf();
 void test_yun();
 
 void debug_algebra() {
-  printf("%0.11f\n", nth_root(10000, 1000000));
+  // printf("%0.11f\n", nth_root(10000, 1000000));
   // struct SinCos out = angle_pair(deg_to_rad(-315.0));
   // printf("%0.11f %0.11f\n", out.cos, out.sin);
   // printf("%0.11f\n", sine(cosine(tangent(43))));
@@ -72,7 +72,7 @@ void debug_algebra() {
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
   // test_lex();
   // test_solve_consts();
-  // test_expansion();
+  test_expansion();
   // test_roots();
   // test_valid();
   // printf("Test rearrange...\n");
@@ -189,8 +189,9 @@ void test_expansion() {
   // char *expression = "1/1";
   // char *expression = "x^3+1.0000000000000314x^2-12.999999999999997x+13."
   //                    "9999999999999999999999999999999999934";
-  char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(3x+4)";
+  // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(3x+4)";
   // char *expression = "0.000000*x^6.000000-0.000000*x^5.000000+0.000000*x^4.000000-0.000000*x^3.000000-0.000000*x^2.000000+0.000000*x-0.000000";
+  char *expression = "3x-8x";
 
   // Not working still
 

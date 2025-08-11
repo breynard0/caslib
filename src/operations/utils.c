@@ -2,6 +2,7 @@
 #include "dutils.h"
 #include "flags.h"
 #include "gcf.h"
+#include "log.h"
 #include "pow.h"
 #include "root.h"
 
@@ -14,6 +15,14 @@ int int_abs(int num) {
 }
 
 long long_abs(long num) {
+  if (num < 0) {
+    return -num;
+  } else {
+    return num;
+  }
+}
+
+long long long_long_abs(long long num) {
   if (num < 0) {
     return -num;
   } else {
@@ -47,13 +56,7 @@ short long_long_digits(long long num) {
   return 19;
 }
 
-short double_digits_whole(double num) {
-  short digits = 0;
-  while (num > pow_di(10.0, digits)) {
-    digits++;
-  }
-  return digits;
-}
+short double_digits_whole(double num) { return ((short)log_n(num, 10)) + 1; }
 
 static short check_places(double num, short places) {
   short i = 0;

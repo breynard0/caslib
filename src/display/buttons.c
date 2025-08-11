@@ -1,19 +1,38 @@
 #include "buttons.h"
 #include "enums.h"
+#include "equation_objects.h"
+#include "expansion.h"
+#include "lex.h"
+
+void insert_char_idx(char *buffer, int length, char c, int idx) {
+  for (int i = length - 2; i >= idx; i--) {
+    buffer[i + 1] = buffer[i];
+  }
+  buffer[idx] = c;
+}
 
 short button_update(char *buffer, int *length, short cursor_pos,
                     enum PushButton button, union PushButtonData data,
                     Boolean second, Boolean subscript) {
   short cursor = cursor_pos;
 
+  short colon_count = 0;
+  for (int i = 0; i <= cursor; i++) {
+    if (buffer[i] == ':') {
+      colon_count++;
+    }
+  }
+
   // Make space for new thing
   if (cursor < *length &&
-      !(button == B_NEGATE || button == B_SOLVE || button == B_REARRANGE ||
-        button == B_GET_ROOT || button == B_EXPAND || button == B_SUBSCRIPT ||
-        button == B_CAPITAL || button == B_2ND || button == B_UP ||
-        button == B_DOWN || button == B_LEFT || button == B_RIGHT ||
-        button == B_DEL || button == B_CLEAR || button == B_START ||
-        button == B_END || button == B_NONE)) {
+      !(button == B_SOLVE || button == B_REARRANGE || button == B_GET_ROOT ||
+        button == B_EXPAND || button == B_SUBSCRIPT || button == B_2ND ||
+        button == B_UP || button == B_DOWN || button == B_LEFT ||
+        button == B_RIGHT || button == B_DEL || button == B_CLEAR ||
+        button == B_START || button == B_END || button == B_NONE)) {
+    // Adjust for subscripts
+    cursor += colon_count;
+
     for (int i = *length; i >= cursor; i--) {
       buffer[i] = buffer[i - 1];
     }
@@ -26,6 +45,59 @@ short button_update(char *buffer, int *length, short cursor_pos,
       buffer[i] = buffer[i - 1];
     }
     buffer[cursor] = ' ';
+  }
+
+  // Expand functions
+  if (button == B_SOLVE || button == B_REARRANGE || button == B_GET_ROOT ||
+      button == B_EXPAND) {
+    for (int i = 0; i < *length; i++) {
+      Boolean found = FALSE;
+      char c = buffer[i];
+      if (c == '@') {
+        buffer[i] = 'p';
+        found = TRUE;
+      }
+      if (c == '#') {
+        buffer[i] = 'r';
+        found = TRUE;
+      }
+      if (c == '[') {
+        buffer[i] = 's';
+        found = TRUE;
+      }
+      if (c == ']') {
+        buffer[i] = 'c';
+        found = TRUE;
+      }
+      if (c == ';') {
+        buffer[i] = 't';
+        found = TRUE;
+      }
+      if (c == '`') {
+        buffer[i] = 'a';
+        found = TRUE;
+      }
+      if (c == '~') {
+        buffer[i] = 'o';
+        found = TRUE;
+      }
+      if (c == '$') {
+        buffer[i] = 'g';
+        found = TRUE;
+      }
+      if (c == '%') {
+        buffer[i] = 'd';
+        found = TRUE;
+      }
+      if (c == '&') {
+        buffer[i] = 'l';
+        found = TRUE;
+      }
+      if (found) {
+        (*length)++;
+        insert_char_idx(buffer, *length, '\\', i);
+      }
+    }
   }
 
   switch (button) {
@@ -189,30 +261,50 @@ short button_update(char *buffer, int *length, short cursor_pos,
     (*length)++;
     cursor++;
     break;
-  case B_NEGATE:
-    break;
   case B_SOLVE:
     break;
   case B_REARRANGE:
     break;
   case B_GET_ROOT:
     break;
-  case B_EXPAND:
-    break;
-  case B_SUBSCRIPT:
-    break;
-  case B_CAPITAL:
-    break;
-  case B_2ND:
-    break;
+  case B_EXPAND: {
+    // This is larger than the character buffer to handle juxtposition, etc.
+    struct EquationObject expression[192] = {};
+    int lex_len = lex(buffer, *length, expression, 192);
+    int out_len = expand_polynomial(expression, lex_len);
+    out_len = 0;
+    while (expression[out_len].type != END_LEX) {
+      out_len++;
+    }
+    
+    // Convert back to chars
+    int buf_len = eo_to_string(expression, out_len, buffer);
+    *length = buf_len;
+    cursor = buf_len;
+
+  } break;
   case B_PI:
     buffer[cursor] = '@';
     (*length)++;
     cursor++;
     break;
-  case B_UP:
+  case B_UP: {
+    if (cursor > 0) {
+      cursor--;
+      while (cursor > 0 && buffer[cursor] != '(' && buffer[cursor] != ')') {
+        cursor--;
+      }
+    }
     break;
+  }
   case B_DOWN:
+    if (cursor < *length) {
+      cursor++;
+      while (cursor < *length && buffer[cursor] != '(' &&
+             buffer[cursor] != ')') {
+        cursor++;
+      }
+    }
     break;
   case B_LEFT:
     if (cursor > 0) {
@@ -260,7 +352,8 @@ short button_update(char *buffer, int *length, short cursor_pos,
       }
     }
     if (del_char == ':') {
-      button_update(buffer, length, del_pos + 1, B_DEL, data, second, subscript);
+      button_update(buffer, length, del_pos + 1, B_DEL, data, second,
+                    subscript);
     }
     break;
   }
@@ -285,8 +378,14 @@ short button_update(char *buffer, int *length, short cursor_pos,
   case B_END:
     cursor = *length;
     break;
+  case B_SUBSCRIPT:
+  case B_2ND:
   case B_NONE:
     break;
+  }
+
+  if (cursor > *length - colon_count) {
+    cursor = *length - colon_count;
   }
 
   return cursor;
