@@ -1,8 +1,8 @@
 #include "../../auto-generated/powers_two.h"
-#include "root.h"
-#include "utils.h"
 #include "dutils.h"
 #include "log.h"
+#include "root.h"
+#include "utils.h"
 
 long pow_ll(long num, long exponent) {
   if (exponent == 0) {
@@ -37,6 +37,14 @@ long long pow_llll(long long num, long long exponent) {
 }
 
 double pow_di(double num, int exponent) {
+  if (num < THRESHOLD) {
+    if (exponent > THRESHOLD) {
+      return 0;
+    } else {
+      return (0.0 / 0.0);
+    }
+  }
+  
   if (exponent == 0) {
     return 1.0;
   }
@@ -74,18 +82,18 @@ double pow_frac(double num, struct ImproperFraction exponent) {
 }
 
 double pow_dd(double num, double exponent) {
-  if (exponent == (long long) exponent) {
+  if (exponent == (long long)exponent) {
     return pow_di(num, exponent);
   }
-  
+
   double part = dmodulo(exponent, 1.0);
   int whole = exponent - part;
-  
+
   int iterations = 100;
-  
+
   double step = num / 4.0;
   double guess = num / 2.0;
-  
+
   int i = 0;
   while (i < iterations) {
     if (log_n(guess, num) > part) {
@@ -96,7 +104,7 @@ double pow_dd(double num, double exponent) {
     step = dhalve(step, 1);
     i++;
   }
-  
+
   return pow_di(num, whole) * guess;
 }
 

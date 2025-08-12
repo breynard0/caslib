@@ -70,9 +70,9 @@ void debug_algebra() {
   // printf("%0.10f\n", log_2(160000));
   // printf("%0.10f\n", ln(200000));
   // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
-  test_lex();
+  // test_lex();
   // test_solve_consts();
-  // test_expansion();
+  test_expansion();
   // test_roots();
   // test_valid();
   // printf("Test rearrange...\n");
@@ -192,7 +192,8 @@ void test_expansion() {
   //                    "9999999999999999999999999999999999934";
   // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(3x+4)";
   // char *expression = "0.000000*x^6.000000-0.000000*x^5.000000+0.000000*x^4.000000-0.000000*x^3.000000-0.000000*x^2.000000+0.000000*x-0.000000";
-  char *expression = "3x-8x";
+  // char *expression = "3x-8x";
+  char *expression = "2/0";
 
   // Not working still
 

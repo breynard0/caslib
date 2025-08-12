@@ -5,6 +5,7 @@
 #include "parse.h"
 #include "pow.h"
 #include "utils.h"
+#include "flags.h"
 
 void remove_eo_idx(struct EquationObject *list, int length, int idx) {
   if (idx == length - 1) {
@@ -78,6 +79,11 @@ int eo_to_string(struct EquationObject *expression, int length, char *buffer) {
     switch (expression[i].type) {
     case NUMBER: {
       double num = expression[i].value.number;
+      // NaN check
+      if (num != num) {
+        f_undefined = TRUE;
+        return 0;
+      }
       double whole = (double)((long long)num);
       double partial = num - ((double)whole);
       long long digits = double_digits_whole(double_abs(whole));
