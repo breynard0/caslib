@@ -37,14 +37,14 @@ long long pow_llll(long long num, long long exponent) {
 }
 
 double pow_di(double num, int exponent) {
-  if (num < THRESHOLD) {
-    if (exponent > THRESHOLD) {
+  if (double_abs(num) < THRESHOLD) {
+    if (double_abs(exponent) > THRESHOLD) {
       return 0;
     } else {
       return (0.0 / 0.0);
     }
   }
-  
+
   if (exponent == 0) {
     return 1.0;
   }

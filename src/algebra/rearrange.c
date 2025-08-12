@@ -1,6 +1,7 @@
 #include "enums.h"
 #include "equation_objects.h"
 #include "expansion.h"
+#include "flags.h"
 #include "gcf.h"
 
 struct ReplaceObject {
@@ -11,10 +12,21 @@ struct ReplaceObject {
 
 int rearrange_for_var(struct EquationObject *buffer, int length,
                       struct Letter target) {
-  // Grab copy of original
+  // Grab copy of original, making sure target is present in the process
+  Boolean target_present = FALSE;
   struct EquationObject original[length] = {};
   for (int i = 0; i < length; i++) {
     original[i] = buffer[i];
+    if (buffer[i].type == LETTER &&
+        buffer[i].value.letter.letter == target.letter &&
+        buffer[i].value.letter.subscript == target.subscript) {
+      target_present = TRUE;
+    }
+  }
+
+  if (!target_present) {
+    f_bad_equation = TRUE;
+    return 0;
   }
 
   // Construct ReplaceObject array
@@ -164,6 +176,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
           remove_eo_idx(lhs, lhs_len, 0);
           lhs_len--;
         }
+        i = 0;
       }
     }
   }
@@ -184,6 +197,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
         }
         start--;
       }
+      start++;
       if (found) {
         enum EOType sign = SUB;
         if (start != -1 &&
@@ -212,6 +226,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
           remove_eo_idx(rhs, rhs_len, 0);
           rhs_len--;
         }
+        i = 0;
       }
     }
   }
@@ -253,6 +268,10 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
         lhs_len--;
       }
     }
+    if (last.type == ADD) {
+      remove_eo_idx(lhs, lhs_len, 0);
+      lhs_len--;
+    }
   }
 
   // Right-hand side
@@ -284,6 +303,10 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
         remove_eo_idx(rhs, rhs_len, 0);
         rhs_len--;
       }
+    }
+    if (last.type == ADD) {
+      remove_eo_idx(rhs, rhs_len, 0);
+      rhs_len--;
     }
   }
 
@@ -350,7 +373,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     i++;
   }
 
-  // // Divide by GCF
+  // Divide by GCF
   struct EquationObject gcf[length] = {};
   int gcf_len = 0;
   int len0 = 0;
@@ -392,7 +415,8 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
   // Remove letter from GCF
   i = 0;
   while (i < gcf_len) {
-    if (gcf[i].type == LETTER && gcf[i].value.letter.letter == target.letter &&
+    if (gcf[i].type == LETTER && gcf[i].value.letter.letter == target.letter
+    &&
         gcf[i].value.letter.subscript == target.subscript) {
       remove_eo_idx(gcf, gcf_len, i);
       gcf_len--;
@@ -405,14 +429,15 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
       if (i >= 0 && (gcf[i - 1].type == MULT || gcf[i - 1].type == DIV)) {
         remove_eo_idx(gcf, gcf_len, i - 1);
         gcf_len--;
-      } else if (i < gcf_len && (gcf[i].type == MULT || gcf[i].type == DIV)) {
+      } else if (i < gcf_len && (gcf[i].type == MULT || gcf[i].type == DIV))
+      {
         remove_eo_idx(gcf, gcf_len, i);
         gcf_len--;
       }
     }
     i++;
   }
-  
+
   // Do the division
   struct EquationObject bs_obj;
   bs_obj.type = BLOCK_START;
@@ -464,7 +489,8 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
   i = 0;
   double degree = 0;
   while (i < lhs_len) {
-    if (lhs[i].type == LETTER && lhs[i].value.letter.letter == target.letter &&
+    if (lhs[i].type == LETTER && lhs[i].value.letter.letter == target.letter
+    &&
         lhs[i].value.letter.subscript == target.subscript) {
       double my_deg = 1;
       if (i < lhs_len - 1 && lhs[i + 1].type == EXP) {
