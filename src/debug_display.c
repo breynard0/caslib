@@ -433,15 +433,15 @@ void debug_display() {
       if (button_type == B_CLEAR) {
         mode = M_EXPRESSION;
       }
-      if (button_type == B_REARRANGE) {
+      if (button_type == B_REARRANGE && mode != M_WHICH_VAR) {
         letter_buf.letter = ' ';
         letter_buf.subscript = ' ';
         mode = M_WHICH_VAR;
       }
-      if (button_type == B_GET_ROOT) {
+      if (button_type == B_GET_ROOT && mode != M_SHOW_ROOTS) {
         mode = M_SHOW_ROOTS;
       }
-      if (button_type == B_SOLVE) {
+      if (button_type == B_SOLVE && mode != M_VAR_VALUE) {
         mode = M_VAR_VALUE;
       }
 
