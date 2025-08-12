@@ -12,6 +12,7 @@ int lex(char *input, int length, struct EquationObject *buffer,
   short state = 1;
 
   struct EquationObject eo_def;
+  eo_def.type = NONE;
   eo_def.value.none = 0;
   struct EquationObject eo;
 
@@ -255,8 +256,10 @@ int lex(char *input, int length, struct EquationObject *buffer,
     i++;
   }
 
-  buffer[out_len] = eo;
-  out_len++;
+  if (eo.type != NONE) {
+    buffer[out_len] = eo;
+    out_len++;
+  }
   eo = eo_def;
   eo.type = END_LEX;
   buffer[out_len] = eo;
