@@ -1,8 +1,13 @@
+#include "alt_buttons.h"
 #include "buttons.h"
 #include "draw.h"
 #include "enums.h"
+#include "equation_objects.h"
+#include "expansion.h"
 #include "flags.h"
 #include "letters.h"
+#include "lex.h"
+#include "rearrange.h"
 #include "valid.h"
 
 #include <raylib.h>
@@ -123,6 +128,7 @@ void debug_display() {
   InitWindow(4 * WIDTH, 800, "Computer Algebra Solver");
   SetTargetFPS(30);
 
+  // Initialize variables
   short cursor_pos = 0;
 
   Boolean second = FALSE;
@@ -131,14 +137,16 @@ void debug_display() {
   char input_string[128] = {};
   int input_string_len = 0;
 
+  struct Letter letter_buf;
+
   enum StateMode mode = M_EXPRESSION;
-  
+
   Boolean changed = FALSE;
 
   while (!WindowShouldClose()) {
     // Update
     // Update display
-    if (changed) {
+    if (changed && mode == M_EXPRESSION) {
       clear_display(buffer, SIZE);
       draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len,
                       &cursor_pos, FALSE);
@@ -402,7 +410,11 @@ void debug_display() {
       changed = TRUE;
 
       Boolean second_before = second;
-      second = button_type == B_2ND;
+      if (button_type == B_2ND) {
+        second = !second;
+      } else if (mode == M_EXPRESSION) {
+        second = FALSE;
+      }
 
       Boolean subscript_before = subscript;
       if (button_type == B_SUBSCRIPT) {
@@ -411,7 +423,7 @@ void debug_display() {
       } else {
         subscript = FALSE;
       }
-      
+
       f_bad_equation = FALSE;
       f_bad_term = FALSE;
       f_buffer_overflow = FALSE;
@@ -421,12 +433,56 @@ void debug_display() {
       if (button_type == B_CLEAR) {
         mode = M_EXPRESSION;
       }
+      if (button_type == B_REARRANGE) {
+        letter_buf.letter = ' ';
+        letter_buf.subscript = ' ';
+        mode = M_WHICH_VAR;
+      }
+      if (button_type == B_GET_ROOT) {
+        mode = M_SHOW_ROOTS;
+      }
+      if (button_type == B_SOLVE) {
+        mode = M_VAR_VALUE;
+      }
 
-      if (input_string_len < 128 && button_type != B_GET_ROOT &&
-          button_type != B_SOLVE && button_type != B_REARRANGE) {
-        cursor_pos = button_update(input_string, &input_string_len, cursor_pos,
-                                   button_type, button_data, second_before,
-                                   subscript_before);
+      switch (mode) {
+      case M_EXPRESSION:
+        if (input_string_len < 128 && button_type != B_GET_ROOT &&
+            button_type != B_SOLVE && button_type != B_REARRANGE) {
+          cursor_pos = button_update(input_string, &input_string_len,
+                                     cursor_pos, button_type, button_data,
+                                     second_before, subscript_before);
+        }
+        break;
+      case M_WHICH_VAR: {
+        clear_display(buffer, SIZE);
+        Boolean finished = update_get_var(
+            8, 16, buffer, WIDTH, &letter_buf, &subscript, &second, &mode,
+            &cursor_pos, button_type, button_data);
+        if (finished) {
+          struct EquationObject expression[192] = {};
+          int lex_len = lex(input_string, input_string_len, expression, 192);
+          if (!valid_expr(expression, lex_len)) {
+            f_bad_equation = TRUE;
+            break;
+          }
+          int out_len = rearrange_for_var(expression, lex_len, letter_buf);
+          out_len = 0;
+          while (expression[out_len].type != END_LEX) {
+            out_len++;
+          }
+
+          // Convert back to chars
+          int buf_len = eo_to_string(expression, out_len, input_string);
+          input_string_len = buf_len;
+          cursor_pos = buf_len;
+        }
+        break;
+      }
+      case M_VAR_VALUE:
+        break;
+      case M_SHOW_ROOTS:
+        break;
       }
     }
 

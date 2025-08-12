@@ -350,7 +350,7 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
     i++;
   }
 
-  // Divide by GCF
+  // // Divide by GCF
   struct EquationObject gcf[length] = {};
   int gcf_len = 0;
   int len0 = 0;
@@ -390,7 +390,30 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
   }
 
   // Remove letter from GCF
-
+  i = 0;
+  while (i < gcf_len) {
+    if (gcf[i].type == LETTER && gcf[i].value.letter.letter == target.letter &&
+        gcf[i].value.letter.subscript == target.subscript) {
+      remove_eo_idx(gcf, gcf_len, i);
+      gcf_len--;
+      if (i < gcf_len - 1 && gcf[i].type == EXP) {
+        remove_eo_idx(gcf, gcf_len, i);
+        gcf_len--;
+        remove_eo_idx(gcf, gcf_len, i);
+        gcf_len--;
+      }
+      if (i >= 0 && (gcf[i - 1].type == MULT || gcf[i - 1].type == DIV)) {
+        remove_eo_idx(gcf, gcf_len, i - 1);
+        gcf_len--;
+      } else if (i < gcf_len && (gcf[i].type == MULT || gcf[i].type == DIV)) {
+        remove_eo_idx(gcf, gcf_len, i);
+        gcf_len--;
+      }
+    }
+    i++;
+  }
+  
+  // Do the division
   struct EquationObject bs_obj;
   bs_obj.type = BLOCK_START;
 
@@ -433,29 +456,6 @@ int rearrange_for_var(struct EquationObject *buffer, int length,
   rhs[rhs_len].type = END_LEX;
   rhs_len++;
   rhs_len = expand_polynomial(rhs, rhs_len) - 1;
-
-  i = 0;
-  while (i < gcf_len) {
-    if (gcf[i].type == LETTER && gcf[i].value.letter.letter == target.letter &&
-        gcf[i].value.letter.subscript == target.subscript) {
-      remove_eo_idx(gcf, gcf_len, i);
-      gcf_len--;
-      if (i < gcf_len - 1 && gcf[i].type == EXP) {
-        remove_eo_idx(gcf, gcf_len, i);
-        gcf_len--;
-        remove_eo_idx(gcf, gcf_len, i);
-        gcf_len--;
-      }
-      if (i >= 0 && (gcf[i - 1].type == MULT || gcf[i - 1].type == DIV)) {
-        remove_eo_idx(gcf, gcf_len, i - 1);
-        gcf_len--;
-      } else if (i < gcf_len && (gcf[i].type == MULT || gcf[i].type == DIV)) {
-        remove_eo_idx(gcf, gcf_len, i);
-        gcf_len--;
-      }
-    }
-    i++;
-  }
 
   // Take out term if all instances of target have the same degree
   // If they have different degrees, then too bad for you
