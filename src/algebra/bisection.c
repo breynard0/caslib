@@ -39,7 +39,7 @@ double get_root_bisection(struct RootRange range,
 
   double y = 1.0;
 
-  while (double_abs(y) >= 0.000000001) {
+  while (double_abs(y) >= THRESHOLD && double_abs(a - b) >= THRESHOLD) {
     c = (a + b) / 2.0;
 
     target.value = a;

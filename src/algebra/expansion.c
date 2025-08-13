@@ -247,7 +247,7 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
         new_len--;
         i--;
       }
-
+      
       // Replace subtraction with negative addition
       // int k = 0;
       // while (k < new_len) {
@@ -289,6 +289,12 @@ int expand_polynomial(struct EquationObject *buffer, int length) {
       }
 
       if (expression[dest_start].type == BLOCK_START) {
+        while (expression[dest_start].type == BLOCK_START) {
+          dest_start++;
+          start++;
+        }
+        dest_start--;
+        start--;
         int idx = dest_start + 1;
         Boolean running = TRUE;
         while (running) {

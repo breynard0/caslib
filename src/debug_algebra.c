@@ -31,6 +31,7 @@ void test_lex();
 void test_solve_consts();
 void test_expansion();
 void test_roots();
+void test_roots_function();
 void test_valid();
 void test_rearrange();
 void test_derivative();
@@ -74,6 +75,7 @@ void debug_algebra() {
   // test_solve_consts();
   test_expansion();
   // test_roots();
+  // test_roots_function();
   // test_valid();
   // printf("Test rearrange...\n");
   // test_rearrange();
@@ -90,7 +92,8 @@ void test_lex() {
   // char *expression = "-2+2*4^2";
   // char *expression = "4xy";
   // char *expression = "60\\d";
-  char *expression = "3x+4";
+  // char *expression = "3x+4";
+  char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
   printf("Lexing %s\n", expression);
   struct EquationObject buffer[256];
 
@@ -164,7 +167,7 @@ void test_expansion() {
   // char *expression = "x*(x+1)+(x+1)";
   // char *expression = "(x+1)(x+1)";
   // char *expression = "(x+2)(x+y)";
-  char *expression = "(x+2)(x-2)";
+  // char *expression = "(x+2)(x-2)";
   // char *expression = "(x-1)^6";
   // char *expression = "2(3x^2-4x+8(3+2))";
   // char *expression = "3/2";
@@ -191,14 +194,16 @@ void test_expansion() {
   // char *expression = "x^3+1.0000000000000314x^2-12.999999999999997x+13."
   //                    "9999999999999999999999999999999999934";
   // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(3x+4)";
-  // char *expression = "0.000000*x^6.000000-0.000000*x^5.000000+0.000000*x^4.000000-0.000000*x^3.000000-0.000000*x^2.000000+0.000000*x-0.000000";
+  // char *expression =
+  // "0.000000*x^6.000000-0.000000*x^5.000000+0.000000*x^4.000000-0.000000*x^3.000000-0.000000*x^2.000000+0.000000*x-0.000000";
   // char *expression = "3x-8x";
   // char *expression = "2/0";
+  // char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+  // char *expression = "((x((x-1))-4((x-1))))";
+  // char *expression = "(3(x-4))(10(x-1))";
+  char *expression = "(3(x-4))(10(x-1))";
 
   // Not working still
-  // char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
-  // char *expression = "(3x^2-24x+58)(10x^2-20x+12)";
-  // char *expression = "(3x+3)(7x-2)";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -244,10 +249,12 @@ void test_roots() {
   // char *expression = "(x-2)(x-2.05)";
   // char *expression = "(x-2)(x-3)";
   // char *expression = "x^2-5x+6";
-  // char *expression = "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024";
-  // char *expression = "(x-2)(x-2)(x-3)(x-3)(x^2-128)";
-  // char *expression = "x^6-10x^5-91x^4+1220x^3-4700x^2+7680x-4608";
-  // char *expression = "((x-2)(x-2)(x-3)(x-3)(x^2-128))/(3x+4)";
+  // char *expression =
+  // "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024"; char
+  // *expression = "(x-2)(x-2)(x-3)(x-3)(x^2-128)"; char *expression =
+  // "x^6-10x^5-91x^4+1220x^3-4700x^2+7680x-4608"; char *expression =
+  // "((x-2)(x-2)(x-3)(x-3)(x^2-128))/(3x+4)"; char *expression =
+  // "(3(x-4)^2+10)(10(x-1)^2+2)";
   char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
 
   printf("Lexing %s...\n", expression);
@@ -262,7 +269,7 @@ void test_roots() {
   for (int i = 0; i < new_len; i++) {
     print_eo_flat(lex_buffer[i]);
   }
-  
+
   printf("Removing squares...\n");
   new_len = yun_decompose(lex_buffer, new_len);
   printf("Square free decomposition: ");
@@ -274,7 +281,7 @@ void test_roots() {
   for (int i = 0; i < new_len; i++) {
     print_eo_flat(lex_buffer[i]);
   }
-  
+
   printf("Calculating bound...\n");
   double bound_abs = get_bound_abs(lex_buffer, new_len);
   printf("Bound calculated: %f < x < %f\n", -bound_abs, bound_abs);
@@ -289,6 +296,21 @@ void test_roots() {
            delimiters[i].max);
     double solution = get_root_bisection(delimiters[i], lex_buffer, new_len);
     printf("Solution: %0.8f\n", solution);
+  }
+}
+
+void test_roots_function() {
+  char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+
+  struct EquationObject lex_buffer[1024];
+  int lex_len = lex(expression, strlen(expression), lex_buffer, 1024);
+  int new_len = expand_polynomial(lex_buffer, 1024);
+
+  double out_roots[64] = {};
+
+  int num_roots = real_roots(lex_buffer, new_len, out_roots);
+  for (int i = 0; i < num_roots; i++) {
+    printf("%f\n", out_roots[i]);
   }
 }
 
@@ -355,10 +377,10 @@ void test_polydiv() {
 
   // char *dividend = "3x+4";
   // char *divisor = "3x+4";
-  
+
   // char *dividend = "x^5-87x^4+9x^3+7x^2-3";
   // char *divisor = "-1207.44x^3+98.16x^2+48.72x-3";
-  
+
   char *dividend = "x^5-87x^4+9x^3+7x^2-3";
   char *divisor = "-1207.44x^3+98.16x^2+48.72x-3";
 
@@ -435,7 +457,7 @@ void test_polygcf() {
   //     "3x^9-44x^8+272x^7-896x^6+1568x^5-896x^4-1792x^3+4096x^2-3328x+1024";
   // char *divisor =
   //     "27x^8-352x^7+1904x^6-5376x^5+7840x^4-3584x^3-5376x^2+8192x-3328";
-  
+
   char *dividend = "x^5-87x^4+9x^3+7x^2-3";
   char *divisor = "5x^4-348x^3+27x^2+14x";
 
@@ -463,9 +485,9 @@ void test_yun() {
   // char *expression = "x^4-x^3-15x^2+40x-28";
   // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(x-2)(3x+4)";
   char *expression = "x^5-14x^4+77x^3-208x^2+276x-144";
-  // char *expression = "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024";
-  // char *expression = "(x-2)(x-2)(3x+4)";
-  // char *expression = "3x^3-8x^2-4x+16";
+  // char *expression =
+  // "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024"; char
+  // *expression = "(x-2)(x-2)(3x+4)"; char *expression = "3x^3-8x^2-4x+16";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
