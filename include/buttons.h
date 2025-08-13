@@ -47,6 +47,11 @@ enum PushButton {
 union PushButtonData {
     int number;
 };
+struct SolveVar {
+  struct Letter letter;
+  char num[25];
+  short num_len;
+};
 #endif
 
 // Returns new cursor position

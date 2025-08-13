@@ -7,7 +7,9 @@
 #include "flags.h"
 #include "letters.h"
 #include "lex.h"
+#include "parse.h"
 #include "rearrange.h"
+#include "root.h"
 #include "valid.h"
 
 #include <raylib.h>
@@ -138,6 +140,12 @@ void debug_display() {
   int input_string_len = 0;
 
   struct Letter letter_buf;
+
+  struct SolveVar input_var_buf[64] = {};
+  int input_var_len = 0;
+
+  double roots[64] = {};
+  int roots_len = 0;
 
   enum StateMode mode = M_EXPRESSION;
 
@@ -439,10 +447,49 @@ void debug_display() {
         mode = M_WHICH_VAR;
       }
       if (button_type == B_GET_ROOT && mode != M_SHOW_ROOTS) {
+        // 1. Give a bit of personal space to the displayed roots' y axes
+        // 2. Make it so it doesn't crash when the roots overflow the screen
+        // 3. Add validity checking to all buttons
         mode = M_SHOW_ROOTS;
+        struct EquationObject expression[192] = {};
+        int new_len = lex(input_string, input_string_len, expression, 128);
+        new_len = expand_polynomial(expression, new_len);
+        for (int i = 0; i < new_len; i++) {
+          if (expression[i].type == LETTER) {
+            letter_buf = expression[i].value.letter;
+            break;
+          }
+        }
+        roots_len = real_roots(expression, new_len, roots);
+        cursor_pos = 0;
       }
       if (button_type == B_SOLVE && mode != M_VAR_VALUE) {
         mode = M_VAR_VALUE;
+        cursor_pos = 0;
+        input_var_len = 0;
+
+        // Populate buffer
+        struct EquationObject expression[192] = {};
+        int new_len = lex(input_string, input_string_len, expression, 128);
+
+        for (int i = 0; i < new_len; i++) {
+          if (expression[i].type == LETTER) {
+            Boolean found = FALSE;
+            for (int j = 0; j < input_var_len; j++) {
+              struct Letter l = input_var_buf[input_string_len].letter;
+              if (expression[i].value.letter.letter == l.letter &&
+                  expression[i].value.letter.subscript == l.subscript) {
+                found = TRUE;
+                break;
+              }
+            }
+            if (!found) {
+              input_var_buf[input_var_len].letter = expression[i].value.letter;
+              input_var_buf[input_var_len].num_len = 0;
+              input_var_len++;
+            }
+          }
+        }
       }
 
       switch (mode) {
@@ -480,8 +527,16 @@ void debug_display() {
         break;
       }
       case M_VAR_VALUE:
+        clear_display(buffer, SIZE);
+        update_get_var_values(8, 16, buffer, WIDTH, input_string,
+                              &input_string_len, input_var_buf, &input_var_len,
+                              &subscript, &mode, &cursor_pos, button_type,
+                              button_data);
         break;
       case M_SHOW_ROOTS:
+        clear_display(buffer, SIZE);
+        update_show_roots(8, 16, buffer, WIDTH, roots, roots_len, &mode,
+                          &cursor_pos, button_type, letter_buf, HEIGHT);
         break;
       }
     }
