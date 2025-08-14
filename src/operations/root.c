@@ -61,6 +61,8 @@ int real_roots(struct EquationObject *expression, int length, double *roots) {
   int num_roots = 0;
   for (int i = 0; i < out_delim_len; i++) {
     double root = get_root_bisection(delimiters[i], expression, new_len);
+    // Round to nearest threshold unit
+    root = dround(root / THRESHOLD) * THRESHOLD;
     struct InputVar var;
     int i = 0;
     while (expression[i].type != LETTER) {

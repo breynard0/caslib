@@ -208,7 +208,7 @@ void update_show_roots(short y_spacer, short size, char *buffer,
 
   short offset = *cursor * size;
   for (int i = 0; i < roots_len; i++) {
-    short y = y_spacer + offset + (i * size);
+    short y = y_spacer + offset + (i * (size + 2));
     draw_letter(letter.letter, 8, y, size, buffer, buf_width);
     // Set to 1 by default to give a little extra space between subscript and
     // index

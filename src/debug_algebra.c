@@ -74,8 +74,8 @@ void debug_algebra() {
   // test_lex();
   // test_solve_consts();
   // test_expansion();
-  // test_roots();
-  test_roots_function();
+  test_roots();
+  // test_roots_function();
   // test_valid();
   // printf("Test rearrange...\n");
   // test_rearrange();
@@ -256,7 +256,8 @@ void test_roots() {
   // "x^6-10x^5-91x^4+1220x^3-4700x^2+7680x-4608"; char *expression =
   // "((x-2)(x-2)(x-3)(x-3)(x^2-128))/(3x+4)"; char *expression =
   // "(3(x-4)^2+10)(10(x-1)^2+2)";
-  char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+  // char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+  char *expression = "3x-4";
 
   printf("Lexing %s...\n", expression);
   struct EquationObject lex_buffer[1024];
@@ -302,7 +303,8 @@ void test_roots() {
 
 void test_roots_function() {
   // char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
-  char *expression = "(x-3)(x-2)";
+  // char *expression = "(x-3)(x+2)(7x-2)";
+  char *expression = "3x+4";
 
   struct EquationObject lex_buffer[1024];
   int lex_len = lex(expression, strlen(expression), lex_buffer, 1024);
@@ -312,7 +314,7 @@ void test_roots_function() {
 
   int num_roots = real_roots(lex_buffer, new_len, out_roots);
   for (int i = 0; i < num_roots; i++) {
-    printf("%f\n", out_roots[i]);
+    printf("%0.16f\n", out_roots[i]);
   }
 }
 

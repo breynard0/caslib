@@ -450,6 +450,8 @@ void debug_display() {
         // 1. Give a bit of personal space to the displayed roots' y axes
         // 2. Make it so it doesn't crash when the roots overflow the screen
         // 3. Add validity checking to all buttons
+        // 4. Remove cursors and weird characters from get roots
+        // 5. Make the numbers work properly
         mode = M_SHOW_ROOTS;
         struct EquationObject expression[192] = {};
         int new_len = lex(input_string, input_string_len, expression, 128);

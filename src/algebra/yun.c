@@ -58,7 +58,7 @@ int yun_decompose(struct EquationObject *expression, int length) {
       bc_len++;
     }
     bc_len++;
-    
+
     d_len = 0;
     while (d_clone[d_len].type != END_LEX) {
       d_len++;
@@ -71,49 +71,27 @@ int yun_decompose(struct EquationObject *expression, int length) {
     }
     a_len = bc_len;
 
-    // Change from monic to primitive
-    // Algorithm to implement:
-    // 1. Divide one of the original expressions by the GCD
-    // 2. Multiply all coefficients by the first coefficient of the quotient
-    // 3. Divide all of the coefficients by their GCD
-    polynomial_division(old_expr, old_expr_len, b_clone, bc_len);
-    double first_coeff = 1.0;
-    if (old_expr[0].type == NUMBER) {
-      first_coeff = old_expr[0].value.number;
-    }
-    struct EquationObject num_obj = {};
-    num_obj.type = NUMBER;
-    num_obj.value.number = first_coeff;
-    struct EquationObject mult_obj = {};
-    mult_obj.type = MULT;
-    struct EquationObject bs_obj = {};
-    bs_obj.type = BLOCK_START;
-    struct EquationObject be_obj = {};
-    be_obj.type = BLOCK_END;
-    a_len++;
-    insert_eo_idx(a, a_len, 0, num_obj);
-    a_len++;
-    insert_eo_idx(a, a_len, 1, mult_obj);
-    a_len++;
-    insert_eo_idx(a, a_len, 2, bs_obj);
-    a_len++;
-    insert_eo_idx(a, a_len, a_len - 2, be_obj);
-    a_len = expand_polynomial(a, a_len);
-
-    double gcf_val = 0.0;
-    int count = 0;
-    for (int i = 0; i < a_len; i++) {
-      enum EOType last = a[i - 1].type;
-      if (a[i].type == NUMBER && (i == 0 || last == ADD || last == SUB)) {
-        gcf_val = gcf(a[i].value.number, gcf_val);
-        count++;
+    // Push a, so long as it isn't a single number 1 and it isn't a0
+    if ((a[0].type != NUMBER || a[0].value.number != 1 || a_len > 2) && n > 0) {
+      // Change from monic to primitive
+      // Algorithm to implement:
+      // 1. Divide one of the original expressions by the GCD
+      // 2. Multiply all coefficients by the first coefficient of the quotient
+      // 3. Divide all of the coefficients by their GCD
+      polynomial_division(old_expr, old_expr_len, b_clone, bc_len);
+      double first_coeff = 1.0;
+      if (old_expr[0].type == NUMBER) {
+        first_coeff = old_expr[0].value.number;
       }
-    }
-
-    if (count > 1) {
-      double reciprocal_gcf = 1.0 / gcf_val;
-
-      num_obj.value.number = reciprocal_gcf;
+      struct EquationObject num_obj = {};
+      num_obj.type = NUMBER;
+      num_obj.value.number = first_coeff;
+      struct EquationObject mult_obj = {};
+      mult_obj.type = MULT;
+      struct EquationObject bs_obj = {};
+      bs_obj.type = BLOCK_START;
+      struct EquationObject be_obj = {};
+      be_obj.type = BLOCK_END;
       a_len++;
       insert_eo_idx(a, a_len, 0, num_obj);
       a_len++;
@@ -123,10 +101,32 @@ int yun_decompose(struct EquationObject *expression, int length) {
       a_len++;
       insert_eo_idx(a, a_len, a_len - 2, be_obj);
       a_len = expand_polynomial(a, a_len);
-    }
 
-    // Push a, so long as it isn't a single number 1 and it isn't a0
-    if ((a[0].type != NUMBER || a[0].value.number != 1) && n > 0) {
+      double gcf_val = 0.0;
+      int count = 0;
+      for (int i = 0; i < a_len; i++) {
+        enum EOType last = a[i - 1].type;
+        if (a[i].type == NUMBER && (i == 0 || last == ADD || last == SUB)) {
+          gcf_val = gcf(a[i].value.number, gcf_val);
+          count++;
+        }
+      }
+
+      if (count > 1) {
+        double reciprocal_gcf = 1.0 / gcf_val;
+
+        num_obj.value.number = reciprocal_gcf;
+        a_len++;
+        insert_eo_idx(a, a_len, 0, num_obj);
+        a_len++;
+        insert_eo_idx(a, a_len, 1, mult_obj);
+        a_len++;
+        insert_eo_idx(a, a_len, 2, bs_obj);
+        a_len++;
+        insert_eo_idx(a, a_len, a_len - 2, be_obj);
+        a_len = expand_polynomial(a, a_len);
+      }
+
       int i = 0;
       expression[out_len].type = BLOCK_START;
       out_len++;

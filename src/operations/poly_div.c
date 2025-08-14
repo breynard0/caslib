@@ -1,6 +1,7 @@
 #include "enums.h"
 #include "equation_objects.h"
 #include "expansion.h"
+#include "flags.h"
 
 void polynomial_division(struct EquationObject *dividend, int dividend_len,
                          struct EquationObject *divisor, int divisor_len) {
@@ -9,6 +10,17 @@ void polynomial_division(struct EquationObject *dividend, int dividend_len,
       divisor[0].type == NUMBER) {
     dividend[0].value.number /= divisor[0].value.number;
     return;
+  }
+  
+  // Case of division by 0 or 1
+  if (divisor[0].type == NUMBER && divisor_len <= 2) {
+    if (divisor[0].value.number == 0) {
+      f_undefined = TRUE;
+      return;
+    }
+    if (divisor[0].value.number == 1) {
+      return;
+    }
   }
 
   int temp_max_len = dividend_len;
