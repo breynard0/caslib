@@ -54,6 +54,7 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
     } else if (expr1[0].value.number == 0) {
       return expr0_len;
     } else {
+      expr0[0].type = NUMBER;
       expr0[0].value.number = 1.0;
       return 2;
     }

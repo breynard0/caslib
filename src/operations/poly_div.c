@@ -11,7 +11,7 @@ void polynomial_division(struct EquationObject *dividend, int dividend_len,
     dividend[0].value.number /= divisor[0].value.number;
     return;
   }
-  
+
   // Case of division by 0 or 1
   if (divisor[0].type == NUMBER && divisor_len <= 2) {
     if (divisor[0].value.number == 0) {
@@ -19,6 +19,7 @@ void polynomial_division(struct EquationObject *dividend, int dividend_len,
       return;
     }
     if (divisor[0].value.number == 1) {
+      divisor[0].value.number = 0;
       return;
     }
   }

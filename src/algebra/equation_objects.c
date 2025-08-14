@@ -2,10 +2,10 @@
 #include "dutils.h"
 #include "enums.h"
 #include "expansion.h"
+#include "flags.h"
 #include "parse.h"
 #include "pow.h"
 #include "utils.h"
-#include "flags.h"
 
 void remove_eo_idx(struct EquationObject *list, int length, int idx) {
   if (idx == length - 1) {
@@ -84,6 +84,11 @@ int eo_to_string(struct EquationObject *expression, int length, char *buffer) {
         f_undefined = TRUE;
         return 0;
       }
+      if (num < 0.0) {
+        buffer[out_len] = '-';
+        out_len++;
+      }
+      num = double_abs(num);
       double whole = (double)((long long)num);
       double partial = num - ((double)whole);
       long long digits = double_digits_whole(double_abs(whole));
@@ -106,7 +111,9 @@ int eo_to_string(struct EquationObject *expression, int length, char *buffer) {
         digits = double_digits_partial(num);
         for (int i = 0; i < digits; i++) {
           partial *= 10;
-          buffer[out_len] = ((short)partial) + '0';
+          short dgt = (short)partial;
+          buffer[out_len] = dgt + '0';
+          partial -= (double)dgt;
           out_len++;
         }
       }

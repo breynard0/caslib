@@ -177,7 +177,8 @@ void update_get_var_values(short y_spacer, short size, char *buffer,
 
   short big = 32000;
   draw_expression(8 + 2 * size + subscript_buffer, y_spacer, size, buffer,
-                  buf_width, cur_value.num, cur_value.num_len, &big, FALSE);
+                  buf_width, cur_value.num, cur_value.num_len, &big, FALSE,
+                  FALSE);
 
   values_buf[*cursor] = cur_value;
 }
@@ -194,7 +195,7 @@ void update_show_roots(short y_spacer, short size, char *buffer,
     }
     break;
   case B_DOWN:
-    if (*cursor < roots_len - 1) {
+    if (*cursor < roots_len - 2) {
       (*cursor)++;
     }
     break;
@@ -207,26 +208,38 @@ void update_show_roots(short y_spacer, short size, char *buffer,
   }
 
   short offset = *cursor * size;
+  if (roots_len == 0) {
+    draw_letter('n', 8, y_spacer, size, buffer, buf_width);
+    draw_letter('o', 8 + size, y_spacer, size, buffer, buf_width);
+    draw_letter('r', 8 + 3*size, y_spacer, size, buffer, buf_width);
+    draw_letter('o', 8 + 4*size, y_spacer, size, buffer, buf_width);
+    draw_letter('o', 8 + 5*size, y_spacer, size, buffer, buf_width);
+    draw_letter('t', 8 + 6*size, y_spacer, size, buffer, buf_width);
+    draw_letter('s', 8 + 7*size, y_spacer, size, buffer, buf_width);
+  }
   for (int i = 0; i < roots_len; i++) {
-    short y = y_spacer + offset + (i * (size + 2));
-    draw_letter(letter.letter, 8, y, size, buffer, buf_width);
-    // Set to 1 by default to give a little extra space between subscript and
-    // index
-    short subset_offset = 1;
-    if (letter.subscript != ' ') {
-      draw_letter(letter.subscript, 8 + size, y + (size - 8), size - 8, buffer,
+    short y = y_spacer - offset + (i * (size + 2));
+    if (y + size < height) {
+      draw_letter(letter.letter, 8, y, size, buffer, buf_width);
+      // Set to 1 by default to give a little extra space between subscript and
+      // index
+      short subset_offset = 1;
+      if (letter.subscript != ' ') {
+        draw_letter(letter.subscript, 8 + size, y + (size - 8), size - 8,
+                    buffer, buf_width);
+        subset_offset += size - 8;
+      }
+      draw_letter(i + '0', 8 + size + subset_offset + 1, y + (size - 8),
+                  size - 8, buffer, buf_width);
+      draw_letter('=', 8 + 2 * size + subset_offset, y, size, buffer,
                   buf_width);
-      subset_offset += size - 8;
+      struct EquationObject root_eo = {};
+      root_eo.type = NUMBER;
+      root_eo.value.number = roots[i];
+      char str_buf[24] = "";
+      int str_len = eo_to_string(&root_eo, 1, str_buf);
+      draw_expression(8 + 3 * size + subset_offset, y, size, buffer, buf_width,
+                      str_buf, str_len, cursor, FALSE, FALSE);
     }
-    draw_letter(i + '0', 8 + size + subset_offset + 1, y + (size - 8), size - 8,
-                buffer, buf_width);
-    draw_letter('=', 8 + 2 * size + subset_offset, y, size, buffer, buf_width);
-    struct EquationObject root_eo = {};
-    root_eo.type = NUMBER;
-    root_eo.value.number = roots[i];
-    char str_buf[24] = "";
-    int str_len = eo_to_string(&root_eo, 1, str_buf);
-    draw_expression(8 + 3 * size + subset_offset, y, size, buffer, buf_width,
-                    str_buf, str_len, cursor, FALSE);
   }
 }

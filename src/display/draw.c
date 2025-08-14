@@ -134,7 +134,7 @@ void draw_rect(short x, short y, short width, short height, char *buffer,
 
 int draw_expression(short x, short y, short size, char *buffer, short buf_width,
                     char *expression_in, short length, short *cursor,
-                    Boolean cursor_calculation) {
+                    Boolean cursor_calculation, Boolean draw_cursor) {
   char expression[length] = {};
   int new_len = 0;
   // Get all subscripts
@@ -154,7 +154,7 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
   short offset = 0;
   if (!cursor_calculation) {
     short cursor_pos = draw_expression(x, y, size, buffer, buf_width,
-                                       expression_in, length, cursor, TRUE);
+                                       expression_in, length, cursor, TRUE, TRUE);
     // x -= i_max(cursor_pos - buf_width, 0);
     if (cursor_pos >= buf_width) {
       offset = -i_max(cursor_pos - buf_width + buf_width / 4, 0);
@@ -369,7 +369,7 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
     }
 
     // Draw cursor
-    if (*cursor == i) {
+    if (*cursor == i && draw_cursor) {
       if (!cursor_calculation) {
         draw_line(draw_spot_before + x + offset, y - 2,
                   draw_spot_before + x + offset, y + size + 2, buffer,
@@ -383,7 +383,7 @@ int draw_expression(short x, short y, short size, char *buffer, short buf_width,
   }
 
   // Draw cursor at end
-  if (!cursor_calculation) {
+  if (!cursor_calculation && draw_cursor) {
     if (*cursor == new_len || new_len == 0) {
       draw_line(draw_spot + x + offset, y + size + 2,
                 draw_spot + x + offset + size, y + size + 2, buffer, buf_width);

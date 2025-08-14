@@ -463,6 +463,17 @@ const char LETM[8] = {
   0b01010010,
 };
 
+const char LETR[8] = {
+  0b00000000,
+  0b00000000,
+  0b00000000,
+  0b00100000,
+  0b00111100,
+  0b00100010,
+  0b00100000,
+  0b00100000,
+};
+
 // clang-format on
 
 void draw_bitmap(const char bitmap[8], struct DrawData data, char *buffer) {
@@ -620,6 +631,9 @@ void draw_letter(char letter, short x, short y, short size, char *buffer,
     break;
   case 'm':
     draw_bitmap(LETM, data, buffer);
+    break;
+  case 'r':
+    draw_bitmap(LETR, data, buffer);
     break;
   }
 }

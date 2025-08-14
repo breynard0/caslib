@@ -157,7 +157,7 @@ void debug_display() {
     if (changed && mode == M_EXPRESSION) {
       clear_display(buffer, SIZE);
       draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len,
-                      &cursor_pos, FALSE);
+                      &cursor_pos, FALSE, TRUE);
       draw_top_bar(WIDTH, buffer, 8, second, subscript);
       changed = FALSE;
     }
