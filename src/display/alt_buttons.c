@@ -67,6 +67,7 @@ Boolean update_get_var(short y_spacer, short size, char *buffer,
   case B_2ND:
   case B_SUBSCRIPT:
   case B_NONE:
+  case B_REARRANGE:
     break;
   default:
     *mode = M_EXPRESSION;
