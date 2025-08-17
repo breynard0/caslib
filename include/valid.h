@@ -3,3 +3,4 @@
 
 Boolean valid_expr(struct EquationObject *input, int length);
 Boolean is_univariate(struct EquationObject *input, int length);
+Boolean no_var_functions(const struct EquationObject* input, int length);

@@ -512,9 +512,10 @@ void debug_display() {
         break;
       case M_WHICH_VAR: {
         clear_display(buffer, SIZE);
-        Boolean finished = update_get_var(
-            8, 16, buffer, WIDTH, &letter_buf, &subscript, &second, &mode,
-            &cursor_pos, button_type, button_data);
+        Boolean finished =
+            update_get_var(8, 16, buffer, WIDTH, &letter_buf, &subscript,
+                           &second, &mode, &cursor_pos, button_type,
+                           button_data, input_string, input_string_len);
         if (finished) {
           struct EquationObject expression[192] = {};
           int lex_len = lex(input_string, input_string_len, expression, 192);
@@ -522,6 +523,7 @@ void debug_display() {
             f_bad_equation = TRUE;
             break;
           }
+          lex_len = expand_polynomial(expression, lex_len);
           int out_len = rearrange_for_var(expression, lex_len, letter_buf);
           out_len = 0;
           while (expression[out_len].type != END_LEX) {

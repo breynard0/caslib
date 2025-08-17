@@ -66,6 +66,8 @@ void print_eo(struct EquationObject object) {
     break;
   case NONE:
     break;
+  default:
+    printf("ERROR: %i", object.type);
   }
   printf("\n");
 }

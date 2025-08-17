@@ -12,7 +12,12 @@ Boolean update_get_var(short y_spacer, short size, char *buffer,
                        short buf_width, struct Letter *letter_buf,
                        Boolean *subscript, Boolean *second,
                        enum StateMode *mode, short *cursor,
-                       enum PushButton button, union PushButtonData data) {
+                       enum PushButton button, union PushButtonData data, char* input_string, int input_string_len) {
+  // Draw expression for helpfulness
+  draw_expression(10, 44, 16, buffer, buf_width, input_string, input_string_len,
+                  cursor, FALSE, FALSE);
+
+  // Draw the rest
   struct Letter letter = *letter_buf;
   short x = buf_width / 8;
   switch (button) {
@@ -212,11 +217,11 @@ void update_show_roots(short y_spacer, short size, char *buffer,
   if (roots_len == 0) {
     draw_letter('n', 8, y_spacer, size, buffer, buf_width);
     draw_letter('o', 8 + size, y_spacer, size, buffer, buf_width);
-    draw_letter('r', 8 + 3*size, y_spacer, size, buffer, buf_width);
-    draw_letter('o', 8 + 4*size, y_spacer, size, buffer, buf_width);
-    draw_letter('o', 8 + 5*size, y_spacer, size, buffer, buf_width);
-    draw_letter('t', 8 + 6*size, y_spacer, size, buffer, buf_width);
-    draw_letter('s', 8 + 7*size, y_spacer, size, buffer, buf_width);
+    draw_letter('r', 8 + 3 * size, y_spacer, size, buffer, buf_width);
+    draw_letter('o', 8 + 4 * size, y_spacer, size, buffer, buf_width);
+    draw_letter('o', 8 + 5 * size, y_spacer, size, buffer, buf_width);
+    draw_letter('t', 8 + 6 * size, y_spacer, size, buffer, buf_width);
+    draw_letter('s', 8 + 7 * size, y_spacer, size, buffer, buf_width);
   }
   for (int i = 0; i < roots_len; i++) {
     short y = y_spacer - offset + (i * (size + 2));

@@ -1,12 +1,7 @@
 .SILENT:
 
-# define gcc_call
-# 	$(eval $@_SOURCE = $(1))
-# 	$(eval $@_DEST = $(2))
-# 	gcc -g -pg -c ${@_SOURCE} -o ${@_DEST}
-# endef
 gcc_call = gcc -I./include -I/usr/include/ -g -pg -c $(1) -o $(2)
-	
+
 run: init build
 	echo "Running..."
 	./work/main
@@ -26,7 +21,7 @@ build: deps
 	gcc -L/usr/lib64/ -lraylib -g -pg work/*.o -o work/main
 
 deps: raylib auto-deps operations algebra display
-	
+
 algebra:
 	@$(call gcc_call,src/algebra/lex.c,work/lex.o)
 	@$(call gcc_call,src/algebra/parse.c,work/parse.o)

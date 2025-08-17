@@ -31,10 +31,14 @@ int div_terms(struct EquationObject *term0, int t0_len,
               struct EquationObject *term1, int t1_len) {
   struct EquationObject tmp_buf[2 * (t0_len + t1_len)];
   int tmp_len = 0;
+  tmp_buf[tmp_len].type = BLOCK_START;
+  tmp_len++;
   for (int i = 0; i < t0_len; i++) {
     tmp_buf[tmp_len] = term0[i];
     tmp_len++;
   }
+  tmp_buf[tmp_len].type = BLOCK_END;
+  tmp_len++;
   tmp_buf[tmp_len].type = DIV;
   tmp_len++;
   tmp_buf[tmp_len].type = BLOCK_START;
@@ -44,6 +48,8 @@ int div_terms(struct EquationObject *term0, int t0_len,
     tmp_len++;
   }
   tmp_buf[tmp_len].type = BLOCK_END;
+  tmp_len++;
+  tmp_buf[tmp_len].type = END_LEX;
   tmp_len++;
 
   int new_len = expand_polynomial(tmp_buf, tmp_len);

@@ -8,7 +8,7 @@ Boolean update_get_var(short y_spacer, short size, char *buffer,
                        short buf_width, struct Letter *letter_buf,
                        Boolean *subscript, Boolean *second,
                        enum StateMode *mode, short *cursor,
-                       enum PushButton button, union PushButtonData data);
+                       enum PushButton button, union PushButtonData data, char* input_string, int input_string_len);
 void update_get_var_values(short y_spacer, short size, char *buffer,
                            short buf_width, char *expression_in, int *expr_len,
                            struct SolveVar *values_buf, int *values_len,
