@@ -75,8 +75,8 @@ void debug_algebra()
     // test_lex();
     // test_solve_consts();
     // test_expansion();
-    test_roots();
-    // test_roots_function();
+    // test_roots();
+    test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
     // test_rearrange();
@@ -211,7 +211,7 @@ void test_expansion()
     // char *expression = "(3axy-x)/(x^1)";
     // const auto expression = "(3(x-4))(4(x-1))";
     // char* expression = "(3(x-4))(10(x-1))";
-    char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+    char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
 
     // Not working still
 
@@ -251,10 +251,6 @@ void test_rearrange()
 
 void test_roots()
 {
-    // TODO: amend algorithm if division by polynomial
-    // Frankly, can probably just ignore the denominator. Multiply both sides by
-    // the polynomial, but other side is zero
-
     // char *expression = "3/2+(3x/3)/(9x-1)-2";
     // char *expression = "(x+2)(x-3)(x^3-18)";
     // char *expression = "x^5-x^4-6x^3-18x^2+18x+108";
@@ -271,16 +267,16 @@ void test_roots()
     // "x^6-10x^5-91x^4+1220x^3-4700x^2+7680x-4608"; char *expression =
     // "((x-2)(x-2)(x-3)(x-3)(x^2-128))/(3x+4)"; char *expression =
     // "(3(x-4)^2+10)(10(x-1)^2+2)";
-    char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+    char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char *expression = "x+1";
     // char* expression = "x^2+1";
     // char *expression = "x^2-1";
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
-    int lex_len = lex(expression, strlen(expression), lex_buffer, 1024);
+    int lex_len = lex(expression, (int)strlen(expression), lex_buffer, 1024);
     printf("Expanding...\n");
-    int new_len = expand_polynomial(lex_buffer, 1024);
+    int new_len = expand_polynomial(lex_buffer, lex_len);
     printf("Expanded: ");
     if (f_unsupported == 1)
     {
@@ -325,7 +321,7 @@ void test_roots()
 
 void test_roots_function()
 {
-    char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+    char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char *expression = "(x-3)(x+2)(7x-2)";
     // char* expression = "3x+4";
 
@@ -502,8 +498,11 @@ void test_polygcf()
     // char *dividend = "x^5-87x^4+9x^3+7x^2-3";
     // char *divisor = "5x^4-348x^3+27x^2+14x";
 
-    char* dividend = "x^2+1";
-    char* divisor = "2x";
+    // char* dividend = "x^2+1";
+    // char* divisor = "2x";
+
+    char* dividend = "30x^4-300x^3+1096x^2-1448x+696";
+    char* divisor = "120x^3-900x^2+2192x-1448";
 
     printf("Lexing %s...\n", dividend);
     struct EquationObject dividend_buffer[1024];

@@ -209,6 +209,13 @@ int polynomial_gcf(struct EquationObject *expr0, int expr0_len,
   }
   out_len = expand_polynomial(expr0, out_len);
 
+  // If what is returned will be a single constant, that constant will be made exactly equal to 1
+  // This is a bit of a hacky fix, but it should work most of the time
+  if (expr0_len <= 2 && expr0[0].type == NUMBER)
+  {
+    expr0[0].value.number = 1;
+  }
+
   return out_len;
 }
 
