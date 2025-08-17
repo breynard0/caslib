@@ -76,8 +76,8 @@ void debug_algebra()
     // test_solve_consts();
     // test_expansion();
     // test_roots();
-    test_roots_function();
-    // test_valid();
+    // test_roots_function();
+    test_valid();
     // printf("Test rearrange...\n");
     // test_rearrange();
     // printf("Test power rule...\n");
@@ -340,13 +340,14 @@ void test_roots_function()
 
 void test_valid()
 {
-    char* expression = "z+/x";
+    char* expression = "z+\\t(2+\\s30\\d-3)";
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
     int lex_len = lex(expression, strlen(expression), lex_buffer, 64);
     printf("Checking...\n");
-    Boolean out = valid_expr(lex_buffer, lex_len);
+    // Boolean out = valid_expr(lex_buffer, lex_len);
     // Boolean out = is_univariate(lex_buffer, lex_len);
+    const Boolean out = no_var_functions(lex_buffer, lex_len);
     if (out)
     {
         printf("True");

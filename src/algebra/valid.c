@@ -96,9 +96,53 @@ Boolean no_var_functions(const struct EquationObject* input, int length)
 
     for (int i = 0; i < length; i++)
     {
-        if (input[i].type == TANGENT)
+        switch (input[i].type)
         {
-            out = FALSE;
+        case EXP:
+        case SINE:
+        case COSINE:
+        case TANGENT:
+        case ARCSINE:
+        case ARCCOSINE:
+        case ARCTANGENT:
+        case ROOT:
+        case LOG:
+            {
+                const int start = i + 1;
+                if ((input[i].type == ROOT || input[i].type == LOG) && (input[i - 1].type == BLOCK_END || input[i - 1].
+                    type == LETTER))
+                {
+                    out = FALSE;
+                }
+                if (input[start].type == LETTER)
+                {
+                    out = FALSE;
+                }
+                if (input[start].type == BLOCK_START)
+                {
+                    int blocks = 1;
+                    int idx = start + 1;
+                    while (blocks != 0)
+                    {
+                        if (input[idx].type == BLOCK_START)
+                        {
+                            blocks++;
+                        }
+                        if (input[idx].type == BLOCK_END)
+                        {
+                            blocks--;
+                        }
+                        if (input[idx].type == LETTER)
+                        {
+                            out = FALSE;
+                            break;
+                        }
+                        idx++;
+                    }
+                }
+            }
+            break;
+        default: break;
         }
     }
 
