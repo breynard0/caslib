@@ -4,12 +4,109 @@
 #include "flags.h"
 #include "gcf.h"
 
+struct ReplaceObject
+{
+    struct Letter letter;
+    short start_idx;
+    short end_idx;
+};
+
 int rearrange_for_var(struct EquationObject* buffer, int length,
                       struct Letter target)
 {
+    // Grab copy of original, making sure target is present in the process
+    Boolean target_present = FALSE;
+    struct EquationObject original[length] = {};
+    for (int i = 0; i < length; i++)
+    {
+        original[i] = buffer[i];
+        if (buffer[i].type == LETTER &&
+            buffer[i].value.letter.letter == target.letter &&
+            buffer[i].value.letter.subscript == target.subscript)
+        {
+            target_present = TRUE;
+        }
+    }
+
+    if (!target_present)
+    {
+        f_bad_equation = TRUE;
+        return 0;
+    }
+
+    // Construct ReplaceObject array
+    struct ReplaceObject r_objs[length / 2] = {};
+    int new_len = length;
+    int r_objs_len = 0;
+    for (int i = 0; i < length; i++)
+    {
+        struct ReplaceObject temp;
+        temp.letter.letter = '#';
+        temp.letter.subscript = r_objs_len;
+
+        switch (buffer[i].type)
+        {
+        // Single character values
+        case PI_VAL:
+        case NUMBER:
+            if (i == 0 ||
+                !(buffer[i - 1].type == SINE || buffer[i - 1].type == COSINE ||
+                    buffer[i - 1].type == TANGENT || buffer[i - 1].type == ARCSINE ||
+                    buffer[i - 1].type == ARCCOSINE ||
+                    buffer[i - 1].type == ARCTANGENT || buffer[i - 1].type == TANGENT ||
+                    buffer[i - 1].type == ARCSINE || buffer[i + 1].type == ROOT ||
+                    buffer[i - 1].type == ROOT || buffer[i + 1].type == LOG ||
+                    buffer[i - 1].type == LOG))
+            {
+                temp.start_idx = i;
+                temp.end_idx = i;
+                buffer[i].type = LETTER;
+                buffer[i].value.letter = temp.letter;
+                r_objs[r_objs_len] = temp;
+                r_objs_len++;
+            }
+            break;
+        case SINE:
+        case COSINE:
+        case TANGENT:
+        case ARCSINE:
+        case ARCCOSINE:
+        case ARCTANGENT:
+            temp.start_idx = i;
+            temp.end_idx = i + 1;
+            buffer[i].type = LETTER;
+            buffer[i].value.letter = temp.letter;
+            remove_eo_idx(buffer, new_len, i + 1);
+            new_len--;
+            r_objs[r_objs_len] = temp;
+            r_objs_len++;
+            break;
+        // Double input functions
+        case ROOT:
+        case LOG:
+        case EXP:
+            if (buffer[i - 1].type != LETTER && buffer[i + 1].type != LETTER)
+            {
+                temp.start_idx = i - 1;
+                temp.end_idx = i + 1;
+                buffer[i - 1].type = LETTER;
+                buffer[i].value.letter = temp.letter;
+                remove_eo_idx(buffer, new_len, i);
+                new_len--;
+                remove_eo_idx(buffer, new_len, i);
+                new_len--;
+                r_objs[r_objs_len] = temp;
+                r_objs_len++;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+
     struct EquationObject lhs[length] = {};
     int lhs_len = 0;
-    struct EquationObject rhs[2*length] = {};
+    struct EquationObject rhs[2 * length] = {};
     int rhs_len = 0;
 
     Boolean equal_found = FALSE;
@@ -205,6 +302,43 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
 
     // Expand lhs
     lhs_len = expand_polynomial(lhs, lhs_len) - 1;
+
+    // Substitute in values
+    int max = lhs_len;
+    if (rhs_len > lhs_len)
+    {
+        max = rhs_len;
+    }
+    for (i = 0; i < max; i++)
+    {
+        for (int j = 0; j < r_objs_len; j++)
+        {
+            if (i < lhs_len && lhs[i].type == LETTER &&
+                lhs[i].value.letter.letter == r_objs[j].letter.letter &&
+                lhs[i].value.letter.subscript == r_objs[j].letter.subscript)
+            {
+                remove_eo_idx(lhs, lhs_len, i);
+                lhs_len--;
+                for (int k = 0; k <= r_objs[j].end_idx - r_objs[j].start_idx; k++)
+                {
+                    lhs_len++;
+                    insert_eo_idx(lhs, lhs_len, i + k, original[r_objs[j].start_idx + k]);
+                }
+            }
+            if (i < rhs_len && rhs[i].type == LETTER &&
+                rhs[i].value.letter.letter == r_objs[j].letter.letter &&
+                rhs[i].value.letter.subscript == r_objs[j].letter.subscript)
+            {
+                remove_eo_idx(rhs, rhs_len, i);
+                rhs_len--;
+                for (int k = 0; k <= r_objs[j].end_idx - r_objs[j].start_idx; k++)
+                {
+                    rhs_len++;
+                    insert_eo_idx(rhs, rhs_len, i + k, original[r_objs[j].start_idx + k]);
+                }
+            }
+        }
+    }
 
     // Push to buffer
     int out_len = 0;

@@ -120,25 +120,26 @@ Boolean no_var_functions(const struct EquationObject* input, int length)
                 }
                 if (input[start].type == BLOCK_START)
                 {
-                    int blocks = 1;
-                    int idx = start + 1;
-                    while (blocks != 0)
-                    {
-                        if (input[idx].type == BLOCK_START)
-                        {
-                            blocks++;
-                        }
-                        if (input[idx].type == BLOCK_END)
-                        {
-                            blocks--;
-                        }
-                        if (input[idx].type == LETTER)
-                        {
-                            out = FALSE;
-                            break;
-                        }
-                        idx++;
-                    }
+                    // int blocks = 1;
+                    // int idx = start + 1;
+                    // while (blocks != 0)
+                    // {
+                    //     if (input[idx].type == BLOCK_START)
+                    //     {
+                    //         blocks++;
+                    //     }
+                    //     if (input[idx].type == BLOCK_END)
+                    //     {
+                    //         blocks--;
+                    //     }
+                    //     if (input[idx].type == LETTER)
+                    //     {
+                    //         out = FALSE;
+                    //         break;
+                    //     }
+                    //     idx++;
+                    // }
+                    out = FALSE;
                 }
             }
             break;
