@@ -8,6 +8,20 @@
 // Source: Wikipedia
 // I'll make this more memory efficient if I need to, I promise
 int yun_decompose(struct EquationObject *expression, int length) {
+  // If single term, return immediately
+  Boolean single_term = TRUE;
+  for (int i = 0; i < length; i++)
+  {
+    if (expression[i].type == ADD || expression[i].type == SUB)
+    {
+      single_term = FALSE;
+    }
+  }
+  if (single_term)
+  {
+    return length;
+  }
+
   // Making a bigger because it has the gcd business to deal with
   struct EquationObject a[2 * length] = {};
   int a_len = 0;
@@ -24,7 +38,7 @@ int yun_decompose(struct EquationObject *expression, int length) {
   // i represents the number of times iterated without pushing a value.
   // My threshold is a ridiculous number, but better safe than sorry
   int i = 0;
-  const int max_i = 1000;
+  constexpr int max_i = 1000;
 
   for (int i = 0; i < length; i++) {
     b[i] = expression[i];
@@ -71,6 +85,7 @@ int yun_decompose(struct EquationObject *expression, int length) {
     d_len++;
 
     bc_len = polynomial_gcf(b_clone, bc_len, d_clone, d_len);
+
     for (int i = 0; i < bc_len; i++) {
       a[i] = b_clone[i];
     }
@@ -180,7 +195,7 @@ int yun_decompose(struct EquationObject *expression, int length) {
     }
     b_d_len = power_rule_derivative_univariate(b_d, b_d_len) - 1;
 
-    int d_len = 0;
+    d_len = 0;
     d[d_len].type = BLOCK_START;
     d_len++;
     for (int i = 0; i < c_len; i++) {
@@ -206,6 +221,7 @@ int yun_decompose(struct EquationObject *expression, int length) {
     while (d[d_len].type != END_LEX) {
       d_len++;
     }
+    d_len++;
     n++;
   }
 

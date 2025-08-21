@@ -64,18 +64,31 @@ int real_roots(struct EquationObject *expression, int length, double *roots) {
     // Round to nearest threshold unit
     root = dround(root / THRESHOLD) * THRESHOLD;
     struct InputVar var;
-    int i = 0;
-    while (expression[i].type != LETTER) {
-      i++;
+    int j = 0;
+    while (expression[j].type != LETTER) {
+      j++;
     }
-    var.letter = expression[i].value.letter;
+    var.letter = expression[j].value.letter;
     var.value = root;
     // Verify that Yun's theorem hasn't made up roots. It can do that sometimes.
-    double y = solve_const_expr(original, length, &var, 1);
+    const double y = solve_const_expr(original, length, &var, 1);
     if (double_abs(y) <= THRESHOLD * square_root(1.0 / THRESHOLD)) {
       roots[num_roots] = root;
       num_roots++;
     }
+  }
+  // This method is unable to detect roots of zero, so checking that here
+  struct InputVar var;
+  int i = 0;
+  while (expression[i].type != LETTER) {
+    i++;
+  }
+  var.letter = expression[i].value.letter;
+  var.value = 0.0;
+  const double y = solve_const_expr(original, length, &var, 1);
+  if (double_abs(y) <= THRESHOLD * square_root(1.0 / THRESHOLD)) {
+    roots[num_roots] = 0.0;
+    num_roots++;
   }
   return num_roots;
 }
