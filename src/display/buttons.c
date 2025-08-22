@@ -318,7 +318,7 @@ short button_update(char* buffer, int* length, short cursor_pos,
             // Convert back to chars
             int buf_len = eo_to_string(expression, out_len, buffer);
             *length = buf_len;
-            cursor = (short)buf_len;
+            cursor = 0;
         }
         break;
     case B_PI:

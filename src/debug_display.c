@@ -168,7 +168,7 @@ void debug_display()
         if (changed && mode == M_EXPRESSION)
         {
             clear_display(buffer, SIZE);
-            draw_expression(10, 44, 16, buffer, WIDTH, input_string, input_string_len,
+            draw_expression(10, 36, 16, buffer, WIDTH, input_string, (short)input_string_len,
                             &cursor_pos, FALSE, TRUE);
             draw_top_bar(WIDTH, buffer, 8, second, subscript);
             changed = FALSE;
@@ -638,7 +638,7 @@ void debug_display()
                         // Convert back to chars
                         int buf_len = eo_to_string(expression, out_len, input_string);
                         input_string_len = buf_len;
-                        cursor_pos = (short)buf_len;
+                        cursor_pos = 0;
                     }
                     break;
                 }

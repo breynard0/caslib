@@ -16,7 +16,7 @@ Boolean update_get_var(short y_spacer, short size, char* buffer,
                        char* input_string, int input_string_len)
 {
     // Draw expression for helpfulness
-    draw_expression(10, 44, 16, buffer, buf_width, input_string, input_string_len,
+    draw_expression(10, 36, 16, buffer, buf_width, input_string, input_string_len,
                     cursor, FALSE, FALSE);
 
     // Draw the rest
@@ -196,7 +196,7 @@ void update_get_var_values(short y_spacer, short size, char* buffer,
         solution_eo.type = NUMBER;
         solution_eo.value.number = solution;
         *expr_len = eo_to_string(&solution_eo, 1, expression_in);
-        *cursor = *expr_len;
+        *cursor = 0;
         break;
     }
 
