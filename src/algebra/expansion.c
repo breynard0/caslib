@@ -21,6 +21,7 @@ int expand_polynomial(struct EquationObject* buffer, int length)
     // If a single thing, do nothing
     if (length <= 2)
     {
+        length = 2;
         return length;
     }
 

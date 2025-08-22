@@ -29,7 +29,7 @@ void insert_eo_idx(struct EquationObject *list, int length, int idx,
 // Yes, this is a wrapper. Yes, I'll fix it if it's a performance issue.
 int div_terms(struct EquationObject *term0, int t0_len,
               struct EquationObject *term1, int t1_len) {
-  struct EquationObject tmp_buf[2 * (t0_len + t1_len)];
+  struct EquationObject tmp_buf[2 * (t0_len + t1_len) + 6];
   int tmp_len = 0;
   tmp_buf[tmp_len].type = BLOCK_START;
   tmp_len++;

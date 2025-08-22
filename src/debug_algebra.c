@@ -76,10 +76,10 @@ void debug_algebra()
     // test_solve_consts();
     // test_expansion();
     // test_roots();
-    test_roots_function();
+    // test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
-    // test_rearrange();
+    test_rearrange();
     // printf("Test power rule...\n");
     // test_derivative();
     // test_polydiv();
@@ -211,7 +211,8 @@ void test_expansion()
     // char *expression = "(3axy-x)/(x^1)";
     // const auto expression = "(3(x-4))(4(x-1))";
     // char* expression = "(3(x-4))(10(x-1))";
-    char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+    // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+    char* expression = "8";
 
     // Not working still
 
@@ -222,7 +223,7 @@ void test_expansion()
     int new_len = expand_polynomial(lex_buffer, lex_len);
     for (int i = 0; i < new_len; i++)
     {
-        print_eo_flat(lex_buffer[i]);
+        print_eo(lex_buffer[i]);
     }
 }
 
@@ -230,10 +231,10 @@ void test_rearrange()
 {
     // char *expression = "d=vt-(1/2)at^2";
     // char* expression = "12axy^3+yz=4xy^2+c";
-    // char *expression = "x+4=5";
+    // char *expression = "x-4=5";
     // char *expression = "5x+10=20y";
-    // char *expression = "a=0.5x-vt";
-    char* expression = "a=0.5x-vt\\t30";
+    char* expression = "a=0.5x-vt";
+    // char* expression = "a=0.5x-vt\\t30";
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];

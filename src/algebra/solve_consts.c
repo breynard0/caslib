@@ -34,12 +34,10 @@ double solve_const_expr(struct EquationObject* input, int length,
 
     // Use recursion to reduce blocks to doubles
     int i = 0;
-    Boolean blocks_found = FALSE;
-    while (!blocks_found)
+    while (i < 100000)
     {
         if (i >= new_len)
         {
-            blocks_found = TRUE;
             break;
         }
 
@@ -136,12 +134,10 @@ double solve_const_expr(struct EquationObject* input, int length,
 
     // Exponentiation and friends
     i = 1;
-    Boolean exp_found = FALSE;
-    while (!exp_found)
+    while (i < 1000000)
     {
         if (i >= new_len)
         {
-            exp_found = TRUE;
             break;
         }
 
@@ -199,16 +195,14 @@ double solve_const_expr(struct EquationObject* input, int length,
 
     // Multiplications and divisions
     i = 1;
-    Boolean mult_found = FALSE;
-    while (!mult_found)
+    while (i < 100000)
     {
         if (i >= new_len)
         {
-            mult_found = TRUE;
             break;
         }
-        double before = expression[i - 1].value.number;
-        double after = expression[i + 1].value.number;
+        const double before = expression[i - 1].value.number;
+        const double after = expression[i + 1].value.number;
         double val = 0.0;
 
         Boolean found = FALSE;

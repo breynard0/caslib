@@ -1,27 +1,25 @@
 #include "buttons.h"
 #include "draw.h"
 #include "enums.h"
-#include "equation_objects.h"
 #include "letters.h"
 #include "lex.h"
 #include "parse.h"
 #include "solve_consts.h"
-#include "utils.h"
 
 Boolean update_get_var(short y_spacer, short size, char* buffer,
                        short buf_width, struct Letter* letter_buf,
-                       Boolean* subscript, Boolean* second,
+                       Boolean* subscript, const Boolean* second,
                        enum StateMode* mode, short* cursor,
                        enum PushButton button, union PushButtonData data,
                        char* input_string, int input_string_len)
 {
     // Draw expression for helpfulness
-    draw_expression(10, 36, 16, buffer, buf_width, input_string, input_string_len,
+    draw_expression(10, 36, 16, buffer, buf_width, input_string, (short)input_string_len,
                     cursor, FALSE, FALSE);
 
     // Draw the rest
     struct Letter letter = *letter_buf;
-    short x = buf_width / 8;
+    const short x = buf_width / 8;
     switch (button)
     {
     case B_NUMBER_LETTER:
@@ -58,11 +56,13 @@ Boolean update_get_var(short y_spacer, short size, char* buffer,
                 case 3:
                     push_letter = 'a';
                     break;
+                default:
+                    break;
                 }
             }
             else
             {
-                push_letter = data.number + '0';
+                push_letter = (char)('0' + data.number);
             }
             if (letter.letter == ' ')
             {
@@ -91,7 +91,6 @@ Boolean update_get_var(short y_spacer, short size, char* buffer,
     default:
         *mode = M_EXPRESSION;
         return TRUE;
-        break;
     }
 
     if (letter.letter == ' ')
@@ -121,7 +120,7 @@ Boolean update_get_var(short y_spacer, short size, char* buffer,
 
 void update_get_var_values(short y_spacer, short size, char* buffer,
                            short buf_width, char* expression_in, int* expr_len,
-                           struct SolveVar* values_buf, int* values_len,
+                           struct SolveVar* values_buf, const int* values_len,
                            Boolean* subscript, enum StateMode* mode,
                            short* cursor, enum PushButton button,
                            union PushButtonData data)
@@ -220,7 +219,7 @@ void update_get_var_values(short y_spacer, short size, char* buffer,
 }
 
 void update_show_roots(short y_spacer, short size, char* buffer,
-                       short buf_width, double* roots, int roots_len,
+                       short buf_width, const double* roots, int roots_len,
                        enum StateMode* mode, short* cursor,
                        enum PushButton button, struct Letter letter,
                        short height)

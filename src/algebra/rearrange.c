@@ -3,6 +3,7 @@
 #include "expansion.h"
 #include "flags.h"
 #include "gcf.h"
+#include "parse.h"
 
 struct ReplaceObject
 {
@@ -48,7 +49,6 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
         {
         // Single character values
         case PI_VAL:
-        case NUMBER:
             if (i == 0 ||
                 !(buffer[i - 1].type == SINE || buffer[i - 1].type == COSINE ||
                     buffer[i - 1].type == TANGENT || buffer[i - 1].type == ARCSINE ||
@@ -147,6 +147,7 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
                 Boolean is_negative = FALSE;
                 if (sign_idx >= 0 && buffer[sign_idx].type == SUB)
                 {
+                    is_negative = TRUE;
                 }
                 // Flip the sign if target_found and equal_found have the same value
                 if (target_found == equal_found)
@@ -161,7 +162,7 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
                 }
                 else
                 {
-                    if (start != 0)
+                    if (*len_ptr != 0)
                     {
                         buf_ptr[*len_ptr].type = ADD;
                         (*len_ptr)++;
@@ -230,8 +231,11 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
     }
 
     // Divide both sides by the GCD
-    lhs_len = div_terms(lhs, lhs_len, gcd_buf, gcd_len) - 1;
-    rhs_len = div_terms(rhs, rhs_len, gcd_buf, gcd_len) - 1;
+    // if (found && lhs_len > 1)
+    {
+        lhs_len = div_terms(lhs, lhs_len, gcd_buf, gcd_len) - 1;
+        rhs_len = div_terms(rhs, rhs_len, gcd_buf, gcd_len) - 1;
+    }
 
     // Get degree of variables
     Boolean same = TRUE;
@@ -262,7 +266,8 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
 
     // If all degrees are the same, factor out x then divide rhs by that quotient
     // Afterwards, set lhs to the variable
-    if (same)
+    // If rhs_len is one, that means the right side is a single number, so don't do this
+    if (same && rhs_len > 1)
     {
         struct EquationObject div_obj[4] = {};
         div_obj[0].type = LETTER;
