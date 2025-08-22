@@ -183,7 +183,10 @@ void debug_display()
         int scaling = GetRenderWidth() / WIDTH;
         for (int i = 0; i < SIZE; i++)
         {
-            Color c = (Color){111, 153, 64, 255};
+            Color c = (Color)
+            {
+                111, 153, 64, 255
+            };
             if (buffer[i] != 0)
             {
                 c = BLACK;
@@ -528,7 +531,8 @@ void debug_display()
                 else
                 {
                     new_len = expand_polynomial(expression, new_len);
-                    if (!is_univariate(expression, new_len) || !no_var_functions(expression, new_len))
+                    if (!is_univariate(expression, new_len) ||
+                        !no_var_functions(expression, new_len))
                     {
                         f_unsupported = TRUE;
                     }

@@ -19,8 +19,9 @@ int draw_expression(short x, short y, short size, char* buffer, short buf_width,
                     char* expression_in, short length, short* cursor,
                     Boolean cursor_calculation, Boolean draw_cursor);
 
-int draw_terms(short x, short y, short size, char* buffer, short buf_width, char* expression_in, short length,
-               short* cursor, Boolean cursor_calculation, Boolean draw_cursor);
+int draw_terms(short x, short y, short size, char* buffer, short buf_width,
+               char* expression_in, short length, short* cursor,
+               Boolean cursor_calculation, Boolean draw_cursor);
 
 void draw_top_bar(short width, char* buffer, short size, Boolean second,
                   Boolean ssc);

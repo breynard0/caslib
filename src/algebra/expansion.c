@@ -96,7 +96,6 @@ int expand_polynomial(struct EquationObject* buffer, int length)
 
     struct EquationObject expression[orig_expr_len] = {};
 
-
     expand_juxtopposed(buffer, new_len, expression, orig_expr_len, nullptr, 0);
 
     new_len = 0;
@@ -291,7 +290,6 @@ int expand_polynomial(struct EquationObject* buffer, int length)
                 i--;
             }
 
-
             int dest_start = i + 1;
             int end = -1;
 
@@ -332,8 +330,9 @@ int expand_polynomial(struct EquationObject* buffer, int length)
                         block_count++;
                     }
                     const enum EOType last1 = expression[idx].type;
-                    if (block_count == 0 && (expression[idx].type == ADD || expression[idx].type == SUB ||
-                        expression[idx].type == BLOCK_END))
+                    if (block_count == 0 &&
+                        (expression[idx].type == ADD || expression[idx].type == SUB ||
+                            expression[idx].type == BLOCK_END))
                     {
                         new_len++;
                         insert_eo_idx(expression, new_len, idx, mult_obj);
@@ -350,9 +349,10 @@ int expand_polynomial(struct EquationObject* buffer, int length)
                         if (block_count == 0)
                         {
                             running = FALSE;
-                        } else
+                        }
+                        else
                         {
-                        block_count--;
+                            block_count--;
                         }
                     }
                     idx++;

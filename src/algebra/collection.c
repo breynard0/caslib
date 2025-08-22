@@ -112,10 +112,10 @@ int collect_reorder_polynomial(struct EquationObject* buffer, int length)
         if (t == LETTER)
         {
             // Add coefficient of 1 if does not exist
-            if (i < 2 || (((mid_buf[i - 1].type == ADD ||
-                    mid_buf[i - 1].type == SUB) ||
-                (mid_buf[i - 2].type != NUMBER &&
-                    mid_buf[i - 2].type != LETTER))))
+            if (i < 2 ||
+                (((mid_buf[i - 1].type == ADD || mid_buf[i - 1].type == SUB) ||
+                    (mid_buf[i - 2].type != NUMBER &&
+                        mid_buf[i - 2].type != LETTER))))
             {
                 coeffs[coeffs_len] = 1.0;
                 coeffs_len++;

@@ -22,9 +22,11 @@ Boolean valid_expr(struct EquationObject* input, int length)
             {
                 valid = FALSE;
             }
-            if (i >= 1 && (input[i - 1].type == ADD || input[i - 1].type == SUB ||
-                input[i - 1].type == MULT || input[i - 1].type == DIV ||
-                input[i - 1].type == EQUAL) && eo.type != SUB)
+            if (i >= 1 &&
+                (input[i - 1].type == ADD || input[i - 1].type == SUB ||
+                    input[i - 1].type == MULT || input[i - 1].type == DIV ||
+                    input[i - 1].type == EQUAL) &&
+                eo.type != SUB)
             {
                 valid = FALSE;
             }
@@ -109,8 +111,8 @@ Boolean no_var_functions(const struct EquationObject* input, int length)
         case LOG:
             {
                 const int start = i + 1;
-                if ((input[i].type == ROOT || input[i].type == LOG) && (input[i - 1].type == BLOCK_END || input[i - 1].
-                    type == LETTER))
+                if ((input[i].type == ROOT || input[i].type == LOG) &&
+                    (input[i - 1].type == BLOCK_END || input[i - 1].type == LETTER))
                 {
                     out = FALSE;
                 }
@@ -143,7 +145,8 @@ Boolean no_var_functions(const struct EquationObject* input, int length)
                 }
             }
             break;
-        default: break;
+        default:
+            break;
         }
     }
 

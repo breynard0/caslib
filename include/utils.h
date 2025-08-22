@@ -2,7 +2,7 @@
 
 #define PI 3.14159265359
 #define NAT_LOG_BASE_E 2.718281828459
-#define NAN 0.0/0.0
+#define NAN 0.0 / 0.0
 #define THRESHOLD 0.000000001
 // #define THRESHOLD 0.01
 
