@@ -1,17 +1,9 @@
-#include "atrig.h"
 #include "collection.h"
 #include "cull.h"
-#include "equation_objects.h"
 #include "evaluate.h"
 #include "flags.h"
-#include "log.h"
-#include "parentheses.h"
 #include "parse.h"
-#include "pow.h"
-#include "root.h"
 #include "solve_consts.h"
-#include "trig.h"
-#include "utils.h"
 
 // Make sure buffer is big enough! This function also assumes no block
 // denominators.

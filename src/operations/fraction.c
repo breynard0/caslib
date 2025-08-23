@@ -2,13 +2,14 @@
 #include "pow.h"
 #include "utils.h"
 
-static short is_imprecise(long long num) {
+static short is_imprecise(const long long num)
+{
   unsigned long long i = 10;
   int c = 0;
   long long last = 0;
   int count = 0;
   while (i <= num) {
-    short digit = (num - last) % i / pow_ll(10, count);
+    // short digit = (num - last) % i / pow_ll(10, count);
     if (num % i == last) {
       c++;
     } else {
@@ -27,7 +28,8 @@ static short is_imprecise(long long num) {
   return 0;
 }
 
-static long long fix_long_long(long long num) {
+static long long fix_long_long(const long long num)
+{
   short flip = 0;
   {
     unsigned long long i = 10;
@@ -37,8 +39,7 @@ static long long fix_long_long(long long num) {
 
     // Make flip true if there are at least 5 of the same digit in a row
     while (i <= num) {
-      long thing = pow_ll(10, count);
-      short digit = ((num - last) % i) / pow_ll(10, count);
+      const short digit = (num - last) % i / pow_ll(10, count);
       if (digit == last && digit == 0) {
         c++;
       } else {
@@ -61,17 +62,20 @@ static long long fix_long_long(long long num) {
     long long last = 0;
     int last_digit = 0;
     int count = 0;
-    int digits = long_long_digits(num);
+    const int digits = long_long_digits(num);
     short good = 1;
 
     while (count < digits) {
-      short digit = ((num - last) % i) / pow_ll(10, count);
+      const short digit = (num - last) % i / pow_ll(10, count);
       if ((digit >= last_digit ||
-           ((digit >= (last_digit - 1)) && (count < 4))) &&
-          good) {
+          digit >= last_digit - 1 && count < 4) &&
+        good)
+      {
         new_num *= 10;
-      } else {
-        new_num += (digit * pow_ll(10, count));
+      }
+      else
+      {
+        new_num += digit * pow_ll(10, count);
         good = 0;
       }
 
@@ -87,15 +91,17 @@ static long long fix_long_long(long long num) {
   return num;
 }
 
-const double MULTIPLIER = 1000000000000.0;
-struct ImproperFraction double_to_fraction(double num) {
-  short negative_mul = 2 * (num >= 0) - 1;
+constexpr double MULTIPLIER = 1000000000000.0;
+
+struct ImproperFraction double_to_fraction(double num)
+{
+  const short negative_mul = 2 * (num >= 0) - 1;
   num = double_abs(num);
 
   double multiplier = MULTIPLIER;
 
-  double whole = dfloor(num);
-  double decimal = num - whole;
+  const double whole = dfloor(num);
+  const double decimal = num - whole;
   struct ImproperFraction f;
 
   do {
@@ -104,7 +110,8 @@ struct ImproperFraction double_to_fraction(double num) {
     reduce_fraction(&f);
     f.numerator += (long)whole * f.denominator;
     multiplier /= 10;
-  } while (((num < 0.0) != (f.numerator < 0)) || is_imprecise(f.numerator));
+  }
+  while (num < 0.0 != f.numerator < 0 || is_imprecise(f.numerator));
 
   f.numerator = (long long)(double)f.numerator;
   f.numerator = fix_long_long(f.numerator);
@@ -114,13 +121,14 @@ struct ImproperFraction double_to_fraction(double num) {
   return f;
 }
 
-struct MixedFraction double_to_mixed_fraction(double num) {
-  short is_negative = num <= 0;
+struct MixedFraction double_to_mixed_fraction(double num)
+{
+  const short is_negative = num <= 0;
   num = double_abs(num);
 
-  double whole = dfloor(num);
-  double decimal = num - whole;
-  struct ImproperFraction i = double_to_fraction(decimal);
+  const double whole = dfloor(num);
+  const double decimal = num - whole;
+  const struct ImproperFraction i = double_to_fraction(decimal);
   struct MixedFraction out;
   out.numerator = i.numerator;
   out.denominator = i.denominator;

@@ -1,11 +1,8 @@
 #include "draw.h"
-#include "buttons.h"
-#include "dutils.h"
 #include "enums.h"
-#include "gcf.h"
 #include "letters.h"
 
-void clear_display(char* buffer, short length)
+void clear_display(char* buffer, const short length)
 {
     for (int i = 0; i < length; i++)
     {
@@ -13,7 +10,7 @@ void clear_display(char* buffer, short length)
     }
 }
 
-void set_pixel(short x, short y, short value, char* buffer, short width)
+void set_pixel(const short x, const short y, const short value, char* buffer, const short width)
 {
     if (x < 0 || x >= width || y < 0)
     {
@@ -22,7 +19,7 @@ void set_pixel(short x, short y, short value, char* buffer, short width)
     buffer[y * width + x] = (char)value;
 }
 
-void set_pixel_on(short x, short y, char* buffer, short width)
+void set_pixel_on(const short x, const short y, char* buffer, const short width)
 {
     if (x < 0 || x >= width || y < 0)
     {
@@ -31,32 +28,26 @@ void set_pixel_on(short x, short y, char* buffer, short width)
     buffer[y * width + x] = ON;
 }
 
-int i_min(int a, int b)
+int i_min(const int a, const int b)
 {
     if (a < b)
     {
         return a;
     }
-    else
-    {
-        return b;
-    }
+    return b;
 }
 
-int i_max(int a, int b)
+int i_max(const int a, const int b)
 {
     if (a > b)
     {
         return a;
     }
-    else
-    {
-        return b;
-    }
+    return b;
 }
 
-void draw_line(short x0, short y0, short x1, short y1, char* buffer,
-               short width)
+void draw_line(const short x0, const short y0, const short x1, const short y1, char* buffer,
+               const short width)
 {
     short higher_y = y0;
     short lower_y = y1;
@@ -72,13 +63,8 @@ void draw_line(short x0, short y0, short x1, short y1, char* buffer,
         higher_x = x1;
         lower_x = x0;
     }
-    short rise = higher_y - lower_y;
-    short run = higher_x - lower_x;
-    int max = rise;
-    if (run > rise)
-    {
-        max = run;
-    }
+    const short rise = higher_y - lower_y;
+    const short run = higher_x - lower_x;
 
     if (x0 == x1)
     {
@@ -128,12 +114,12 @@ void draw_line(short x0, short y0, short x1, short y1, char* buffer,
         return;
     }
 
-    float f_rise = (float)rise;
-    float f_run = (float)run;
+    const float f_rise = rise;
+    const float f_run = run;
 
     if (run > rise)
     {
-        double length = f_run / (f_rise + 1);
+        const double length = f_run / (f_rise + 1);
 
         for (int i = 0; i <= higher_y - lower_y; i++)
         {
@@ -146,7 +132,7 @@ void draw_line(short x0, short y0, short x1, short y1, char* buffer,
     }
     else
     {
-        double length = f_rise / (f_run + 1);
+        const double length = f_rise / (f_run + 1);
 
         for (int i = 0; i <= higher_x - lower_x; i++)
         {
@@ -158,8 +144,8 @@ void draw_line(short x0, short y0, short x1, short y1, char* buffer,
     }
 }
 
-void draw_rect(short x, short y, short width, short height, char* buffer,
-               short buf_width)
+void draw_rect(const short x, const short y, const short width, const short height, char* buffer,
+               const short buf_width)
 {
     for (int i = 0; i < height; i++)
     {
@@ -170,9 +156,9 @@ void draw_rect(short x, short y, short width, short height, char* buffer,
     }
 }
 
-int draw_expression(const short x, const short y, short size, char* buffer, short buf_width,
-                    char* expression_in, short length, short* cursor,
-                    Boolean cursor_calculation, Boolean draw_cursor)
+int draw_expression(const short x, const short y, const short size, char* buffer, const short buf_width,
+                    char* expression_in, const short length, short* cursor,
+                    const Boolean cursor_calculation, const Boolean draw_cursor)
 {
     char expression[length] = {};
     int new_len = 0;
@@ -232,9 +218,9 @@ int draw_expression(const short x, const short y, short size, char* buffer, shor
     int blocks = 0;
     while (i < new_len)
     {
-        short draw_spot_before = draw_spot;
+        const short draw_spot_before = draw_spot;
 
-        char cur_let = expression[i];
+        const char cur_let = expression[i];
 
         if (cur_let == '\\')
         {
@@ -478,7 +464,7 @@ int draw_expression(const short x, const short y, short size, char* buffer, shor
                         {
                             draw_letter_var = '?';
                         }
-                        short new_size = size - 8;
+                        const short new_size = size - 8;
                         draw_letter(draw_letter_var, x + draw_spot + offset + new_size / 2, (short)(y + size + 1),
                                     new_size, buffer,
                                     buf_width);
@@ -527,10 +513,10 @@ int draw_expression(const short x, const short y, short size, char* buffer, shor
 
 #include "flags.h"
 
-void draw_top_bar(short width, char* buffer, short size, Boolean second,
-                  Boolean ssc)
+void draw_top_bar(const short width, char* buffer, const short size, const Boolean second,
+                  const Boolean ssc)
 {
-    short side_spacing = width / 10;
+    const short side_spacing = width / 10;
 
     if (second)
     {
@@ -549,7 +535,7 @@ void draw_top_bar(short width, char* buffer, short size, Boolean second,
                     width);
     }
 
-    short draw_pos = side_spacing + width / 2;
+    const short draw_pos = side_spacing + width / 2;
     if (f_overflow || f_buffer_overflow)
     {
         draw_letter('o', draw_pos, 0, size, buffer, width);

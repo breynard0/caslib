@@ -3,8 +3,9 @@
 #include "expansion.h"
 #include "flags.h"
 
-void polynomial_division(struct EquationObject *dividend, int dividend_len,
-                         struct EquationObject *divisor, int divisor_len) {
+void polynomial_division(struct EquationObject* dividend, const int dividend_len,
+                         struct EquationObject* divisor, const int divisor_len)
+{
   // Case of 2 constants
   if (dividend_len <= 2 && dividend[0].type == NUMBER && divisor_len <= 2 &&
       divisor[0].type == NUMBER) {
@@ -45,7 +46,9 @@ void polynomial_division(struct EquationObject *dividend, int dividend_len,
     if (divisor[i].type == EXP) {
       divisor_degree = divisor[i + 1].value.number;
       break;
-    } else if (divisor[i].type == LETTER) {
+    }
+    if (divisor[i].type == LETTER)
+    {
       letter_found = TRUE;
     }
   }
@@ -188,12 +191,14 @@ void polynomial_division(struct EquationObject *dividend, int dividend_len,
 
     temp_degree = 1;
     i = 0;
-    Boolean letter_found = FALSE;
+    letter_found = FALSE;
     while (i < temp_len) {
       if (temp[i].type == EXP) {
         temp_degree = temp[i + 1].value.number;
         break;
-      } else if (temp[i].type == LETTER) {
+      }
+      if (temp[i].type == LETTER)
+      {
         letter_found = TRUE;
       }
 

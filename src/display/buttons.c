@@ -1,6 +1,5 @@
 #include "buttons.h"
 #include "enums.h"
-#include "equation_objects.h"
 #include "expansion.h"
 #include "flags.h"
 #include "lex.h"
@@ -243,6 +242,9 @@ short button_update(char* buffer, int* length, short cursor_pos,
             case 3:
                 letter = 'w';
                 break;
+            default:
+                letter = '?';
+                break;
             }
             buffer[cursor] = letter;
         }
@@ -396,7 +398,7 @@ short button_update(char* buffer, int* length, short cursor_pos,
                     buffer[i] = buffer[i + 1];
                 }
             }
-            if (length >= 0)
+            if (*length >= 0)
             {
                 (*length)--;
                 if (cursor_at_end)

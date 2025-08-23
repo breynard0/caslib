@@ -1,7 +1,6 @@
 #include "gcf.h"
 #include "dutils.h"
 #include "enums.h"
-#include "equation_objects.h"
 #include "expansion.h"
 #include "poly_div.h"
 #include "utils.h"
@@ -326,7 +325,7 @@ int term_gcf(struct EquationObject* term0, int t0_len,
             !(term0[i].value.letter.letter == exclude.letter &&
                 term0[i].value.letter.subscript == exclude.subscript))
         {
-            char ex = term0[i].value.letter.letter;
+            // char ex = term0[i].value.letter.letter;
             double self_power = 1.0;
             if (i < t0_len && term0[i + 1].type == EXP)
             {

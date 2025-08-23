@@ -58,7 +58,7 @@ int evaluate_consts(struct EquationObject* expression, int length)
 
                 expression[start].type = NUMBER;
                 expression[start].value.number =
-                    solve_const_expr(tmp_buf, i - start - 1, 0, 0);
+                    solve_const_expr(tmp_buf, i - start - 1, nullptr, 0);
                 for (int j = 0; j < i - start; j++)
                 {
                     remove_eo_idx(expression, new_len, start + 1);

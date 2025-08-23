@@ -96,11 +96,11 @@ void test_lex()
     // char *expression = "60\\d";
     // char *expression = "3x+4";
     // char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
-    char* expression = "3";
+    const auto expression = "3";
     printf("Lexing %s\n", expression);
     struct EquationObject buffer[256];
 
-    int max_len = lex(expression, strlen(expression), buffer, 256);
+    const int max_len = lex(expression, strlen(expression), buffer, 256);
 
     printf("---------------------------------\n");
 
@@ -125,17 +125,17 @@ void test_solve_consts()
     // char *expression = "(1/(2+2))";
     // char *expression = "x^2+x-6";
     // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
-    char* expression = "\\s\\s40";
+    const auto expression = "\\s\\s40";
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[256];
-    int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
+    const int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
     printf("Solving...\n");
     struct InputVar var;
     var.letter.letter = 'x';
     var.letter.subscript = ' ';
     var.value = 2;
     struct InputVar vars[1] = {var};
-    double solution = solve_const_expr(lex_buffer, lex_len, vars, 1);
+    const double solution = solve_const_expr(lex_buffer, lex_len, vars, 1);
     printf("%0.12f", solution);
 }
 
@@ -218,7 +218,7 @@ void test_expansion()
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
-    int lex_len = lex(expression, (int)strlen(expression), lex_buffer, 64);
+    const int lex_len = lex(expression, (int)strlen(expression), lex_buffer, 64);
     printf("Expanding...\n");
     int new_len = expand_polynomial(lex_buffer, lex_len);
     for (int i = 0; i < new_len; i++)

@@ -9,7 +9,7 @@
 
 enum FuncType { fSINE, fCOSINE, fTANGENT };
 
-static double arc_compute(double num, enum FuncType type)
+static double arc_compute(double num, const enum FuncType type)
 {
     short is_negative = 1;
 
@@ -51,7 +51,7 @@ static double arc_compute(double num, enum FuncType type)
     int i = 0;
     while (i < CORDIC_COUNT)
     {
-        double val;
+        double val = 0;
         switch (type)
         {
         case fSINE:
@@ -65,12 +65,12 @@ static double arc_compute(double num, enum FuncType type)
             break;
         }
 
-        double x_last = x;
-        double y_last = y;
-        double angle = CORDIC_CONSTANTS[i];
+        const double x_last = x;
+        const double y_last = y;
+        const double angle = CORDIC_CONSTANTS[i];
 
-        double halved_x = dhalve(x, i);
-        double halved_y = dhalve(y, i);
+        const double halved_x = dhalve(x, i);
+        const double halved_y = dhalve(y, i);
 
         // Not using pre-computed values of cosine since Y is being directly
         // compared
@@ -106,11 +106,11 @@ static double arc_compute(double num, enum FuncType type)
     return angle_sum * is_negative;
 }
 
-double arc_sine(double num) { return arc_compute(num, fSINE); }
+double arc_sine(const double num) { return arc_compute(num, fSINE); }
 
-double arc_cosine(double num) { return arc_compute(num, fCOSINE); }
+double arc_cosine(const double num) { return arc_compute(num, fCOSINE); }
 
-double arc_tangent(double num)
+double arc_tangent(const double num)
 {
     return arc_cosine(1 / square_root(1 + num * num));
 }

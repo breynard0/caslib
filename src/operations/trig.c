@@ -15,10 +15,10 @@ struct SinCos angle_pair(double num) {
   num = dmodulo(num, 2 * PI);
 
   if (negative == TRUE) {
-    num = (2.0 * PI) - num;
+    num = 2.0 * PI - num;
   }
 
-  const double halfpi = PI / 2.0;
+  constexpr double halfpi = PI / 2.0;
 
   double x_mul = 1.0;
   double y_mul = 1.0;
@@ -57,13 +57,13 @@ struct SinCos angle_pair(double num) {
 
   unsigned int i = 0;
   while (i < CORDIC_COUNT) {
-    double last_x = x;
-    double last_y = y;
+    const double last_x = x;
+    const double last_y = y;
 
-    double angle = CORDIC_CONSTANTS[i];
+    const double angle = CORDIC_CONSTANTS[i];
 
-    double halved_x = dhalve(x, i);
-    double halved_y = dhalve(y, i);
+    const double halved_x = dhalve(x, i);
+    const double halved_y = dhalve(y, i);
 
     if (angle_sum > num) {
       angle_sum -= angle;
@@ -84,16 +84,19 @@ struct SinCos angle_pair(double num) {
   return out;
 }
 
-double sine(double angle) {
-  struct SinCos pair = angle_pair(angle);
+double sine(const double angle)
+{
+  const struct SinCos pair = angle_pair(angle);
   return pair.sin;
 }
 
-double cosine(double angle) {
-  struct SinCos pair = angle_pair(angle);
+double cosine(const double angle)
+{
+  const struct SinCos pair = angle_pair(angle);
   return pair.cos;
 }
-double tangent(double angle) {
-  struct SinCos pair = angle_pair(angle);
+double tangent(const double angle)
+{
+  const struct SinCos pair = angle_pair(angle);
   return pair.sin / pair.cos;
 }

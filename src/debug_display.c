@@ -183,7 +183,7 @@ void debug_display()
         int scaling = GetRenderWidth() / WIDTH;
         for (int i = 0; i < SIZE; i++)
         {
-            Color c = (Color)
+            auto c = (Color)
             {
                 111, 153, 64, 255
             };
