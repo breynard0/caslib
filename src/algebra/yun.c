@@ -39,7 +39,7 @@ int yun_decompose(struct EquationObject* expression, int length)
     // i represents the number of times iterated without pushing a value.
     // My threshold is a ridiculous number, but better safe than sorry
     int i = 0;
-    constexpr int max_i = 1000;
+    const int max_i = 1000;
 
     for (int i = 0; i < length; i++)
     {

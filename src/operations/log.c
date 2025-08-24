@@ -20,7 +20,7 @@ double ln(const double x)
 
 double log_2(double num)
 {
-    const auto cast = (double_cast)num;
+    const double_cast cast = (double_cast)num;
     const int exponent = cast.parts.exponent - 1023;
     const double remainder = num / pow_di(2.0, exponent);
     return exponent + ln(remainder) / LN2;

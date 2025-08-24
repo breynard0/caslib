@@ -11,7 +11,7 @@ double ddouble(double num, const int n)
 
 double dhalve(double num, const int n)
 {
-    auto cast = (double_cast)num;
+    double_cast cast = (double_cast)num;
     int exp = cast.parts.exponent;
     exp -= n;
     cast.parts.exponent = exp;

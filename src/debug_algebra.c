@@ -96,7 +96,7 @@ void test_lex()
     // char *expression = "60\\d";
     // char *expression = "3x+4";
     // char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
-    const auto expression = "3";
+    char* expression = "3";
     printf("Lexing %s\n", expression);
     struct EquationObject buffer[256];
 
@@ -125,7 +125,7 @@ void test_solve_consts()
     // char *expression = "(1/(2+2))";
     // char *expression = "x^2+x-6";
     // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
-    const auto expression = "\\s\\s40";
+    char* expression = "\\s\\s40";
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[256];
     const int lex_len = lex(expression, strlen(expression), lex_buffer, 256);

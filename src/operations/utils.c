@@ -79,7 +79,7 @@ static short check_places(double num, short places)
     return 1;
 }
 
-// TOdDO: figure out what the heck is going on here
+// TODO: figure out what the heck is going on here
 short double_digits_partial(const double num)
 {
     short digits = 0;

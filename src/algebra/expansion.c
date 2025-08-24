@@ -89,7 +89,7 @@ int expand_polynomial(struct EquationObject* buffer, int length)
 
     struct EquationObject expression[orig_expr_len] = {};
 
-    expand_juxtopposed(buffer, new_len, expression, orig_expr_len, nullptr, 0);
+    expand_juxtopposed(buffer, new_len, expression, orig_expr_len, 0, 0);
 
     new_len = 0;
     while (expression[new_len].type != END_LEX)

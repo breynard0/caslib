@@ -2,3 +2,5 @@ work
 work/*
 gmon.out
 profile.txt
+dist
+dist/*
