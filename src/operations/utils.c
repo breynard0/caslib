@@ -57,34 +57,19 @@ short long_long_digits(const long long num)
     return 19;
 }
 
-short double_digits_whole(const double num) { return (short)log_n(num, 10) + 1; }
-
-static short check_places(double num, short places)
+short double_digits_whole(const double num)
 {
-    // short i = 0;
-    // struct ImproperFraction f = double_to_fraction(num - dfloor(num));
-    // printf("%lli\n", f.numerator);
-    // while (i < places) {
-    //   double n = num * pow_di(10, i);
-    //   // printf("%f, ", dmodulo(dround(n), 10));
-    //   if (dmodulo(dround(n), 10) != 0) {
-    //     // printf("\n");
-    //     return 1;
-    //   }
-
-    //   i++;
-    // }
-    // // printf("\n");
-    // return 0;
-    return 1;
+    if (num == 0)
+    {
+        return 1;
+    }
+    return (short)log_n(num, 10) + 1;
 }
 
-// TODO: figure out what the heck is going on here
 short double_digits_partial(const double num)
 {
     short digits = 0;
-    while (dmodulo(num * pow_di(10, digits), 1.0) != 0 &&
-        check_places(num * pow_di(10, digits), 3))
+    while (dmodulo(num * pow_di(10, digits), 1.0) != 0)
     {
         digits++;
     }

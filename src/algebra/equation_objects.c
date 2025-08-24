@@ -107,6 +107,7 @@ int eo_to_string(const struct EquationObject* expression, const int length, char
                 // NaN check
                 if (num != num)
                 {
+                    // ReSharper disable once CppDFAUnreachableCode
                     f_undefined = TRUE;
                     return 0;
                 }
