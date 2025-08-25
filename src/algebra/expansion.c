@@ -1,9 +1,11 @@
 #include "collection.h"
 #include "cull.h"
+#include "dutils.h"
 #include "evaluate.h"
 #include "flags.h"
 #include "parse.h"
 #include "solve_consts.h"
+#include "utils.h"
 
 // Make sure buffer is big enough! This function also assumes no block
 // denominators.
@@ -170,6 +172,13 @@ int expand_polynomial(struct EquationObject* buffer, int length)
             if (expression[i + 1].type == NUMBER ||
                 expression[i + 1].type == LETTER)
             {
+                // Divison by zero
+                if (expression[i + 1].type == NUMBER && double_abs(expression[i + 1].value.number) < THRESHOLD)
+                {
+                    f_undefined = TRUE;
+                    return 0;
+                }
+
                 new_len++;
                 insert_eo_idx(expression, new_len, i + 2, minus_1_obj);
                 new_len++;

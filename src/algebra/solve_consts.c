@@ -203,7 +203,7 @@ double solve_const_expr(struct EquationObject* input, int length,
         }
         const double before = expression[i - 1].value.number;
         const double after = expression[i + 1].value.number;
-        double val = 0.0;
+        double val = 0;
 
         Boolean found = FALSE;
 
@@ -214,6 +214,12 @@ double solve_const_expr(struct EquationObject* input, int length,
         }
         if (expression[i].type == DIV)
         {
+            // Divison by zero
+            if (double_abs(after) < THRESHOLD)
+            {
+                f_undefined = TRUE;
+                return 0.0 / 0.0;
+            }
             val = before / after;
             found = TRUE;
         }
