@@ -79,10 +79,10 @@ void debug_algebra()
     // test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
-    test_rearrange();
+    // test_rearrange();
     // printf("Test power rule...\n");
     // test_derivative();
-    // test_polydiv();
+    test_polydiv();
     // test_polygcf();
     // test_yun();
 }
@@ -96,7 +96,9 @@ void test_lex()
     // char *expression = "60\\d";
     // char *expression = "3x+4";
     // char *expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
-    char* expression = "3";
+    // char* expression = "3";
+    char* expression = "-0.296296296296x^5*(-324x-3224)";
+
     printf("Lexing %s\n", expression);
     struct EquationObject buffer[256];
 
@@ -212,7 +214,8 @@ void test_expansion()
     // const auto expression = "(3(x-4))(4(x-1))";
     // char* expression = "(3(x-4))(10(x-1))";
     // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
-    char* expression = "8";
+    // char* expression = "8";
+    char* expression = "-0.296296296296x^5*(-324x-3224)";
 
     // Not working still
 
@@ -256,7 +259,7 @@ void test_roots()
     // char *expression = "(x+2)(x-3)(x^3-18)";
     // char *expression = "x^5-x^4-6x^3-18x^2+18x+108";
     // char *expression = "(x-2)(x-3)(x-5)(x-7)(x-8)(x-36)";
-    char* expression = "(x-3)(x+2)(7x-2)";
+    // char* expression = "(x-3)(x+2)(7x-2)";
     // char *expression = "(x+200)(x+3)(x-50)(x-70)(x-80)(x-3600)";
     // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-1)";
     // char *expression = "(x-2)(x+3)(x-3)";
@@ -275,6 +278,8 @@ void test_roots()
     // char *expression = "x^2-1";
     // char *expression = "6x^2";
     // char *expression = "x(x-22)";
+    // char *expression = "3x^2-2x-4";
+    char* expression = "3x^2-32x-4";
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
@@ -326,11 +331,12 @@ void test_roots()
 void test_roots_function()
 {
     // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
-    char* expression = "(x-3)(x+2)(7x-2)";
+    // char* expression = "(x-3)(x+2)(7x-2)";
     // char* expression = "3x+4";
     // char* expression = "x(3x+4)";
     // char* expression = "6x^2";
     // char* expression = "6x^2-4x+85";
+    char* expression = "3x^2-2x-4";
 
     struct EquationObject lex_buffer[1024];
     int lex_len = lex(expression, strlen(expression), lex_buffer, 1024);
@@ -423,8 +429,17 @@ void test_polydiv()
     // char *dividend = "x^5-87x^4+9x^3+7x^2-3";
     // char *divisor = "-1207.44x^3+98.16x^2+48.72x-3";
 
-    char* dividend = "2x";
-    char* divisor = "1";
+    // char* dividend = "2x";
+    // char* divisor = "1";
+
+    // char* dividend = "96x^31-322";
+    // char* divisor = "-324.9325x-3224";
+
+    char* dividend = "96x^6-322";
+    char* divisor = "-324x-3224";
+
+    // char* dividend = "3x^2-32x-4";
+    // char* divisor = "6x-32";
 
     printf("Lexing %s...\n", dividend);
     struct EquationObject dividend_buffer[1024];
@@ -509,8 +524,11 @@ void test_polygcf()
     // char* dividend = "x^2+1";
     // char* divisor = "2x";
 
-    char* dividend = "30x^4-300x^3+1096x^2-1448x+696";
-    char* divisor = "120x^3-900x^2+2192x-1448";
+    // char* dividend = "30x^4-300x^3+1096x^2-1448x+696";
+    // char* divisor = "120x^3-900x^2+2192x-1448";
+
+    char* dividend = "3x^32-322x-3224";
+    char* divisor = "96x^31-322";
 
     printf("Lexing %s...\n", dividend);
     struct EquationObject dividend_buffer[1024];

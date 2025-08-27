@@ -47,8 +47,8 @@ int collect_reorder_polynomial(struct EquationObject* buffer, int length)
     int count = 0;
     while (i < length)
     {
-        if ((i == length - 1) || (start_buf[i].type == END_LEX) ||
-            (start_buf[i].type == ADD) || (start_buf[i].type == SUB))
+        if (i == length - 1 || start_buf[i].type == END_LEX ||
+            start_buf[i].type == ADD || start_buf[i].type == SUB)
         {
             struct EquationObject tmp_buf[2 * count];
             for (int j = 0; j < count; j++)
@@ -65,7 +65,7 @@ int collect_reorder_polynomial(struct EquationObject* buffer, int length)
                 mid_buf[mid_len] = tmp_buf[j];
                 mid_len++;
             }
-            if ((start_buf[i].type == ADD) || (start_buf[i].type == SUB))
+            if (start_buf[i].type == ADD || start_buf[i].type == SUB)
             {
                 mid_buf[mid_len].type = start_buf[i].type;
                 mid_len++;

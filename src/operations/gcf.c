@@ -29,24 +29,6 @@ long gcf(long x, long y)
 int polynomial_gcf(struct EquationObject* expr0, int expr0_len,
                    struct EquationObject* expr1, int expr1_len)
 {
-    // Debugging stuff
-    // struct EquationObject expr0[expr0_len] = {};
-    // for (int i = 0; i < expr0_len; i++) {
-    //   expr0[i] = expr0a[i];
-    // }
-    // struct EquationObject expr1[expr1_len] = {};
-    // for (int i = 0; i < expr1_len; i++) {
-    //   expr1[i] = expr1a[i];
-    // }
-
-    // #include "debug.h"
-    // for (int i = 0; i < expr0_len; i++) {
-    //   print_eo_flat(expr0[i]);
-    // }
-    // for (int i = 0; i < expr1_len; i++) {
-    //   print_eo_flat(expr1[i]);
-    // }
-
     // If either is constant, then by definition, polynomial GCD is 1
     // Unless that number is zero, then it is simply whichever is not zero
     if ((expr0_len <= 2 && expr0[0].type == NUMBER) ||
@@ -60,16 +42,13 @@ int polynomial_gcf(struct EquationObject* expr0, int expr0_len,
             }
             return expr1_len;
         }
-        else if (expr1[0].value.number == 0)
+        if (expr1[0].value.number == 0)
         {
             return expr0_len;
         }
-        else
-        {
-            expr0[0].type = NUMBER;
-            expr0[0].value.number = 1.0;
-            return 2;
-        }
+        expr0[0].type = NUMBER;
+        expr0[0].value.number = 1.0;
+        return 2;
     }
 
     int max_len = expr0_len;

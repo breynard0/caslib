@@ -240,15 +240,15 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
     // Get degree of variables
     Boolean same = TRUE;
     double cur_degree = 0.0 / 0.0;
-    for (int i = 0; i < lhs_len; i++)
+    for (int j = 0; j < lhs_len; j++)
     {
-        if (lhs[i].type == LETTER && lhs[i].value.letter.letter == target.letter)
+        if (lhs[j].type == LETTER && lhs[j].value.letter.letter == target.letter)
         {
             double tent_degree = 1;
-            if (lhs[i].value.letter.subscript == target.subscript &&
-                i < lhs_len - 2 && lhs[i + 1].type == EXP)
+            if (lhs[j].value.letter.subscript == target.subscript &&
+                j < lhs_len - 2 && lhs[j + 1].type == EXP)
             {
-                tent_degree = lhs[i + 2].value.number;
+                tent_degree = lhs[j + 2].value.number;
             }
             if (cur_degree != cur_degree)
             {

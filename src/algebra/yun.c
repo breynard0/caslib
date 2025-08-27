@@ -36,10 +36,9 @@ int yun_decompose(struct EquationObject* expression, int length)
 
     int out_len = 0;
 
-    // i represents the number of times iterated without pushing a value.
+    // idx represents the number of times iterated without pushing a value.
     // My threshold is a ridiculous number, but better safe than sorry
-    int i = 0;
-    const int max_i = 1000;
+    int idx = 0;
 
     for (int i = 0; i < length; i++)
     {
@@ -55,8 +54,9 @@ int yun_decompose(struct EquationObject* expression, int length)
 
     while (!eq_1)
     {
+        const int max_i = 1000;
         // Check if should exit
-        if (i > max_i ||
+        if (idx > max_i ||
             (b_len <= 2 && b[0].type == NUMBER && b[0].value.number == 1.0))
         {
             eq_1 = TRUE;
@@ -176,7 +176,7 @@ int yun_decompose(struct EquationObject* expression, int length)
         }
         else
         {
-            i++;
+            idx++;
         }
 
         // Set b and c to the divisions

@@ -2,11 +2,12 @@
 #include "draw.h"
 #include "dutils.h"
 
-struct DrawData {
-  short x;
-  short y;
-  short size;
-  short buf_width;
+struct DrawData
+{
+    short x;
+    short y;
+    short size;
+    short buf_width;
 };
 
 // clang-format off
@@ -476,164 +477,174 @@ const char LETR[8] = {
 
 // clang-format on
 
-void draw_bitmap(const char bitmap[8], struct DrawData data, char *buffer) {
-  short x = data.x;
-  short y = data.y;
-  short size = data.size;
-  short res = size / 8;
-  short buf_width = data.buf_width;
+void draw_bitmap(const char bitmap[8], struct DrawData data, char* buffer)
+{
+    short x = data.x;
+    short y = data.y;
+    short size = data.size;
+    short res = size / 8;
+    short buf_width = data.buf_width;
 
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      short pix_state = bitmap[i] & (0b10000000 >> j);
-      for (int k = 0; k < res; k++) {
-        for (int l = 0; l < res; l++) {
-          if (pix_state) {
-            set_pixel_on(x + (j * res) + k, y + (i * res) + l, buffer,
-                         buf_width);
-          }
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            short pix_state = bitmap[i] & (0b10000000 >> j);
+            for (int k = 0; k < res; k++)
+            {
+                for (int l = 0; l < res; l++)
+                {
+                    if (pix_state)
+                    {
+                        set_pixel_on(x + (j * res) + k, y + (i * res) + l, buffer,
+                                     buf_width);
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
 
-void draw_letter(char letter, short x, short y, short size, char *buffer,
-                 short buf_width) {
-  struct DrawData data = {};
-  data.x = x;
-  data.y = y;
-  data.size = size;
-  data.buf_width = buf_width;
+void draw_letter(char letter, short x, short y, short size, char* buffer,
+                 short buf_width)
+{
+    struct DrawData data = {};
+    data.x = x;
+    data.y = y;
+    data.size = size;
+    data.buf_width = buf_width;
 
-  switch (letter) {
-  case '0':
-    draw_bitmap(LET0, data, buffer);
-    break;
-  case '1':
-    draw_bitmap(LET1, data, buffer);
-    break;
-  case '2':
-    draw_bitmap(LET2, data, buffer);
-    break;
-  case '3':
-    draw_bitmap(LET3, data, buffer);
-    break;
-  case '4':
-    draw_bitmap(LET4, data, buffer);
-    break;
-  case '5':
-    draw_bitmap(LET5, data, buffer);
-    break;
-  case '6':
-    draw_bitmap(LET6, data, buffer);
-    break;
-  case '7':
-    draw_bitmap(LET7, data, buffer);
-    break;
-  case '8':
-    draw_bitmap(LET8, data, buffer);
-    break;
-  case '9':
-    draw_bitmap(LET9, data, buffer);
-    break;
-  case '+':
-    draw_bitmap(LETADD, data, buffer);
-    break;
-  case '-':
-    draw_bitmap(LETSUB, data, buffer);
-    break;
-  case '*':
-    draw_bitmap(LETMUL, data, buffer);
-    break;
-  case '/':
-    draw_bitmap(LETDIV, data, buffer);
-    break;
-  case '^':
-    draw_bitmap(LETEXP, data, buffer);
-    break;
-  case '(':
-    draw_bitmap(LETBS, data, buffer);
-    break;
-  case ')':
-    draw_bitmap(LETBE, data, buffer);
-    break;
-  case '=':
-    draw_bitmap(LETEQ, data, buffer);
-    break;
-  case '.':
-    draw_bitmap(LETDOT, data, buffer);
-    break;
-  case '?':
-    draw_bitmap(LETQUES, data, buffer);
-    break;
-  case '@':
-    draw_bitmap(LETPI, data, buffer);
-    break;
-  case '%':
-    draw_bitmap(LETDEG, data, buffer);
-    break;
-  case '#':
-    draw_bitmap(LETROOT, data, buffer);
-    break;
-  case 's':
-    draw_bitmap(LETS, data, buffer);
-    break;
-  case 'i':
-    draw_bitmap(LETI, data, buffer);
-    break;
-  case 'n':
-    draw_bitmap(LETN, data, buffer);
-    break;
-  case 'c':
-    draw_bitmap(LETC, data, buffer);
-    break;
-  case 'o':
-    draw_bitmap(LETO, data, buffer);
-    break;
-  case 't':
-    draw_bitmap(LETT, data, buffer);
-    break;
-  case 'a':
-    draw_bitmap(LETA, data, buffer);
-    break;
-  case 'l':
-    draw_bitmap(LETL, data, buffer);
-    break;
-  case 'g':
-    data.y += 3;
-    draw_bitmap(LETG, data, buffer);
-    break;
-  case 'b':
-    draw_bitmap(LETB, data, buffer);
-    break;
-  case 'd':
-    draw_bitmap(LETD, data, buffer);
-    break;
-  case 'e':
-    draw_bitmap(LETE, data, buffer);
-    break;
-  case 'f':
-    draw_bitmap(LETF, data, buffer);
-    break;
-  case 'x':
-    draw_bitmap(LETX, data, buffer);
-    break;
-  case 'y':
-    data.y += 3;
-    draw_bitmap(LETY, data, buffer);
-    break;
-  case 'w':
-    draw_bitmap(LETW, data, buffer);
-    break;
-  case 'u':
-    draw_bitmap(LETU, data, buffer);
-    break;
-  case 'm':
-    draw_bitmap(LETM, data, buffer);
-    break;
-  case 'r':
-    draw_bitmap(LETR, data, buffer);
-    break;
-  }
+    switch (letter)
+    {
+    case '0':
+        draw_bitmap(LET0, data, buffer);
+        break;
+    case '1':
+        draw_bitmap(LET1, data, buffer);
+        break;
+    case '2':
+        draw_bitmap(LET2, data, buffer);
+        break;
+    case '3':
+        draw_bitmap(LET3, data, buffer);
+        break;
+    case '4':
+        draw_bitmap(LET4, data, buffer);
+        break;
+    case '5':
+        draw_bitmap(LET5, data, buffer);
+        break;
+    case '6':
+        draw_bitmap(LET6, data, buffer);
+        break;
+    case '7':
+        draw_bitmap(LET7, data, buffer);
+        break;
+    case '8':
+        draw_bitmap(LET8, data, buffer);
+        break;
+    case '9':
+        draw_bitmap(LET9, data, buffer);
+        break;
+    case '+':
+        draw_bitmap(LETADD, data, buffer);
+        break;
+    case '-':
+        draw_bitmap(LETSUB, data, buffer);
+        break;
+    case '*':
+        draw_bitmap(LETMUL, data, buffer);
+        break;
+    case '/':
+        draw_bitmap(LETDIV, data, buffer);
+        break;
+    case '^':
+        draw_bitmap(LETEXP, data, buffer);
+        break;
+    case '(':
+        draw_bitmap(LETBS, data, buffer);
+        break;
+    case ')':
+        draw_bitmap(LETBE, data, buffer);
+        break;
+    case '=':
+        draw_bitmap(LETEQ, data, buffer);
+        break;
+    case '.':
+        draw_bitmap(LETDOT, data, buffer);
+        break;
+    case '?':
+        draw_bitmap(LETQUES, data, buffer);
+        break;
+    case '@':
+        draw_bitmap(LETPI, data, buffer);
+        break;
+    case '%':
+        draw_bitmap(LETDEG, data, buffer);
+        break;
+    case '#':
+        draw_bitmap(LETROOT, data, buffer);
+        break;
+    case 's':
+        draw_bitmap(LETS, data, buffer);
+        break;
+    case 'i':
+        draw_bitmap(LETI, data, buffer);
+        break;
+    case 'n':
+        draw_bitmap(LETN, data, buffer);
+        break;
+    case 'c':
+        draw_bitmap(LETC, data, buffer);
+        break;
+    case 'o':
+        draw_bitmap(LETO, data, buffer);
+        break;
+    case 't':
+        draw_bitmap(LETT, data, buffer);
+        break;
+    case 'a':
+        draw_bitmap(LETA, data, buffer);
+        break;
+    case 'l':
+        draw_bitmap(LETL, data, buffer);
+        break;
+    case 'g':
+        data.y += 3;
+        draw_bitmap(LETG, data, buffer);
+        break;
+    case 'b':
+        draw_bitmap(LETB, data, buffer);
+        break;
+    case 'd':
+        draw_bitmap(LETD, data, buffer);
+        break;
+    case 'e':
+        draw_bitmap(LETE, data, buffer);
+        break;
+    case 'f':
+        draw_bitmap(LETF, data, buffer);
+        break;
+    case 'x':
+        draw_bitmap(LETX, data, buffer);
+        break;
+    case 'y':
+        data.y += 3;
+        draw_bitmap(LETY, data, buffer);
+        break;
+    case 'w':
+        draw_bitmap(LETW, data, buffer);
+        break;
+    case 'u':
+        draw_bitmap(LETU, data, buffer);
+        break;
+    case 'm':
+        draw_bitmap(LETM, data, buffer);
+        break;
+    case 'r':
+        draw_bitmap(LETR, data, buffer);
+        break;
+    default:
+        break;
+    }
 }

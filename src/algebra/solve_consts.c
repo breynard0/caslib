@@ -83,31 +83,31 @@ double solve_const_expr(struct EquationObject* input, int length,
 
     // Functions
     // Going backwards because nested functions
-    for (int i = new_len - 2; i >= 0; i--)
+    for (int j = new_len - 2; j >= 0; j--)
     {
         Boolean exit = FALSE;
         double val = 0.0;
-        if (i + 1 < new_len)
+        if (j + 1 < new_len)
         {
-            switch (expression[i].type)
+            switch (expression[j].type)
             {
             case SINE:
-                val = sine(expression[i + 1].value.number);
+                val = sine(expression[j + 1].value.number);
                 break;
             case COSINE:
-                val = cosine(expression[i + 1].value.number);
+                val = cosine(expression[j + 1].value.number);
                 break;
             case TANGENT:
-                val = tangent(expression[i + 1].value.number);
+                val = tangent(expression[j + 1].value.number);
                 break;
             case ARCSINE:
-                val = arc_sine(expression[i + 1].value.number);
+                val = arc_sine(expression[j + 1].value.number);
                 break;
             case ARCCOSINE:
-                val = arc_cosine(expression[i + 1].value.number);
+                val = arc_cosine(expression[j + 1].value.number);
                 break;
             case ARCTANGENT:
-                val = arc_tangent(expression[i + 1].value.number);
+                val = arc_tangent(expression[j + 1].value.number);
                 break;
             default:
                 exit = TRUE;
@@ -120,15 +120,15 @@ double solve_const_expr(struct EquationObject* input, int length,
             continue;
         }
 
-        expression[i].type = NUMBER;
-        expression[i].value.number = val;
+        expression[j].type = NUMBER;
+        expression[j].value.number = val;
 
-        if (i + 1 >= new_len)
+        if (j + 1 >= new_len)
         {
             f_bad_equation = 1;
             return NAN;
         }
-        remove_eo_idx(expression, new_len, i + 1);
+        remove_eo_idx(expression, new_len, j + 1);
         new_len--;
     }
 

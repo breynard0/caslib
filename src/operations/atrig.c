@@ -34,7 +34,7 @@ static double arc_compute(double num, const enum FuncType type)
     // Sine values passed into tan may be large, so it is likely inaccurate, hence
     // the workaround The tangent function exported by this file does sinX/cosX to
     // avoid the issues in the arc_compute function
-    const float threshold = 0.99;
+    const double threshold = 0.99;
     if (num > threshold && type != fTANGENT)
     {
         double cos_x = num;
