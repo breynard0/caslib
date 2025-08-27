@@ -1,4 +1,5 @@
 #include "cull.h"
+#include "dutils.h"
 #include "enums.h"
 #include "equation_objects.h"
 #include "parentheses.h"
@@ -234,44 +235,47 @@ int collect_reorder_polynomial(struct EquationObject* buffer, int length)
             }
 
             // Push here
-            coeffs_out[out_coeffs_len] = round_to_threshold(coeff);
-            out_coeffs_len++;
-            if (i != 0 && vars[i - 1].degree != vars[i - 1].degree)
+            if (double_abs(coeff) > THRESHOLD)
             {
-                out_vars[out_vars_len].letter.letter = 'x';
-                out_vars[out_vars_len].letter.subscript = ' ';
-                out_vars[out_vars_len].degree = 0;
-                out_vars_len++;
-            }
-
-            if (i != 0)
-            {
-                int h = i - 1;
-                while (vars[h].degree == vars[h].degree && h != 0)
+                coeffs_out[out_coeffs_len] = round_to_threshold(coeff);
+                out_coeffs_len++;
+                if (i != 0 && vars[i - 1].degree != vars[i - 1].degree)
                 {
-                    h--;
-                }
-                if (vars[h].degree != vars[h].degree)
-                {
-                    h++;
-                }
-                while (vars[h].degree == vars[h].degree && h < vars_len)
-                {
-                    out_vars[out_vars_len] = vars[h];
+                    out_vars[out_vars_len].letter.letter = 'x';
+                    out_vars[out_vars_len].letter.subscript = ' ';
+                    out_vars[out_vars_len].degree = 0;
                     out_vars_len++;
-
-                    h++;
                 }
-                out_vars[out_vars_len].degree = NAN;
-                out_vars_len++;
-            }
-            else
-            {
-                out_vars[out_vars_len].letter.letter = 'x';
-                out_vars[out_vars_len].degree = 0;
-                out_vars_len++;
-                out_vars[out_vars_len].degree = NAN;
-                out_vars_len++;
+
+                if (i != 0)
+                {
+                    int h = i - 1;
+                    while (vars[h].degree == vars[h].degree && h != 0)
+                    {
+                        h--;
+                    }
+                    if (vars[h].degree != vars[h].degree)
+                    {
+                        h++;
+                    }
+                    while (vars[h].degree == vars[h].degree && h < vars_len)
+                    {
+                        out_vars[out_vars_len] = vars[h];
+                        out_vars_len++;
+
+                        h++;
+                    }
+                    out_vars[out_vars_len].degree = NAN;
+                    out_vars_len++;
+                }
+                else
+                {
+                    out_vars[out_vars_len].letter.letter = 'x';
+                    out_vars[out_vars_len].degree = 0;
+                    out_vars_len++;
+                    out_vars[out_vars_len].degree = NAN;
+                    out_vars_len++;
+                }
             }
 
             n++;

@@ -75,14 +75,14 @@ void debug_algebra()
     // test_lex();
     // test_solve_consts();
     // test_expansion();
-    // test_roots();
+    test_roots();
     // test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
     // test_rearrange();
     // printf("Test power rule...\n");
     // test_derivative();
-    test_polydiv();
+    // test_polydiv();
     // test_polygcf();
     // test_yun();
 }
@@ -215,7 +215,8 @@ void test_expansion()
     // char* expression = "(3(x-4))(10(x-1))";
     // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char* expression = "8";
-    char* expression = "-0.296296296296x^5*(-324x-3224)";
+    // char* expression = "-0.296296296296x^5*(-324x-3224)";
+    char* expression = "(-955.259259259259x^5-322)-2.94833105x^4*(-324x-3224)";
 
     // Not working still
 
