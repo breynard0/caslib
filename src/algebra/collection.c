@@ -235,7 +235,7 @@ int collect_reorder_polynomial(struct EquationObject* buffer, int length)
             }
 
             // Push here
-            if (double_abs(coeff) > THRESHOLD)
+            if (double_abs(coeff) > THRESHOLD * 100)
             {
                 coeffs_out[out_coeffs_len] = round_to_threshold(coeff);
                 out_coeffs_len++;

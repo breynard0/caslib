@@ -436,11 +436,14 @@ void test_polydiv()
     // char* dividend = "96x^31-322";
     // char* divisor = "-324.9325x-3224";
 
-    char* dividend = "96x^6-322";
-    char* divisor = "-324x-3224";
+    // char* dividend = "96x^6-322";
+    // char* divisor = "-324x-3224";
 
     // char* dividend = "3x^2-32x-4";
     // char* divisor = "6x-32";
+
+    char* dividend = "6x-32";
+    char* divisor = "-8";
 
     printf("Lexing %s...\n", dividend);
     struct EquationObject dividend_buffer[1024];
