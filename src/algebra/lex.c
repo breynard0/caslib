@@ -12,10 +12,8 @@ int lex(char* input, int length, struct EquationObject* buffer,
 
     short state = 1;
 
-    struct EquationObject eo_def;
-    eo_def.type = NONE;
-    eo_def.value.none = 0;
-    struct EquationObject eo;
+    // struct EquationObject eo_def = { .type = NONE, .value.number = 0};
+    // struct EquationObject eo = { .type = NONE, .value.none = 0};
 
     Boolean dot_flag = FALSE;
     short decimal_digits = 0;
@@ -37,17 +35,17 @@ int lex(char* input, int length, struct EquationObject* buffer,
             if (c >= '0' && c <= '9')
             {
                 short num = c - '0';
-                eo.type = NUMBER;
+                buffer[out_len].type = NUMBER;
                 if (dot_flag == FALSE)
                 {
-                    eo.value.number *= 10;
-                    eo.value.number += num;
+                    buffer[out_len].value.number *= 10;
+                    buffer[out_len].value.number += num;
                 }
                 else
                 {
-                    eo.value.number +=
-                        ((double)num) /
-                        pow_di(10.0, -double_digits_partial(eo.value.number));
+                    buffer[out_len].value.number +=
+                        (double)num /
+                        pow_di(10.0, -double_digits_partial(buffer[out_len].value.number));
                     decimal_digits++;
                 }
                 state = 2;
@@ -64,41 +62,31 @@ int lex(char* input, int length, struct EquationObject* buffer,
             }
             else if (c == '*')
             {
-                eo.type = MULT;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = MULT;
                 out_len++;
                 state = 1;
             }
             else if (c == '/')
             {
-                eo.type = DIV;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = DIV;
                 out_len++;
                 state = 1;
             }
             else if (c == '+')
             {
-                eo.type = ADD;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = ADD;
                 out_len++;
                 state = 1;
             }
             else if (c == '-')
             {
-                eo.type = SUB;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = SUB;
                 out_len++;
                 state = 1;
             }
             else if (c == '^')
             {
-                eo.type = EXP;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = EXP;
                 out_len++;
                 state = 1;
             }
@@ -108,43 +96,37 @@ int lex(char* input, int length, struct EquationObject* buffer,
             }
             else if (c == '(')
             {
-                eo.type = BLOCK_START;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = BLOCK_START;
                 out_len++;
                 state = 1;
             }
             else if (c == ')')
             {
-                eo.type = BLOCK_END;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = BLOCK_END;
                 out_len++;
                 state = 1;
             }
             else if (c == '=')
             {
-                eo.type = EQUAL;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = EQUAL;
                 out_len++;
                 state = 1;
             }
             else
             {
-                eo.type = LETTER;
+                buffer[out_len].type = LETTER;
 
                 // Default values
-                eo.value.letter.letter = ' ';
-                eo.value.letter.subscript = ' ';
+                buffer[out_len].value.letter.letter = ' ';
+                buffer[out_len].value.letter.subscript = ' ';
 
                 if (subscript == FALSE)
                 {
-                    eo.value.letter.letter = c;
+                    buffer[out_len].value.letter.letter = c;
                 }
                 else
                 {
-                    eo.value.letter.subscript = c;
+                    buffer[out_len].value.letter.subscript = c;
                 }
                 state = 3;
             }
@@ -153,21 +135,21 @@ int lex(char* input, int length, struct EquationObject* buffer,
             if (c >= '0' && c <= '9')
             {
                 short num = c - '0';
-                eo.type = NUMBER;
+                buffer[out_len].type = NUMBER;
                 if (dot_flag == FALSE)
                 {
-                    eo.value.number *= 10;
-                    eo.value.number += num;
+                    buffer[out_len].value.number *= 10;
+                    buffer[out_len].value.number += num;
                 }
                 else
                 {
                     if (decimal_digits < 12)
                     {
-                        eo.value.number =
-                            dround(eo.value.number * pow_di(10.0, decimal_digits)) /
+                        buffer[out_len].value.number =
+                            dround(buffer[out_len].value.number * pow_di(10.0, decimal_digits)) /
                             pow_di(10.0, decimal_digits);
-                        eo.value.number += (double)num / pow_di(10.0, decimal_digits + 1);
-                        eo.value.number = round_to_threshold(eo.value.number);
+                        buffer[out_len].value.number += (double)num / pow_di(10.0, decimal_digits + 1);
+                        buffer[out_len].value.number = round_to_threshold(buffer[out_len].value.number);
                         decimal_digits++;
                     }
                 }
@@ -180,10 +162,8 @@ int lex(char* input, int length, struct EquationObject* buffer,
             }
             else
             {
-                buffer[out_len] = eo;
                 dot_flag = FALSE;
                 decimal_digits = 0;
-                eo = eo_def;
                 out_len++;
 
                 i--;
@@ -199,13 +179,11 @@ int lex(char* input, int length, struct EquationObject* buffer,
             else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
                 subscript)
             {
-                eo.type = LETTER;
-                if ((!subscript && eo.value.letter.letter != ' ') ||
-                    (subscript && eo.value.letter.subscript != ' '))
+                buffer[out_len].type = LETTER;
+                if ((!subscript && buffer[out_len].value.letter.letter != ' ') ||
+                    (subscript && buffer[out_len].value.letter.subscript != ' '))
                 {
-                    buffer[out_len] = eo;
                     subscript = FALSE;
-                    eo = eo_def;
                     out_len++;
 
                     i--;
@@ -215,11 +193,11 @@ int lex(char* input, int length, struct EquationObject* buffer,
                 {
                     if (!subscript)
                     {
-                        eo.value.letter.letter = c;
+                        buffer[out_len].value.letter.letter = c;
                     }
                     else
                     {
-                        eo.value.letter.subscript = c;
+                        buffer[out_len].value.letter.subscript = c;
                         subscript = FALSE;
                     }
                     state = 3;
@@ -227,9 +205,7 @@ int lex(char* input, int length, struct EquationObject* buffer,
             }
             else
             {
-                buffer[out_len] = eo;
                 subscript = FALSE;
-                eo = eo_def;
                 out_len++;
 
                 i--;
@@ -240,65 +216,47 @@ int lex(char* input, int length, struct EquationObject* buffer,
             switch (c)
             {
             case 'p':
-                eo.type = PI_VAL;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = PI_VAL;
                 out_len++;
                 state = 1;
                 break;
             case 's':
-                eo.type = SINE;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = SINE;
                 out_len++;
                 state = 1;
                 break;
             case 'c':
-                eo.type = COSINE;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = COSINE;
                 out_len++;
                 state = 1;
                 break;
             case 't':
-                eo.type = TANGENT;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = TANGENT;
                 out_len++;
                 state = 1;
                 break;
             case 'a':
-                eo.type = ARCSINE;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = ARCSINE;
                 out_len++;
                 state = 1;
                 break;
             case 'o':
-                eo.type = ARCCOSINE;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = ARCCOSINE;
                 out_len++;
                 state = 1;
                 break;
             case 'g':
-                eo.type = ARCTANGENT;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = ARCTANGENT;
                 out_len++;
                 state = 1;
                 break;
             case 'r':
-                eo.type = ROOT;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = ROOT;
                 out_len++;
                 state = 1;
                 break;
             case 'l':
-                eo.type = LOG;
-                buffer[out_len] = eo;
-                eo = eo_def;
+                buffer[out_len].type = LOG;
                 out_len++;
                 state = 1;
                 break;
@@ -315,14 +273,11 @@ int lex(char* input, int length, struct EquationObject* buffer,
         i++;
     }
 
-    if (eo.type != NONE)
-    {
-        buffer[out_len] = eo;
-        out_len++;
-    }
-    eo = eo_def;
-    eo.type = END_LEX;
-    buffer[out_len] = eo;
+    // if (buffer[out_len].type != NONE)
+    // {
+    //     out_len++;
+    // }
+    buffer[out_len].type = END_LEX;
     out_len++;
 
     return out_len;

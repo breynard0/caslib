@@ -1,9 +1,9 @@
 .SILENT:
 
-OPT_LEVEL = -O0
+OPT_LEVEL = -O1
 # I will write this absolute path, then I will see myself out
 # I just want to finish this :(
-RAYLIB_FLAGS = $(OPT_LEVEL) -Wall /home/breynard/git-cache/raylib/src/libraylib.web.a -I/usr/include /home/breynard/git-cache/raylib/src/libraylib.web.a -s USE_GLFW=3 -s ASYNCIFY --shell-file /home/breynard/CProjects/caslib/dist/shell.html
+RAYLIB_FLAGS = $(OPT_LEVEL) -Wall /home/breynard/git-cache/raylib/src/libraylib.web.a -I/usr/include /home/breynard/git-cache/raylib/src/libraylib.web.a -s USE_GLFW=3 -s STACK_SIZE=8MB -s ASYNCIFY --shell-file /home/breynard/CProjects/caslib/dist/shell.html
 
 gcc_call = gcc -I./include -I/usr/include/ $(OPT_LEVEL) -g -pg -c $(1) -o $(2).o
 #gcc_call = emcc -I./include $(RAYLIB_FLAGS) -g -pg -c $(1) -o $(2).a
