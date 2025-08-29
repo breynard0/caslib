@@ -23,6 +23,7 @@ enum EOType
     ARCTANGENT,
     LOG,
     END_LEX,
+    // None must remain last
     NONE
 };
 

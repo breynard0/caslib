@@ -42,12 +42,12 @@ void test_yun();
 void debug_algebra()
 {
     // printf("%0.11f\n", nth_root(10000, 1000000));
-    // struct SinCos out = angle_pair(deg_to_rad(-315.0));
+    // struct SinCos out = angle_pair(deg_to_rad(315.0));
     // printf("%0.11f %0.11f\n", out.cos, out.sin);
     // printf("%0.11f\n", sine(cosine(tangent(43))));
     // double num = 20000.0;
-    // printf("Arc function of %f: %0.10f", num, arc_tangent(num));
-    // printf("%li", gcf(-10, -15));
+    // printf("Arc function of %f: %0.10f\n", num, arc_tangent(num));
+    // printf("%li\n", gcf(-10, -15));
     // struct ImproperFraction f;
     // f.numerator = 6;
     // f.denominator = 10;
@@ -63,15 +63,15 @@ void debug_algebra()
     // (double)f.denominator); printf("%0.10f", log_n(16, 10)); printf("%f",
     // pow_frac(10.0, f)); printf("%f", pow_dd(2.0, 4.3)); printf("%f", pow_di(3,
     // 8));
-    // printf("%i", double_digits_partial(0.123456789));
-    // printf("%f", dfloor(12232132998.000001534820));
-    // printf("%f", dround(1999.99));
-    // printf("%f", pow_di(2, -1));
-    // printf("%0.16f", pow_dd(2, 33.82314132412341256));
+    // printf("%i\n", double_digits_partial(0.123456789));
+    // printf("%f\n", dfloor(12232132998.000001534820));
+    // printf("%f\n", dround(1999.99));
+    // printf("%f\n", pow_di(2, -1));
+    // printf("%0.16f\n", pow_dd(2, 33.82314132412341256));
     // printf("%0.10f\n", log_n(1600, 10));
     // printf("%0.10f\n", log_2(160000));
     // printf("%0.10f\n", ln(200000));
-    // printf("%f", dmodulo(8321741235453223.0324123, 8321741235453223.0));
+    // printf("%f\n", dmodulo(8321741235453223.0324123, 8321741235453223.0));
     test_lex();
     // test_solve_consts();
     // test_expansion();
@@ -98,6 +98,7 @@ void test_lex()
     char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char* expression = "3";
     // char* expression = "-0.296296296296x^5*(-324x-3224)";
+    // char* expression = "8x^3-2x+4";
 
     printf("Lexing %s\n", expression);
     struct EquationObject buffer[256];
@@ -213,10 +214,10 @@ void test_expansion()
     // char *expression = "(3axy-x)/(x^1)";
     // const auto expression = "(3(x-4))(4(x-1))";
     // char* expression = "(3(x-4))(10(x-1))";
-    // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+    char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char* expression = "8";
     // char* expression = "-0.296296296296x^5*(-324x-3224)";
-    char* expression = "(-955.259259259259x^5-322)-2.94833105x^4*(-324x-3224)";
+    // char* expression = "(-955.259259259259x^5-322)-2.94833105x^4*(-324x-3224)";
 
     // Not working still
 

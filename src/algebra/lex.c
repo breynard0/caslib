@@ -273,10 +273,10 @@ int lex(char* input, int length, struct EquationObject* buffer,
         i++;
     }
 
-    // if (buffer[out_len].type != NONE)
-    // {
-    //     out_len++;
-    // }
+    if (buffer[out_len].type < NONE)
+    {
+        out_len++;
+    }
     buffer[out_len].type = END_LEX;
     out_len++;
 
