@@ -158,6 +158,7 @@ int polynomial_gcf(struct EquationObject* expr0, int expr0_len,
             remainder_len = new_l1;
         }
 
+
         polynomial_division(quotient, quotient_len, remainder, remainder_len);
 
         remainder_len = 0;

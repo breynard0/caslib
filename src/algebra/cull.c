@@ -71,10 +71,10 @@ int cull_the_useless(struct EquationObject* expression, int length)
         }
         // 0+
         // -0 should be filtered, 0- should not
-        if ((buf[i].type == NUMBER && buf[i].value.number == 0 &&
+        if (((buf[i].type == NUMBER && buf[i].value.number == 0 &&
                 (buf[i - 1].type == ADD || buf[i - 1].type == SUB)) ||
             (buf[i].type == ADD && buf[i - 1].type == NUMBER &&
-                buf[i - 1].value.number == 0))
+                buf[i - 1].value.number == 0)) && i < new_len - 1 && (buf[i + 1].type == ADD || buf[i + 1].type == SUB))
         {
             remove_eo_idx(buf, new_len, i - 1);
             new_len--;

@@ -1,7 +1,9 @@
+#include "dutils.h"
 #include "enums.h"
 #include "equation_objects.h"
 #include "expansion.h"
 #include "flags.h"
+#include "utils.h"
 
 void polynomial_division(struct EquationObject* dividend, const int dividend_len,
                          struct EquationObject* divisor, const int divisor_len)
@@ -180,6 +182,12 @@ void polynomial_division(struct EquationObject* dividend, const int dividend_len
 
         quotient_len = expand_polynomial(quotient, quotient_len);
         div_term_len = expand_polynomial(div_term, div_term_len);
+
+        // If div_term is zero, then we're done
+        if (div_term_len <= 2 && div_term[0].type == NUMBER && double_abs(div_term[0].value.number) < THRESHOLD)
+        {
+            break;
+        }
 
         // Update temp
         struct EquationObject bs_obj;

@@ -1,6 +1,8 @@
 #include "bisection.h"
 #include "dutils.h"
 #include "expansion.h"
+#include "flags.h"
+#include "log.h"
 #include "pow.h"
 #include "solve_consts.h"
 #include "utils.h"
@@ -49,6 +51,46 @@ double cube_root(const double d) { return nth_root(3, d); }
 
 int real_roots(struct EquationObject* expression, const int length, double* roots)
 {
+    // Fail if there are coefficients more than 3 orders of magnitude apart, or greater than 9
+    const double magnitude_threshold = 3.0;
+    double lowest_coeff = 0.0 / 0.0;
+    double highest_coeff = 0.0 / 0.0;
+    for (int i = 0; i < length; i++)
+    {
+        if (expression[i].type == NUMBER && (i == 0 || expression[i - 1].type != EXP))
+        {
+            const double val = expression[i].value.number;
+
+            // NaN checks
+            if (lowest_coeff != lowest_coeff)
+            {
+                // ReSharper disable once CppDFAUnreachableCode
+                lowest_coeff = val;
+            }
+            if (highest_coeff != highest_coeff)
+            {
+                // ReSharper disable once CppDFAUnreachableCode
+                highest_coeff = val;
+            }
+
+            // Replace if bigger or smaller
+            if (val < lowest_coeff)
+            {
+                lowest_coeff = val;
+            }
+            if (val > highest_coeff)
+            {
+                highest_coeff = val;
+            }
+        }
+    }
+    if (double_abs(log_n(lowest_coeff, 10) - log_n(highest_coeff, 10)) > magnitude_threshold || log_n(highest_coeff, 10) > 9)
+    {
+        f_unsupported = TRUE;
+        return 0;
+    }
+
+
     struct EquationObject original[length] = {};
     for (int i = 0; i < length; i++)
     {
@@ -75,7 +117,7 @@ int real_roots(struct EquationObject* expression, const int length, double* root
         var.value = root;
         // Verify that Yun's theorem hasn't made up roots. It can do that sometimes.
         const double y = solve_const_expr(original, length, &var, 1);
-        if (double_abs(y) <= THRESHOLD * square_root(1.0 / THRESHOLD))
+        if (double_abs(y) <= THRESHOLD * pow_di(10, 1 + log_n(highest_coeff, 10)))
         {
             roots[num_roots] = root;
             num_roots++;

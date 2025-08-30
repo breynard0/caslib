@@ -9,6 +9,7 @@ int lex(char* input, int length, struct EquationObject* buffer,
 {
     int i = 0;
     int out_len = 0;
+    int final_out_len = 0;
 
     short state = 1;
 
@@ -32,6 +33,7 @@ int lex(char* input, int length, struct EquationObject* buffer,
         switch (state)
         {
         case 1:
+            final_out_len++;
             if (c >= '0' && c <= '9')
             {
                 short num = c - '0';
@@ -273,12 +275,8 @@ int lex(char* input, int length, struct EquationObject* buffer,
         i++;
     }
 
-    if (buffer[out_len].type < NONE)
-    {
-        out_len++;
-    }
-    buffer[out_len].type = END_LEX;
-    out_len++;
+    buffer[final_out_len].type = END_LEX;
+    final_out_len++;
 
-    return out_len;
+    return final_out_len;
 }

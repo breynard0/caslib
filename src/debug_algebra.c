@@ -72,11 +72,11 @@ void debug_algebra()
     // printf("%0.10f\n", log_2(160000));
     // printf("%0.10f\n", ln(200000));
     // printf("%f\n", dmodulo(8321741235453223.0324123, 8321741235453223.0));
-    test_lex();
+    // test_lex();
     // test_solve_consts();
     // test_expansion();
     // test_roots();
-    // test_roots_function();
+    test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
     // test_rearrange();
@@ -214,10 +214,11 @@ void test_expansion()
     // char *expression = "(3axy-x)/(x^1)";
     // const auto expression = "(3(x-4))(4(x-1))";
     // char* expression = "(3(x-4))(10(x-1))";
-    char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+    // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char* expression = "8";
     // char* expression = "-0.296296296296x^5*(-324x-3224)";
     // char* expression = "(-955.259259259259x^5-322)-2.94833105x^4*(-324x-3224)";
+    char* expression = "(3x+4)-(0)(4xy)";
 
     // Not working still
 
@@ -270,8 +271,11 @@ void test_roots()
     // char *expression = "x^2-5x+6";
     // char *expression =
     // "3x^9-44x^8+272x^7-896x^6+1568x^5-896*x^4-1792x^3+4096x^2-3328x+1024"; char
-    // *expression = "(x-2)(x-2)(x-3)(x-3)(x^2-128)"; char *expression =
-    // "x^6-10x^5-91x^4+1220x^3-4700x^2+7680x-4608"; char *expression =
+    // *expression = "(x-2)(x-2)(x-3)(x-3)(x^2-128)";
+    // char* expression = "x^6-10x^5-91x^4+1220x^3-4700x^2+7680x-4608";
+    // char* expression = "61234968x^6-3401827x^5-93647301x^4+12238420x^3-47034860x^2+76346280x-40986608";
+    char* expression = "36829374x^3-2132555x+4452345";
+    // char *expression =
     // "((x-2)(x-2)(x-3)(x-3)(x^2-128))/(3x+4)"; char *expression =
     // "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
@@ -282,7 +286,7 @@ void test_roots()
     // char *expression = "x(x-22)";
     // char *expression = "3x^2-2x-4";
     // char* expression = "3x^2-32x-4";
-    char* expression = "8x^3-2x+4";
+    // char* expression = "8x^3-2x+4";
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
@@ -340,7 +344,8 @@ void test_roots_function()
     // char* expression = "6x^2";
     // char* expression = "6x^2-4x+85";
     // char* expression = "3x^2-2x-4";
-    char* expression = "8x^3-2x+4";
+    // char* expression = "8x^3-2x+4";
+    char* expression = "49287482x^3-309821x+15832983";
 
     struct EquationObject lex_buffer[1024];
     int lex_len = lex(expression, strlen(expression), lex_buffer, 1024);
@@ -352,6 +357,10 @@ void test_roots_function()
     for (int i = 0; i < num_roots; i++)
     {
         printf("%0.16f\n", out_roots[i]);
+    }
+    if (f_unsupported)
+    {
+        printf("Unsupported Flag Active\n");
     }
 }
 
