@@ -82,13 +82,28 @@ int bundan_max_roots(const struct EquationObject* expression, const int length, 
     replace_array[1].type = LETTER;
     replace_array[1].value.letter = target;
 
+    // I don't know why is this addition and not subtraction, but it doesn't work if I switch it so it's staying
     replace_array[2].type = ADD;
 
     replace_array[3].type = NUMBER;
 
     replace_array[4].type = BLOCK_END;
 
-    struct EquationObject first[3 * length];
+    // Get highest degree
+    double max_deg = 1;
+    for (int i = 1; i < length; i++)
+    {
+        if (expression[i].type == NUMBER && expression[i - 1].type == EXP)
+        {
+            double cur_deg = expression[i].value.number;
+            if (cur_deg > max_deg)
+            {
+                max_deg = cur_deg;
+            }
+        }
+    }
+
+    struct EquationObject first[3 * length * (int)max_deg];
     int first_len = 0;
     for (int i = 0; i < length; i++)
     {
@@ -103,7 +118,7 @@ int bundan_max_roots(const struct EquationObject* expression, const int length, 
     }
     const int first_sign_changes = get_sign_changes(first, first_len);
 
-    struct EquationObject second[3 * length];
+    struct EquationObject second[3 * length * (int)max_deg];
     int second_len = 0;
     for (int i = 0; i < length; i++)
     {

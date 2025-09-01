@@ -90,9 +90,6 @@ struct RootRange next_delimiter(struct EquationObject* expression, int length,
 
     while (uncertainty > THRESHOLD)
     {
-        int lower_roots =
-            bundan_max_roots(expression, length, delim_guess - uncertainty + offset,
-                             delim_guess + offset);
         int upper_roots = bundan_max_roots(expression, length, delim_guess + offset,
                                            delim_guess + uncertainty + offset);
 
@@ -138,7 +135,7 @@ int get_isolation_delimiter_positions(struct EquationObject* expression,
                 break;
             }
             delimiters[out_len] = last_delim;
-            bound = last_delim.min - (THRESHOLD / 2);
+            bound = last_delim.min - THRESHOLD / 2;
             out_len++;
         }
     }

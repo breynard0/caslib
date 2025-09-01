@@ -84,7 +84,8 @@ int real_roots(struct EquationObject* expression, const int length, double* root
             }
         }
     }
-    if (double_abs(log_n(lowest_coeff, 10) - log_n(highest_coeff, 10)) > magnitude_threshold || log_n(highest_coeff, 10) > 9)
+    if (double_abs(log_n(lowest_coeff, 10) - log_n(highest_coeff, 10)) > magnitude_threshold || log_n(highest_coeff, 10)
+        > 9)
     {
         f_unsupported = TRUE;
         return 0;

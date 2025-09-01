@@ -75,8 +75,8 @@ void debug_algebra()
     // test_lex();
     // test_solve_consts();
     // test_expansion();
-    // test_roots();
-    test_roots_function();
+    test_roots();
+    // test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
     // test_rearrange();
@@ -218,7 +218,8 @@ void test_expansion()
     // char* expression = "8";
     // char* expression = "-0.296296296296x^5*(-324x-3224)";
     // char* expression = "(-955.259259259259x^5-322)-2.94833105x^4*(-324x-3224)";
-    char* expression = "(3x+4)-(0)(4xy)";
+    // char* expression = "(3x+4)-(0)(4xy)";
+    char* expression = "9(x-1)^5-3";
 
     // Not working still
 
@@ -274,7 +275,7 @@ void test_roots()
     // *expression = "(x-2)(x-2)(x-3)(x-3)(x^2-128)";
     // char* expression = "x^6-10x^5-91x^4+1220x^3-4700x^2+7680x-4608";
     // char* expression = "61234968x^6-3401827x^5-93647301x^4+12238420x^3-47034860x^2+76346280x-40986608";
-    char* expression = "36829374x^3-2132555x+4452345";
+    // char* expression = "36829374x^3-2132555x+4452345";
     // char *expression =
     // "((x-2)(x-2)(x-3)(x-3)(x^2-128))/(3x+4)"; char *expression =
     // "(3(x-4)^2+10)(10(x-1)^2+2)";
@@ -287,6 +288,7 @@ void test_roots()
     // char *expression = "3x^2-2x-4";
     // char* expression = "3x^2-32x-4";
     // char* expression = "8x^3-2x+4";
+    char* expression = "9x^5-4";
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
