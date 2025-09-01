@@ -75,7 +75,7 @@ void debug_algebra()
     // test_lex();
     // test_solve_consts();
     // test_expansion();
-    test_roots();
+    // test_roots();
     // test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
@@ -83,7 +83,7 @@ void debug_algebra()
     // printf("Test power rule...\n");
     // test_derivative();
     // test_polydiv();
-    // test_polygcf();
+    test_polygcf();
     // test_yun();
 }
 
@@ -289,7 +289,8 @@ void test_roots()
     // char* expression = "3x^2-32x-4";
     // char* expression = "8x^3-2x+4";
     // char* expression = "9x^5-4";
-    char* expression = "3x+1";
+    // char* expression = "3x+1";
+    char* expression = "3x^14-x^3+7";
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
@@ -546,8 +547,11 @@ void test_polygcf()
     // char* dividend = "30x^4-300x^3+1096x^2-1448x+696";
     // char* divisor = "120x^3-900x^2+2192x-1448";
 
-    char* dividend = "3x^32-322x-3224";
-    char* divisor = "96x^31-322";
+    // char* dividend = "3x^32-322x-3224";
+    // char* divisor = "96x^31-322";
+
+    char* dividend = "3x^14-x^3+7";
+    char* divisor = "42x^13-3x^2";
 
     printf("Lexing %s...\n", dividend);
     struct EquationObject dividend_buffer[1024];

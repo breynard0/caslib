@@ -64,10 +64,19 @@ int polynomial_gcf(struct EquationObject* expr0, int expr0_len,
     Boolean expr0_larger = TRUE;
 
     int n = 0;
+    const int n_threshold = 1000;
 
     while (new_l0 != 0 && new_l1 != 0)
     {
         n++;
+
+        if (n > n_threshold)
+        {
+            expr0[0].type = NUMBER;
+            expr0[0].value.number = 1.0;
+            expr0[1].type = END_LEX;
+            return 2;
+        }
 
         if (expr0[0].type == NUMBER &&
             double_abs(expr0[0].value.number) < THRESHOLD)
