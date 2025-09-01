@@ -57,7 +57,7 @@ void polynomial_division(struct EquationObject* dividend, const int dividend_len
         }
     }
 
-    int temp_max_len = max_degree * 10;
+    int temp_max_len = max_degree * divisor_len * dividend_len;
 
     struct EquationObject quotient[temp_max_len] = {};
     int quotient_len = 0;

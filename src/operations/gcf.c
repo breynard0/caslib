@@ -48,6 +48,7 @@ int polynomial_gcf(struct EquationObject* expr0, int expr0_len,
         }
         expr0[0].type = NUMBER;
         expr0[0].value.number = 1.0;
+        expr0[1].type = END_LEX;
         return 2;
     }
 

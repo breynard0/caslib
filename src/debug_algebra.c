@@ -288,7 +288,8 @@ void test_roots()
     // char *expression = "3x^2-2x-4";
     // char* expression = "3x^2-32x-4";
     // char* expression = "8x^3-2x+4";
-    char* expression = "9x^5-4";
+    // char* expression = "9x^5-4";
+    char* expression = "3x+1";
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
@@ -435,8 +436,8 @@ void test_polydiv()
     // char *dividend = "15x^2+10x";
     // char *divisor = "9x+6";
 
-    // char *dividend = "3x+4";
-    // char *divisor = "3x+4";
+    char* dividend = "3x+4";
+    char* divisor = "3x+4";
 
     // char *dividend = "x^5-87x^4+9x^3+7x^2-3";
     // char *divisor = "-1207.44x^3+98.16x^2+48.72x-3";
@@ -456,8 +457,8 @@ void test_polydiv()
     // char* dividend = "3x^2-32x-4";
     // char* divisor = "6x-32";
 
-    char* dividend = "6x-32";
-    char* divisor = "-8";
+    // char* dividend = "6x-32";
+    // char* divisor = "-8";
 
     printf("Lexing %s...\n", dividend);
     struct EquationObject dividend_buffer[1024];

@@ -5,8 +5,8 @@ OPT_LEVEL = -O0
 # I just want to finish this :(
 RAYLIB_FLAGS = $(OPT_LEVEL) -Wall /home/breynard/git-cache/raylib/src/libraylib.web.a -I/usr/include /home/breynard/git-cache/raylib/src/libraylib.web.a -s USE_GLFW=3 -s STACK_SIZE=4MB -s ASYNCIFY --shell-file /home/breynard/CProjects/caslib/dist/shell.html
 
-# gcc_call = gcc -I./include -I/usr/include/ $(OPT_LEVEL) -g -pg -c $(1) -o $(2).o
-gcc_call = emcc -I./include $(RAYLIB_FLAGS) -g -pg -c $(1) -o $(2).a
+ gcc_call = gcc -I./include -I/usr/include/ $(OPT_LEVEL) -g -pg -c $(1) -o $(2).o
+#gcc_call = emcc -I./include $(RAYLIB_FLAGS) -g -pg -c $(1) -o $(2).a
 
 run: init build
 	echo "Running..."
@@ -24,9 +24,9 @@ build: deps
 	@$(call gcc_call,src/debug_display.c,work/debug_display)
 	@$(call gcc_call,src/debug.c,work/debug)
 	@$(call gcc_call,src/main.c,work/main)
-	# gcc -L/usr/lib64/ -lraylib -g -pg work/*.o $(OPT_LEVEL) -o work/main
+	 gcc -L/usr/lib64/ -lraylib -g -pg work/*.o $(OPT_LEVEL) -o work/main
 
-	emcc $(RAYLIB_FLAGS) -o dist/game.html -DPLATFORM_WEB -g -pg work/*.a
+	#emcc $(RAYLIB_FLAGS) -o dist/game.html -DPLATFORM_WEB -g -pg work/*.a
 
 deps: raylib auto-deps operations algebra display
 
