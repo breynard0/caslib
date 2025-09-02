@@ -5,6 +5,7 @@
 #include "lex.h"
 #include "parse.h"
 #include "solve_consts.h"
+#include "utils.h"
 
 Boolean update_get_var(short y_spacer, short size, char* buffer,
                        short buf_width, struct Letter* letter_buf,
@@ -199,7 +200,7 @@ void update_get_var_values(short y_spacer, short size, char* buffer,
             vars_len++;
         }
 
-        double solution = solve_const_expr(expression, new_len, vars, vars_len);
+        double solution = round_to_threshold(solve_const_expr(expression, new_len, vars, vars_len));
         struct EquationObject solution_eo = {};
         solution_eo.type = NUMBER;
         solution_eo.value.number = solution;

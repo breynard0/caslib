@@ -576,11 +576,10 @@ void debug_display()
                             Boolean found = FALSE;
                             for (int j = 0; j < input_var_len; j++)
                             {
-                                struct Letter l = input_var_buf[input_string_len].letter;
+                                struct Letter l = input_var_buf[j].letter;
                                 if (expression[i].value.letter.letter == l.letter &&
                                     expression[i].value.letter.subscript == l.subscript)
                                 {
-                                    input_var_buf[input_string_len].num_len = 0;
                                     found = TRUE;
                                     break;
                                 }

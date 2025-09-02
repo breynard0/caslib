@@ -24,9 +24,16 @@ build: deps
 	@$(call gcc_call,src/debug_display.c,work/debug_display)
 	@$(call gcc_call,src/debug.c,work/debug)
 	@$(call gcc_call,src/main.c,work/main)
-	 gcc -L/usr/lib64/ -lraylib -g -pg work/*.o $(OPT_LEVEL) -o work/main
+	gcc -L/usr/lib64/ -lraylib -g -pg work/*.o $(OPT_LEVEL) -o work/main
 
-	#emcc $(RAYLIB_FLAGS) -o dist/game.html -DPLATFORM_WEB -g -pg work/*.a
+
+webbuild: deps
+	echo "Building..."
+	@$(call gcc_call,src/debug_algebra.c,work/debug_algebra)
+	@$(call gcc_call,src/debug_display.c,work/debug_display)
+	@$(call gcc_call,src/debug.c,work/debug)
+	@$(call gcc_call,src/main.c,work/main)
+	emcc $(RAYLIB_FLAGS) -o dist/game.html -DPLATFORM_WEB -g -pg work/*.a
 
 deps: raylib auto-deps operations algebra display
 
