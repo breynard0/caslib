@@ -567,10 +567,12 @@ void debug_display()
                     mode = M_VAR_VALUE;
                     cursor_pos = 0;
                     input_var_len = 0;
+                    Boolean any_found = FALSE;
                     for (int i = 0; i < new_len; i++)
                     {
                         if (expression[i].type == LETTER)
                         {
+                            any_found = TRUE;
                             Boolean found = FALSE;
                             for (int j = 0; j < input_var_len; j++)
                             {
@@ -578,6 +580,7 @@ void debug_display()
                                 if (expression[i].value.letter.letter == l.letter &&
                                     expression[i].value.letter.subscript == l.subscript)
                                 {
+                                    input_var_buf[input_string_len].num_len = 0;
                                     found = TRUE;
                                     break;
                                 }
@@ -590,6 +593,10 @@ void debug_display()
                                 input_var_len++;
                             }
                         }
+                    }
+                    if (!any_found)
+                    {
+                        mode = M_EXPRESSION;
                     }
                 }
             }

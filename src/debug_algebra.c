@@ -65,7 +65,7 @@ void debug_algebra()
     // 8));
     // printf("%i\n", double_digits_partial(0.123456789));
     // printf("%f\n", dfloor(12232132998.000001534820));
-    // printf("%f\n", dround(1999.99));
+    printf("%f\n", dround(0));
     // printf("%f\n", pow_di(2, -1));
     // printf("%0.16f\n", pow_dd(2, 33.82314132412341256));
     // printf("%0.10f\n", log_n(1600, 10));
@@ -83,7 +83,7 @@ void debug_algebra()
     // printf("Test power rule...\n");
     // test_derivative();
     // test_polydiv();
-    test_polygcf();
+    // test_polygcf();
     // test_yun();
 }
 
@@ -95,8 +95,9 @@ void test_lex()
     // char *expression = "4xy";
     // char *expression = "60\\d";
     // char *expression = "3x+4";
-    char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
+    // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char* expression = "3";
+    char* expression = "0.32141235";
     // char* expression = "-0.296296296296x^5*(-324x-3224)";
     // char* expression = "8x^3-2x+4";
 
@@ -128,7 +129,8 @@ void test_solve_consts()
     // char *expression = "(1/(2+2))";
     // char *expression = "x^2+x-6";
     // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
-    char* expression = "\\s\\s40";
+    // char* expression = "\\s\\s40";
+    char* expression = "x^15+2x-1";
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[256];
     const int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
@@ -136,7 +138,7 @@ void test_solve_consts()
     struct InputVar var;
     var.letter.letter = 'x';
     var.letter.subscript = ' ';
-    var.value = 2;
+    var.value = 0.4999834;
     struct InputVar vars[1] = {var};
     const double solution = solve_const_expr(lex_buffer, lex_len, vars, 1);
     printf("%0.12f", solution);

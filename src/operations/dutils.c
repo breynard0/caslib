@@ -1,5 +1,7 @@
 #include "dutils.h"
 
+#include "utils.h"
+
 double ddouble(double num, const int n)
 {
     double_cast cast = (double_cast)num;
@@ -42,6 +44,10 @@ double dceil(const double num) { return -dfloor(-num); }
 double dround(const double num)
 {
     const double abs = double_abs(num);
+    if (abs < THRESHOLD)
+    {
+        return 0.0;
+    }
     const double sign = num / abs;
     if (dmodulo(abs, 1.0) < 0.5)
     {

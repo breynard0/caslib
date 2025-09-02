@@ -127,17 +127,26 @@ void update_get_var_values(short y_spacer, short size, char* buffer,
 {
     struct SolveVar cur_value = values_buf[*cursor];
 
+    int dot_found = 0;
+    for (int i = 0; i < cur_value.num_len; i++)
+    {
+        if (cur_value.num[i] == '.')
+        {
+            dot_found = 1;
+        }
+    }
+
     switch (button)
     {
     case B_NUMBER_LETTER:
-        if (cur_value.num_len < 23)
+        if (cur_value.num_len < 8 + dot_found)
         {
             cur_value.num[cur_value.num_len] = data.number + '0';
             cur_value.num_len++;
         }
         break;
     case B_PI:
-        if (cur_value.num_len < 23)
+        if (cur_value.num_len < 8 + dot_found)
         {
             cur_value.num[cur_value.num_len] = '@';
             cur_value.num_len++;
@@ -150,7 +159,7 @@ void update_get_var_values(short y_spacer, short size, char* buffer,
         }
         break;
     case B_DOT:
-        if (cur_value.num_len < 23)
+        if (cur_value.num_len < 8 + dot_found)
         {
             cur_value.num[cur_value.num_len] = '.';
             cur_value.num_len++;
@@ -164,7 +173,7 @@ void update_get_var_values(short y_spacer, short size, char* buffer,
         cur_value = values_buf[*cursor];
         break;
     case B_DOWN:
-        if (*cursor < (*values_len - 1))
+        if (*cursor < *values_len - 1)
         {
             (*cursor)++;
         }

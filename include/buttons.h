@@ -55,7 +55,7 @@ union PushButtonData
 struct SolveVar
 {
     struct Letter letter;
-    char num[25];
+    char num[10];
     short num_len;
 };
 #endif
