@@ -287,8 +287,13 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
         rhs_len++;
         rhs[rhs_len].type = BLOCK_START;
         rhs_len++;
+        Boolean only_number = TRUE;
         for (int j = 0; j < lhs_len; j++)
         {
+            if (lhs[j].type != NUMBER)
+            {
+                only_number = FALSE;
+            }
             rhs[rhs_len] = lhs[j];
             rhs_len++;
         }
@@ -303,10 +308,16 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
         }
         lhs[3].type = END_LEX;
         lhs_len = 4;
+        // Evaluate if only a constant number
+        if (only_number)
+        {
+            rhs_len = expand_polynomial(rhs, rhs_len) - 1;
+        }
     }
 
     // Expand lhs
     lhs_len = expand_polynomial(lhs, lhs_len) - 1;
+
 
     // Substitute in values
     int max = lhs_len;
@@ -373,5 +384,32 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
     }
     buffer[out_len].type = END_LEX;
     out_len++;
+
+    // Replace redundant symbols
+    i = 1;
+    while (i < out_len - 1)
+    {
+        if (buffer[i].type == MULT)
+        {
+            // Replace -1* with -, unless it's an exponent
+            if (buffer[i - 1].type == NUMBER && buffer[i - 1].value.number == -1 && i >= 2 && buffer[i - 2].type != EXP)
+            {
+                buffer[i].type = SUB;
+                remove_eo_idx(buffer, out_len, i - 1);
+                out_len--;
+                i = 0;
+            }
+
+            // Remove if either is letter
+            if (buffer[i - 1].type == LETTER || buffer[i + 1].type == LETTER)
+            {
+                remove_eo_idx(buffer, out_len, i);
+                out_len--;
+                i = 0;
+            }
+        }
+        i++;
+    }
+
     return out_len;
 }

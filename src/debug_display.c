@@ -627,7 +627,7 @@ void debug_display()
                             f_bad_equation = TRUE;
                             break;
                         }
-                        lex_len = expand_polynomial(expression, lex_len);
+                        // lex_len = expand_polynomial(expression, lex_len);
                         if (!no_var_functions(expression, lex_len))
                         {
                             f_unsupported = TRUE;
