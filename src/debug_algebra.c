@@ -73,13 +73,13 @@ void debug_algebra()
     // printf("%0.10f\n", ln(200000));
     // printf("%f\n", dmodulo(8321741235453223.0324123, 8321741235453223.0));
     // test_lex();
-    // test_solve_consts();
+    test_solve_consts();
     // test_expansion();
     // test_roots();
     // test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
-    test_rearrange();
+    // test_rearrange();
     // printf("Test power rule...\n");
     // test_derivative();
     // test_polydiv();
@@ -97,7 +97,8 @@ void test_lex()
     // char *expression = "3x+4";
     // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
     // char* expression = "3";
-    char* expression = "0.32141235";
+    // char* expression = "0.32141235";
+    char* expression = "\\p\\p\\p";
     // char* expression = "-0.296296296296x^5*(-324x-3224)";
     // char* expression = "8x^3-2x+4";
 
@@ -130,7 +131,9 @@ void test_solve_consts()
     // char *expression = "x^2+x-6";
     // char *expression = "(x-2)(x-2)(x-2)(x-2)(x-2)(x-3)";
     // char* expression = "\\s\\s40";
-    char* expression = "x^15+2x-1";
+    // char* expression = "x^15+2x-1";
+    char* expression = "x+\\p";
+
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[256];
     const int lex_len = lex(expression, strlen(expression), lex_buffer, 256);
@@ -138,7 +141,7 @@ void test_solve_consts()
     struct InputVar var;
     var.letter.letter = 'x';
     var.letter.subscript = ' ';
-    var.value = 0.4999834;
+    var.value = 1.0;
     struct InputVar vars[1] = {var};
     const double solution = solve_const_expr(lex_buffer, lex_len, vars, 1);
     printf("%0.12f", solution);
@@ -221,7 +224,8 @@ void test_expansion()
     // char* expression = "-0.296296296296x^5*(-324x-3224)";
     // char* expression = "(-955.259259259259x^5-322)-2.94833105x^4*(-324x-3224)";
     // char* expression = "(3x+4)-(0)(4xy)";
-    char* expression = "9(x-1)^5-3";
+    // char* expression = "9(x-1)^5-3";
+    char* expression = "\\p\\p\\p";
 
     // Not working still
 

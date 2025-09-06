@@ -60,6 +60,8 @@ struct SolveVar
 };
 #endif
 
+void expand_functions(char* buffer, int* length);
+
 // Returns new cursor position
 short button_update(char* buffer, int* length, short cursor_pos,
                     enum PushButton button, union PushButtonData data,

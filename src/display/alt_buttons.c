@@ -1,6 +1,7 @@
 #include "buttons.h"
 #include "draw.h"
 #include "enums.h"
+#include "expansion.h"
 #include "letters.h"
 #include "lex.h"
 #include "parse.h"
@@ -200,7 +201,26 @@ void update_get_var_values(short y_spacer, short size, char* buffer,
             vars_len++;
         }
 
-        double solution = round_to_threshold(solve_const_expr(expression, new_len, vars, vars_len));
+        // If there are no letters, then just expand it
+        Boolean letter_found = FALSE;
+        for (int i = 0; i < new_len; i++)
+        {
+            if (expression[i].type == LETTER)
+            {
+                letter_found = TRUE;
+            }
+        }
+
+        double solution;
+        if (letter_found)
+        {
+            solution = round_to_threshold(solve_const_expr(expression, new_len, vars, vars_len));
+        }
+        else
+        {
+            expand_polynomial(expression, new_len);
+            solution = round_to_threshold(expression[0].value.number);
+        }
         struct EquationObject solution_eo = {};
         solution_eo.type = NUMBER;
         solution_eo.value.number = solution;

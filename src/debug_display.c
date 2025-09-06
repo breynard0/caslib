@@ -523,6 +523,7 @@ void debug_display()
             if (button_type == B_GET_ROOT && mode != M_SHOW_ROOTS)
             {
                 struct EquationObject expression[192] = {};
+                expand_functions(input_string, &input_string_len);
                 int new_len = lex(input_string, input_string_len, expression, 128);
                 if (!valid_expr(expression, new_len))
                 {
@@ -555,6 +556,7 @@ void debug_display()
             if (button_type == B_SOLVE && mode != M_VAR_VALUE)
             {
                 // Populate buffer
+                expand_functions(input_string, &input_string_len);
                 struct EquationObject expression[192] = {};
                 int new_len = lex(input_string, input_string_len, expression, 128);
 
@@ -595,6 +597,7 @@ void debug_display()
                     }
                     if (!any_found)
                     {
+                        button_type = B_EXPAND;
                         mode = M_EXPRESSION;
                     }
                 }

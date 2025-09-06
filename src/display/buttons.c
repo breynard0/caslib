@@ -14,6 +14,70 @@ void insert_char_idx(char* buffer, int length, char c, int idx)
     buffer[idx] = c;
 }
 
+void expand_functions(char* buffer, int* length)
+{
+    for (int i = 0; i < *length; i++)
+    {
+        Boolean found = FALSE;
+        char c = buffer[i];
+        if (c == '@')
+        {
+            buffer[i] = 'p';
+            found = TRUE;
+        }
+        if (c == '#')
+        {
+            buffer[i] = 'r';
+            found = TRUE;
+        }
+        if (c == '[')
+        {
+            buffer[i] = 's';
+            found = TRUE;
+        }
+        if (c == ']')
+        {
+            buffer[i] = 'c';
+            found = TRUE;
+        }
+        if (c == ';')
+        {
+            buffer[i] = 't';
+            found = TRUE;
+        }
+        if (c == '`')
+        {
+            buffer[i] = 'a';
+            found = TRUE;
+        }
+        if (c == '~')
+        {
+            buffer[i] = 'o';
+            found = TRUE;
+        }
+        if (c == '$')
+        {
+            buffer[i] = 'g';
+            found = TRUE;
+        }
+        if (c == '%')
+        {
+            buffer[i] = 'd';
+            found = TRUE;
+        }
+        if (c == '&')
+        {
+            buffer[i] = 'l';
+            found = TRUE;
+        }
+        if (found)
+        {
+            (*length)++;
+            insert_char_idx(buffer, *length, '\\', i);
+        }
+    }
+}
+
 short button_update(char* buffer, int* length, short cursor_pos,
                     enum PushButton button, union PushButtonData data,
                     Boolean second, Boolean subscript)
@@ -61,66 +125,7 @@ short button_update(char* buffer, int* length, short cursor_pos,
     if (button == B_SOLVE || button == B_REARRANGE || button == B_GET_ROOT ||
         button == B_EXPAND)
     {
-        for (int i = 0; i < *length; i++)
-        {
-            Boolean found = FALSE;
-            char c = buffer[i];
-            if (c == '@')
-            {
-                buffer[i] = 'p';
-                found = TRUE;
-            }
-            if (c == '#')
-            {
-                buffer[i] = 'r';
-                found = TRUE;
-            }
-            if (c == '[')
-            {
-                buffer[i] = 's';
-                found = TRUE;
-            }
-            if (c == ']')
-            {
-                buffer[i] = 'c';
-                found = TRUE;
-            }
-            if (c == ';')
-            {
-                buffer[i] = 't';
-                found = TRUE;
-            }
-            if (c == '`')
-            {
-                buffer[i] = 'a';
-                found = TRUE;
-            }
-            if (c == '~')
-            {
-                buffer[i] = 'o';
-                found = TRUE;
-            }
-            if (c == '$')
-            {
-                buffer[i] = 'g';
-                found = TRUE;
-            }
-            if (c == '%')
-            {
-                buffer[i] = 'd';
-                found = TRUE;
-            }
-            if (c == '&')
-            {
-                buffer[i] = 'l';
-                found = TRUE;
-            }
-            if (found)
-            {
-                (*length)++;
-                insert_char_idx(buffer, *length, '\\', i);
-            }
-        }
+        expand_functions(buffer, length);
     }
 
     switch (button)
@@ -212,7 +217,7 @@ short button_update(char* buffer, int* length, short cursor_pos,
 
         if (second)
         {
-            char letter = 'a';
+            char letter = 0;
             switch (data.number)
             {
             case 7:
