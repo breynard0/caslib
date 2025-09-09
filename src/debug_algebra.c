@@ -73,13 +73,13 @@ void debug_algebra()
     // printf("%0.10f\n", ln(200000));
     // printf("%f\n", dmodulo(8321741235453223.0324123, 8321741235453223.0));
     // test_lex();
-    test_solve_consts();
+    // test_solve_consts();
     // test_expansion();
     // test_roots();
     // test_roots_function();
     // test_valid();
     // printf("Test rearrange...\n");
-    // test_rearrange();
+    test_rearrange();
     // printf("Test power rule...\n");
     // test_derivative();
     // test_polydiv();
@@ -248,7 +248,9 @@ void test_rearrange()
     // char *expression = "5x+10=20y";
     // char* expression = "a=0.5x-vt";
     // char* expression = "a=0.5x-vt\\t30";
-    char* expression = "5x=y";
+    // char* expression = "5x=y";
+    char* expression = "9(w+2)=3y(x+4)";
+    // char* expression = "9w+18=3xy+12y";
 
     printf("Lexing %s...\n", expression);
     struct EquationObject lex_buffer[1024];
@@ -349,14 +351,14 @@ void test_roots()
 void test_roots_function()
 {
     // char* expression = "(3(x-4)^2+10)(10(x-1)^2+2)";
-    // char* expression = "(x-3)(x+2)(7x-2)";
+    char* expression = "(x-3)(x+2)(7x-2)";
     // char* expression = "3x+4";
     // char* expression = "x(3x+4)";
     // char* expression = "6x^2";
     // char* expression = "6x^2-4x+85";
     // char* expression = "3x^2-2x-4";
     // char* expression = "8x^3-2x+4";
-    char* expression = "49287482x^3-309821x+15832983";
+    // char* expression = "49287482x^3-309821x+15832983";
 
     struct EquationObject lex_buffer[1024];
     int lex_len = lex(expression, strlen(expression), lex_buffer, 1024);

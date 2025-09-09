@@ -104,6 +104,32 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
         }
     }
 
+    // Expand both sides
+    struct EquationObject new_buf[3 * length];
+    int new_buf_len = 0;
+
+    int eq_pos = 0;
+    while (buffer[eq_pos].type != EQUAL)
+    {
+        eq_pos++;
+    }
+
+    for (int i = eq_pos + 1; i < length; i++)
+    {
+        new_buf[new_buf_len] = buffer[i];
+        new_buf_len++;
+    }
+
+    buffer[eq_pos].type = END_LEX;
+    length = expand_polynomial(buffer, eq_pos + 1);
+    buffer[length - 1].type = EQUAL;
+    new_buf_len = expand_polynomial(new_buf, new_buf_len);
+    for (int i = 0; i < new_buf_len; i++)
+    {
+        buffer[length] = new_buf[i];
+        length++;
+    }
+
     struct EquationObject lhs[length] = {};
     int lhs_len = 0;
     struct EquationObject rhs[2 * length] = {};
@@ -113,6 +139,7 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
 
     int i = 0;
     {
+        int blocK_count = 0;
         int start = 0;
         Boolean target_found = FALSE;
         while (i < length)
@@ -125,7 +152,17 @@ int rearrange_for_var(struct EquationObject* buffer, int length,
                 target_found = TRUE;
             }
 
-            if (cur_type == ADD || cur_type == SUB || cur_type == EQUAL ||
+            if (cur_type == BLOCK_START)
+            {
+                blocK_count++;
+            }
+
+            if (cur_type == BLOCK_END)
+            {
+                blocK_count--;
+            }
+
+            if (((cur_type == ADD || cur_type == SUB) && blocK_count == 0) || cur_type == EQUAL ||
                 cur_type == END_LEX || i == length - 1)
             {
                 // Make pointers to make the code cleaner

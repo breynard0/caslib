@@ -1,4 +1,5 @@
 #include "equation_objects.h"
+
 #include "dutils.h"
 #include "enums.h"
 #include "expansion.h"
