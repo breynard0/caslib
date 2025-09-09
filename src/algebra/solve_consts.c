@@ -50,10 +50,7 @@ double solve_const_expr(struct EquationObject* input, int length,
                 {
                     break;
                 }
-                else
-                {
-                    start--;
-                }
+                start--;
             }
             short count = i - start;
             struct EquationObject new_buffer[count];

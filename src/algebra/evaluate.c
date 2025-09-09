@@ -72,8 +72,8 @@ int evaluate_consts(struct EquationObject* expression, int length)
     }
 
     // Evaluate functions
-    i = 0;
-    while (i < new_len)
+    i = new_len;
+    while (i >= 0)
     {
         struct EquationObject cur = expression[i];
 
@@ -82,7 +82,7 @@ int evaluate_consts(struct EquationObject* expression, int length)
         case PI_VAL:
             expression[i].type = NUMBER;
             expression[i].value.number = PI;
-            i = 0;
+            i = new_len;
             break;
         case ROOT:
             expression[i].type = NUMBER;
@@ -92,7 +92,7 @@ int evaluate_consts(struct EquationObject* expression, int length)
             new_len--;
             remove_eo_idx(expression, new_len, i - 1);
             new_len--;
-            i = 0;
+            i = new_len;
             break;
         case EXP:
             if (expression[i - 1].type == NUMBER)
@@ -104,7 +104,7 @@ int evaluate_consts(struct EquationObject* expression, int length)
                 new_len--;
                 remove_eo_idx(expression, new_len, i - 1);
                 new_len--;
-                i = 0;
+                i = new_len;
             }
             break;
         case SINE:
@@ -112,42 +112,42 @@ int evaluate_consts(struct EquationObject* expression, int length)
             expression[i].value.number = sine(expression[i + 1].value.number);
             remove_eo_idx(expression, new_len, i + 1);
             new_len--;
-            i = 0;
+            i = new_len;
             break;
         case COSINE:
             expression[i].type = NUMBER;
             expression[i].value.number = cosine(expression[i + 1].value.number);
             remove_eo_idx(expression, new_len, i + 1);
             new_len--;
-            i = 0;
+            i = new_len;
             break;
         case TANGENT:
             expression[i].type = NUMBER;
             expression[i].value.number = tangent(expression[i + 1].value.number);
             remove_eo_idx(expression, new_len, i + 1);
             new_len--;
-            i = 0;
+            i = new_len;
             break;
         case ARCSINE:
             expression[i].type = NUMBER;
             expression[i].value.number = arc_sine(expression[i + 1].value.number);
             remove_eo_idx(expression, new_len, i + 1);
             new_len--;
-            i = 0;
+            i = new_len;
             break;
         case ARCCOSINE:
             expression[i].type = NUMBER;
             expression[i].value.number = arc_cosine(expression[i + 1].value.number);
             remove_eo_idx(expression, new_len, i + 1);
             new_len--;
-            i = 0;
+            i = new_len;
             break;
         case ARCTANGENT:
             expression[i].type = NUMBER;
             expression[i].value.number = arc_tangent(expression[i + 1].value.number);
             remove_eo_idx(expression, new_len, i + 1);
             new_len--;
-            i = 0;
+            i = new_len;
             break;
         case LOG:
             expression[i].type = NUMBER;
@@ -157,13 +157,13 @@ int evaluate_consts(struct EquationObject* expression, int length)
             new_len--;
             remove_eo_idx(expression, new_len, i - 1);
             new_len--;
-            i = 0;
+            i = new_len;
             break;
         default:
             break;
         }
 
-        i++;
+        i--;
     }
 
     return new_len;

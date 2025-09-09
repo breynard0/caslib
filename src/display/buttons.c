@@ -373,7 +373,7 @@ short button_update(char* buffer, int* length, short cursor_pos,
                 }
             }
 
-            if (cursor < (*length - num_subscript))
+            if (cursor < *length - num_subscript)
             {
                 cursor++;
             }
