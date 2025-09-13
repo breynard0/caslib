@@ -169,7 +169,7 @@ int draw_expression(const short x, const short y, const short size, char* buffer
     {
         if (expression_in[i] == ':')
         {
-            subscripts[sub_len] = i;
+            subscripts[sub_len] = i - sub_len;
             sub_len++;
         }
         else
@@ -216,6 +216,7 @@ int draw_expression(const short x, const short y, const short size, char* buffer
     int i = 0;
     short draw_spot = 0;
     int blocks = 0;
+    int subscripts_passed = 0;
     while (i < new_len)
     {
         const short draw_spot_before = draw_spot;
@@ -227,9 +228,15 @@ int draw_expression(const short x, const short y, const short size, char* buffer
             i++;
         }
 
+        subscripts_passed = 0;
         Boolean is_subscript = FALSE;
         for (int j = 0; j < sub_len; j++)
         {
+            if (i > subscripts[j])
+            {
+                subscripts_passed++;
+            }
+
             if (i == subscripts[j])
             {
                 is_subscript = TRUE;
@@ -481,7 +488,7 @@ int draw_expression(const short x, const short y, const short size, char* buffer
             }
 
         // Draw cursor
-        if (*cursor == i && draw_cursor)
+        if (*cursor - subscripts_passed == i && draw_cursor)
         {
             if (!cursor_calculation)
             {
@@ -501,7 +508,7 @@ int draw_expression(const short x, const short y, const short size, char* buffer
     // Draw cursor at end
     if (!cursor_calculation && draw_cursor)
     {
-        if (*cursor == new_len || new_len == 0)
+        if (*cursor - subscripts_passed >= new_len || new_len == 0)
         {
             draw_line(draw_spot + x + offset, y + size + 2,
                       draw_spot + x + offset + size, y + size + 2, buffer, buf_width);

@@ -23,6 +23,11 @@ static Boolean is_function(enum EOType type)
 
 Boolean is_juxtaposed(struct EquationObject self, struct EquationObject last)
 {
+    // Two numbers because sometimes glitch
+    if (self.type == NUMBER && last.type == NUMBER)
+    {
+        return TRUE;
+    }
     // (2)3
     if (self.type == NUMBER && last.type == BLOCK_END)
     {
@@ -38,9 +43,17 @@ Boolean is_juxtaposed(struct EquationObject self, struct EquationObject last)
     {
         return TRUE;
     }
+
     int cur_pi_letter = self.type == LETTER || self.type == PI_VAL;
+    int last_pi_letter = last.type == LETTER || last.type == PI_VAL;
+
     // 5x
     if (cur_pi_letter && last.type == NUMBER)
+    {
+        return TRUE;
+    }
+    // x5 (technically correct, just uncommon)
+    if (self.type == NUMBER && last_pi_letter)
     {
         return TRUE;
     }
@@ -49,7 +62,6 @@ Boolean is_juxtaposed(struct EquationObject self, struct EquationObject last)
     {
         return TRUE;
     }
-    int last_pi_letter = last.type == LETTER || last.type == PI_VAL;
     // x(2+3)
     if (self.type == BLOCK_START && last_pi_letter)
     {

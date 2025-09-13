@@ -82,16 +82,16 @@ short button_update(char* buffer, int* length, short cursor_pos,
                     enum PushButton button, union PushButtonData data,
                     Boolean second, Boolean subscript)
 {
-    short cursor = cursor_pos;
-
     short colon_count = 0;
-    for (int i = 0; i <= cursor; i++)
+    for (int i = 0; i < cursor_pos; i++)
     {
         if (buffer[i] == ':')
         {
             colon_count++;
         }
     }
+
+    short cursor = cursor_pos;
 
     // Make space for new thing
     if (cursor < *length &&
@@ -102,7 +102,7 @@ short button_update(char* buffer, int* length, short cursor_pos,
             button == B_START || button == B_END || button == B_NONE))
     {
         // Adjust for subscripts
-        cursor += colon_count;
+        // cursor += colon_count;
 
         for (int i = *length; i >= cursor; i--)
         {
@@ -258,10 +258,7 @@ short button_update(char* buffer, int* length, short cursor_pos,
             buffer[cursor] = data.number + '0';
         }
         (*length)++;
-        if (!subscript)
-        {
-            cursor++;
-        }
+        cursor++;
 
         break;
     case B_PLUS:
@@ -360,20 +357,19 @@ short button_update(char* buffer, int* length, short cursor_pos,
         if (cursor > 0)
         {
             cursor--;
+            if (cursor > 0 && buffer[cursor - 1] == ':')
+            {
+                cursor--;
+            }
         }
         break;
     case B_RIGHT:
         {
-            int num_subscript = 0;
-            for (int i = 0; i < *length; i++)
+            if (buffer[cursor] == ':' && cursor < *length)
             {
-                if (buffer[i] == ':')
-                {
-                    num_subscript++;
-                }
+                cursor++;
             }
-
-            if (cursor < *length - num_subscript)
+            if (cursor < *length)
             {
                 cursor++;
             }
@@ -381,7 +377,7 @@ short button_update(char* buffer, int* length, short cursor_pos,
         }
     case B_DEL:
         {
-            if (*length == 0)
+            if (*length == 0 || cursor <= 0)
             {
                 return cursor;
             }
@@ -391,8 +387,6 @@ short button_update(char* buffer, int* length, short cursor_pos,
             {
                 del_pos = 0;
             }
-
-            char del_char = buffer[del_pos];
 
             Boolean cursor_at_end = TRUE;
             if (cursor != *length)
@@ -415,10 +409,11 @@ short button_update(char* buffer, int* length, short cursor_pos,
                     cursor--;
                 }
             }
-            if (del_char == ':')
+            if (buffer[del_pos - 1] == ':')
             {
-                button_update(buffer, length, del_pos + 1, B_DEL, data, second,
+                button_update(buffer, length, del_pos, B_DEL, data, second,
                               subscript);
+                cursor--;
             }
             break;
         }
@@ -452,9 +447,9 @@ short button_update(char* buffer, int* length, short cursor_pos,
         break;
     }
 
-    if (cursor > *length - colon_count)
+    if (cursor > *length)
     {
-        cursor = *length - colon_count;
+        cursor = *length;
     }
 
     return cursor;
