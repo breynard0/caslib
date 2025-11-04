@@ -79,3 +79,17 @@ implemented. If I design something similar to this in the future, I will definit
 
 All in all, I'm very happy with how this has turned out. I'm proud of what I've accomplished this summer and feel that
 I've learned a lot of useful stuff. Next, I'm going to get a physical design together, then throw this onto hardware! 
+
+# Showcase Images
+
+![calc_img](showcase/calc.png)
+
+*Screenshot of the embedded demo GUI*
+
+![roots_img](showcase/roots.png)
+
+*Output demonstrating the steps in root-finding*
+
+![embedded_img](showcase/embedded.png)
+
+*This library running on an STM32*
